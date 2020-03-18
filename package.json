@@ -1,6 +1,6 @@
 {
   "name": "juejin",
-  "displayName": "juejin",
+  "displayName": "掘金",
   "description": "A juejin plugin in vscode",
   "version": "0.1.0",
   "publisher": "luzhenqian",
@@ -19,6 +19,7 @@
     "onCommand:juejin.pins"
   ],
   "main": "./out/extension.js",
+  "icon": "icon/icon.png",
   "contributes": {
     "commands": [
       {

@@ -8,7 +8,7 @@ enum ENV {
   "DEV" = "DEV",
   "PROD" = "PROD"
 }
-let env = ENV.DEV;
+let env = ENV.PROD;
 
 export function activate(context: vscode.ExtensionContext) {
   let disposable = vscode.commands.registerCommand("juejin.pins", () => {
