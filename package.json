@@ -1,0 +1,57 @@
+{
+  "name": "juejin",
+  "displayName": "juejin",
+  "description": "A juejin plugin in vscode",
+  "version": "0.1.0",
+  "publisher": "luzhenqian",
+  "homepage": "https://github.com/luzhenqian/vscode-juejin/README.md",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/luzhenqian/vscode-juejin"
+  },
+  "engines": {
+    "vscode": "^1.43.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:juejin.pins"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "juejin.pins",
+        "title": "juejin pins"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "lint": "eslint src --ext ts",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "test": "node ./out/test/runTest.js",
+    "build": "vsce package",
+    "htmlts": "node ./scripts/ts.html-generator.js"
+  },
+  "devDependencies": {
+    "@types/glob": "^7.1.1",
+    "@types/mocha": "^7.0.1",
+    "@types/node": "^12.11.7",
+    "@types/vscode": "^1.43.0",
+    "@typescript-eslint/eslint-plugin": "^2.18.0",
+    "@typescript-eslint/parser": "^2.18.0",
+    "eslint": "^6.8.0",
+    "glob": "^7.1.6",
+    "mocha": "^7.0.1",
+    "typescript": "^3.7.5",
+    "vscode-test": "^1.3.0"
+  },
+  "dependencies": {
+    "moment": "^2.24.0",
+    "axios": "^0.19.2"
+  }
+}
