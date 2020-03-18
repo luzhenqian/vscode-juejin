@@ -106,11 +106,6 @@ export default `<!DOCTYPE html>
         border: var(--vscode-activityBarBadge-background) 1px solid;
       }
     </style>
-    <link
-      rel="shortcut icon"
-      href="./dist/images/icon.png"
-      type="image/x-icon"
-    />
   </head>
   <body>
     <div class="top">
@@ -196,7 +191,7 @@ export default `<!DOCTYPE html>
 
       // 初始化 message 监听
       function initListenMessage() {
-        window.addEventListener("message", (event) => {
+        window.addEventListener("message", event => {
           const message = event.data;
           switch (message.type) {
             case "GET_PINS":
@@ -248,7 +243,7 @@ export default `<!DOCTYPE html>
       function renderPins(pins) {
         try {
           pinsEl.innerHTML = "<div class='items'>";
-          pins.forEach((pin) => {
+          pins.forEach(pin => {
             const {
               id,
               avatarLarge,
@@ -284,7 +279,7 @@ export default `<!DOCTYPE html>
                   <p>\${content}</p>
                 </div>
                 \${pictures
-                  .map((picture) => \`<img class="picture" src="\${picture}"/>\`)
+                  .map(picture => \`<img class="picture" src="\${picture}"/>\`)
                   .join(" ")}
               </div>
               \${title ? \`<div class="topic">\${title}</div>\` : ""}
@@ -346,14 +341,14 @@ export default `<!DOCTYPE html>
         if (!commentEl) return;
         commentEl.innerHTML += \`
         <div class="comments">
-          \${comments.map((comment) => genComment(comment)).join("")}
+          \${comments.map(comment => genComment(comment)).join("")}
         </div>
         \`;
       }
 
       // 放大缩小图片
       function imageZoomInAndOut() {
-        document.querySelectorAll(".picture").forEach((pictureEl) => {
+        document.querySelectorAll(".picture").forEach(pictureEl => {
           pictureEl.style.cursor = "zoom-in";
           function zoomIn() {
             pictureEl.style["max-width"] = "100%";
@@ -373,7 +368,7 @@ export default `<!DOCTYPE html>
       // 监听图片显示隐藏
       function listenImage() {
         Object.defineProperty(window, "isShowImage", {
-          set: (show) => {
+          set: show => {
             onShowImage(show);
           }
         });
@@ -382,11 +377,11 @@ export default `<!DOCTYPE html>
       // 手动触发图片显示/隐藏
       function onShowImage(show) {
         if (show) {
-          document.querySelectorAll(".picture").forEach((picture) => {
+          document.querySelectorAll(".picture").forEach(picture => {
             picture.style["display"] = "inline-block";
           });
         } else {
-          document.querySelectorAll(".picture").forEach((picture) => {
+          document.querySelectorAll(".picture").forEach(picture => {
             picture.style["display"] = "none";
           });
         }
