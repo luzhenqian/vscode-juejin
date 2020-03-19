@@ -101,6 +101,7 @@ export async function getComments(commentId: string) {
   );
   try {
     const { comments } = data.data.d;
+    console.log("comments:", comments);
     const commentsParse = comments.map((comment: any) => {
       let { createdAt, userInfo, content, topComment } = comment;
       createdAt = timeFromNow(createdAt);
@@ -130,6 +131,7 @@ export async function getComments(commentId: string) {
         topComment
       };
     });
+    console.log("commentsParse:", commentsParse);
     return commentsParse;
   } catch (e) {
     console.log("error:", e);

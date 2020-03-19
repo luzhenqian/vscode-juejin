@@ -191,7 +191,7 @@
 
       // 初始化 message 监听
       function initListenMessage() {
-        window.addEventListener("message", event => {
+        window.addEventListener("message", (event) => {
           const message = event.data;
           switch (message.type) {
             case "GET_PINS":
@@ -243,7 +243,7 @@
       function renderPins(pins) {
         try {
           pinsEl.innerHTML = "<div class='items'>";
-          pins.forEach(pin => {
+          pins.forEach((pin) => {
             const {
               id,
               avatarLarge,
@@ -279,7 +279,7 @@
                   <p>${content}</p>
                 </div>
                 ${pictures
-                  .map(picture => `<img class="picture" src="${picture}"/>`)
+                  .map((picture) => `<img class="picture" src="${picture}"/>`)
                   .join(" ")}
               </div>
               ${title ? `<div class="topic">${title}</div>` : ""}
@@ -299,14 +299,48 @@
 
       // 渲染评论
       function renderComments(comments) {
+        function renderTopComments(topComments) {
+          if (!topComments) return "";
+          if (Array.isArray(topComments)) {
+            return topComments.map((comment) => {
+              console.log("comment:", comment);
+              let {
+                username,
+                avatarLarge,
+                jobTitle,
+                company,
+                createdAt,
+                content,
+                respUserInfo
+              } = comment;
+              let jobInfo = "";
+              if (jobTitle && company) {
+                jobInfo = `${jobTitle} @ ${company}`;
+              } else {
+                if (jobTitle) jobInfo = jobTitle;
+                if (company) jobInfo = company;
+              }
+              jobInfo += jobInfo ? ` · ${createdAt}` : ` ${createdAt}`;
+              if (respUserInfo && respUserInfo.username) {
+                content = `回复 ${respUserInfo.username}: ${content}`;
+              }
+              return `
+                <div class="comments">
+                  <div class="userInfo">
+                    <img class="comment-avatar" src="${avatarLarge}">
+                    <div class="comment-user">
+                      <a class="username">${username}</a>
+                      <div class="userInfoText">${jobInfo}</div>
+                    </div>
+                  </div>
+                  <div>${content}</div>
+                </div>`;
+            }).join(`
+            `);
+          }
+        }
         function genComment(comment) {
           if (!comment) return "";
-          let className = "comment";
-          if (Array.isArray(comment)) {
-            // FIXME: 继续
-            comment = comment[0];
-            className = "comments";
-          }
           let {
             createdAt,
             avatarLarge,
@@ -325,7 +359,7 @@
           }
           jobInfo += jobInfo ? ` · ${createdAt}` : ` ${createdAt}`;
           return `
-          <div class="${className}">
+          <div class="comment">
             <div class="userInfo">
               <img class="comment-avatar" src="${avatarLarge}">
               <div class="comment-user">
@@ -334,21 +368,21 @@
               </div>
             </div>
             <div>${content}</div>
-            ${genComment(topComment)}
+            ${renderTopComments(topComment)}
           </div>
           `;
         }
         if (!commentEl) return;
         commentEl.innerHTML += `
         <div class="comments">
-          ${comments.map(comment => genComment(comment)).join("")}
+          ${comments.map((comment) => genComment(comment)).join("")}
         </div>
         `;
       }
 
       // 放大缩小图片
       function imageZoomInAndOut() {
-        document.querySelectorAll(".picture").forEach(pictureEl => {
+        document.querySelectorAll(".picture").forEach((pictureEl) => {
           pictureEl.style.cursor = "zoom-in";
           function zoomIn() {
             pictureEl.style["max-width"] = "100%";
@@ -368,7 +402,7 @@
       // 监听图片显示隐藏
       function listenImage() {
         Object.defineProperty(window, "isShowImage", {
-          set: show => {
+          set: (show) => {
             onShowImage(show);
           }
         });
@@ -377,11 +411,11 @@
       // 手动触发图片显示/隐藏
       function onShowImage(show) {
         if (show) {
-          document.querySelectorAll(".picture").forEach(picture => {
+          document.querySelectorAll(".picture").forEach((picture) => {
             picture.style["display"] = "inline-block";
           });
         } else {
-          document.querySelectorAll(".picture").forEach(picture => {
+          document.querySelectorAll(".picture").forEach((picture) => {
             picture.style["display"] = "none";
           });
         }
