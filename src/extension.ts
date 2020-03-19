@@ -18,27 +18,20 @@ export function activate(context: vscode.ExtensionContext) {
   // statusBar.text = "touch fish";
   // statusBar.show();
   let disposable = vscode.commands.registerCommand("juejin.pins", () => {
+
+    // 获取配置信息
     function getMetaData() {
       let headText = vscode.workspace
         .getConfiguration()
         .get("juejin.pins.head.text", "别看了，我在写代码。");
       let commentBackgroundColor = vscode.workspace
         .getConfiguration()
-        .get("juejin.pins.comment.background-color");
+        .get("juejin.pins.comment.background-color", 'var(--vscode-badge-background)');
       return { headText, commentBackgroundColor };
     }
 
-    const panel = vscode.window.createWebviewPanel(
-      "juejin-pins",
-      "掘金-沸点",
-      vscode.ViewColumn.Two,
-      {
-        enableScripts: true,
-        retainContextWhenHidden: true
-      }
-    );
-
-    if (env === ENV.DEV) {
+    // 获取本地资源的方式，开发时使用
+    function getHtmlContent() {
       vscode.window.showInformationMessage("current env is dev");
       let templatePath = path.join(
         context.extensionPath,
@@ -62,7 +55,27 @@ export function activate(context: vscode.ExtensionContext) {
           );
         }
       );
-      panel.webview.html = htmlStr;
+      return htmlStr;
+    }
+
+    // 设置背景色
+    function setCommentBackgroundColor(color: string) {
+      // TODO: 没有找到修改配置的 API
+      // vscode.workspace
+    }
+
+    const panel = vscode.window.createWebviewPanel(
+      "juejin-pins",
+      "掘金-沸点",
+      vscode.ViewColumn.Two,
+      {
+        enableScripts: true,
+        retainContextWhenHidden: true
+      }
+    );
+
+    if (env === ENV.DEV) {
+      panel.webview.html = getHtmlContent();
     } else if (env === ENV.PROD) {
       panel.webview.html = html;
     }
@@ -94,6 +107,9 @@ export function activate(context: vscode.ExtensionContext) {
               type: "GET_COMMENT"
             });
             break;
+          case "SET_COMMENT_BACKGROUND_COLOR":
+            setCommentBackgroundColor(message.value);
+            break;
           case "INFO":
             vscode.window.showInformationMessage(message.text);
             break;
@@ -107,4 +123,4 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(disposable);
 }
 
-export function deactivate() {}
+export function deactivate() { }

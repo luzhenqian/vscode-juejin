@@ -31,7 +31,7 @@
         },
         "juejin.pins.comment.background-color": {
           "type": "string",
-          "description": "评论区背景色。必须按照css颜色格式填写，如：#FFFFFF、rgb(0, 0, 0)"
+          "description": "评论区背景色。必须按照css颜色标准格式填写，如：white、#FFFFFF、rgb(255, 255, 255)"
         }
       }
     },

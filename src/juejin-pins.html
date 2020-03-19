@@ -9,23 +9,28 @@
         background-color: var(--vscode-editor-background);
         color: var(--vscode-dropdown-foreground);
       }
-      .top {
+      .top-warp {
         position: fixed;
         top: 0;
-        height: 8vh;
         min-height: 20px;
         width: 100%;
         z-index: 1;
-        box-sizing: border-box;
-        padding: 20px;
         background-color: var(--vscode-editor-background);
       }
+      .top {
+        height: 15vh;
+        position: relative;
+        background-color: var(--vscode-editor-background);
+        box-sizing: border-box;
+        padding: 20px;
+      }
       .actions {
-        float: right;
+        position: absolute;
+        bottom: 20px;
       }
       .contentWarp {
         position: absolute;
-        top: 8vh;
+        top: 15vh;
         margin: 20px;
       }
       .avatar-large {
@@ -108,9 +113,9 @@
     </style>
   </head>
   <body>
-    <div class="top">
-      <div>
-        <span id="head-text" onclick="debug()"></span>
+    <div class="top-warp">
+      <div class="top">
+        <div id="head-text" onclick="debug()"></div>
         <div class="actions">
           <button onclick="renderPrevPins()"><</button>
           <button onclick="getPinsNext()">></button>
@@ -134,6 +139,11 @@
             />
             <label>极简模式</label>
           </div>
+          <!-- 暂时无法通过此方式修改配置文件 -->
+          <!-- <div>
+            <span>自定义评论区背景色：</span
+            ><input onchange="commentColorHandle(this)" type="color" />
+          </div> -->
         </div>
       </div>
     </div>
@@ -202,6 +212,16 @@
         vscode.postMessage({ type: "GET_META_DATA" });
       }
 
+      // 背景色颜色选取
+      function commentColorHandle(target) {
+        setCommentBackgroundColor(target.value);
+      }
+
+      // 改变背景色
+      function setCommentBackgroundColor(value) {
+        vscode.postMessage({ type: "SET_COMMENT_BACKGROUND_COLOR", value });
+      }
+
       // 获取沸点 下一页
       function getPinsNext() {
         vscode.postMessage({ type: "GET_PINS_NEXT" });
@@ -226,7 +246,7 @@
 
       // 初始化 message 监听
       function initListenMessage() {
-        window.addEventListener("message", (event) => {
+        window.addEventListener("message", event => {
           const message = event.data;
           switch (message.type) {
             case "GET_META_DATA":
@@ -280,7 +300,7 @@
       function renderPins(pins) {
         try {
           pinsEl.innerHTML = "<div class='items'>";
-          pins.forEach((pin) => {
+          pins.forEach(pin => {
             let {
               id,
               avatarLarge,
@@ -318,7 +338,7 @@
                   <p>${content}</p>
                 </div>
                 ${pictures
-                  .map((picture) => `<img class="picture" src="${picture}"/>`)
+                  .map(picture => `<img class="picture" src="${picture}"/>`)
                   .join(" ")}
               </div>
               ${title ? `<div class="topic">${title}</div>` : ""}
@@ -347,7 +367,7 @@
         function renderTopComments(topComments) {
           if (!topComments) return "";
           if (Array.isArray(topComments)) {
-            return topComments.map((comment) => {
+            return topComments.map(comment => {
               let {
                 username,
                 avatarLarge,
@@ -423,14 +443,14 @@
         if (!commentEl) return;
         commentEl.innerHTML += `
         <div class="comments">
-          ${comments.map((comment) => renderComment(comment)).join("")}
+          ${comments.map(comment => renderComment(comment)).join("")}
         </div>
         `;
       }
 
       // 放大缩小图片
       function imageZoomInAndOut() {
-        document.querySelectorAll(".picture").forEach((pictureEl) => {
+        document.querySelectorAll(".picture").forEach(pictureEl => {
           pictureEl.style.cursor = "zoom-in";
           function zoomIn() {
             pictureEl.style["max-width"] = "100%";
@@ -450,7 +470,7 @@
       // 监听图片显示隐藏
       function listenImage() {
         Object.defineProperty(window, "isShowImage", {
-          set: (show) => {
+          set: show => {
             onShowImage(show);
             _isShowImage = show;
           }
@@ -460,11 +480,11 @@
       // 手动触发图片显示/隐藏
       function onShowImage(show) {
         if (show) {
-          document.querySelectorAll(".picture").forEach((picture) => {
+          document.querySelectorAll(".picture").forEach(picture => {
             picture.style["display"] = "inline-block";
           });
         } else {
-          document.querySelectorAll(".picture").forEach((picture) => {
+          document.querySelectorAll(".picture").forEach(picture => {
             picture.style["display"] = "none";
           });
         }
@@ -479,17 +499,17 @@
       // 手动触发隐藏所有图片
       function hideAndShowAllImage(status) {
         if (status) {
-          document.body.querySelectorAll("img").forEach((img) => {
+          document.body.querySelectorAll("img").forEach(img => {
             img.style.display = "none";
           });
-          document.body.querySelectorAll(".userInfoText").forEach((img) => {
+          document.body.querySelectorAll(".userInfoText").forEach(img => {
             img.style["margin-left"] = "0px";
           });
         } else {
-          document.body.querySelectorAll("img").forEach((img) => {
+          document.body.querySelectorAll("img").forEach(img => {
             img.style.display = "inline-block";
           });
-          document.body.querySelectorAll(".userInfoText").forEach((img) => {
+          document.body.querySelectorAll(".userInfoText").forEach(img => {
             img.style["margin-left"] = "20px";
           });
         }
@@ -498,7 +518,7 @@
       // 监听图片显示隐藏
       function listenMinimalist() {
         Object.defineProperty(window, "minimalistStatus", {
-          set: (status) => {
+          set: status => {
             hideAndShowAllImage(status);
             _minimalistStatus = status;
             let showImage = document.getElementById("showImage");
