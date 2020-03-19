@@ -8,9 +8,15 @@ enum ENV {
   "DEV" = "DEV",
   "PROD" = "PROD"
 }
-let env = ENV.PROD;
+let env = ENV.DEV;
 
 export function activate(context: vscode.ExtensionContext) {
+  // TODO: 在下方消息栏设置按钮
+  // var statusBar = vscode.window.createStatusBarItem(
+  //   vscode.StatusBarAlignment.Left
+  // );
+  // statusBar.text = "touch fish";
+  // statusBar.show();
   let disposable = vscode.commands.registerCommand("juejin.pins", () => {
     const panel = vscode.window.createWebviewPanel(
       "juejin-pins",

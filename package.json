@@ -2,7 +2,7 @@
   "name": "juejin",
   "displayName": "掘金",
   "description": "A juejin plugin in vscode",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "publisher": "luzhenqian",
   "homepage": "https://github.com/luzhenqian/vscode-juejin",
   "repository": {
@@ -36,7 +36,8 @@
     "pretest": "npm run compile && npm run lint",
     "test": "node ./out/test/runTest.js",
     "build": "vsce package",
-    "htmlts": "node ./scripts/ts.html-generator.js"
+    "htmlts": "node ./scripts/ts.html-generator.js",
+    "publish": "npm run htmlts && vsce publish"
   },
   "devDependencies": {
     "@types/glob": "^7.1.1",
