@@ -5,6 +5,7 @@ const converter = (fileUri) => {
   const template = fs.readFileSync(fileUri);
   const htmlRrsCode = template.toString();
   const htmlResCodeConversion = htmlRrsCode
+    .replace(/\\/g, "\\\\")
     .replace(/`/g, "\\`")
     .replace(/\${/g, "\\${");
   return htmlResCodeConversion;
@@ -25,8 +26,7 @@ const htmlCreate = () => {
     console.log("生成代码中...");
   });
   writeStream.write(`export default \`${htmlStr}\`;
-`
-  );
+`);
   writeStream.end();
 };
 htmlCreate();

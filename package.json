@@ -2,7 +2,7 @@
   "name": "juejin",
   "displayName": "掘金",
   "description": "A juejin plugin in vscode",
-  "version": "0.1.2",
+  "version": "0.1.3-beta",
   "publisher": "luzhenqian",
   "homepage": "https://github.com/luzhenqian/vscode-juejin",
   "repository": {
@@ -21,10 +21,30 @@
   "main": "./out/extension.js",
   "icon": "icon/icon.png",
   "contributes": {
+    "configuration": {
+      "title": "juejin-掘金",
+      "properties": {
+        "juejin.pins.head.text": {
+          "type": "string",
+          "default": "别看了，我在写代码。",
+          "description": "自定义顶部的文字"
+        },
+        "juejin.pins.comment.background-color": {
+          "type": "string",
+          "description": "评论区背景色。必须按照css颜色格式填写，如：#FFFFFF、rgb(0, 0, 0)"
+        }
+      }
+    },
     "commands": [
       {
         "command": "juejin.pins",
         "title": "juejin pins"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "juejin.pins",
+        "key": "ctrl+j ctrl+j"
       }
     ]
   },
@@ -35,7 +55,7 @@
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint",
     "test": "node ./out/test/runTest.js",
-    "build": "vsce package",
+    "build": "npm run htmlts && vsce package",
     "htmlts": "node ./scripts/ts.html-generator.js",
     "publish": "npm run htmlts && vsce publish"
   },

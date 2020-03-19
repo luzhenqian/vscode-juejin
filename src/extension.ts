@@ -8,7 +8,7 @@ enum ENV {
   "DEV" = "DEV",
   "PROD" = "PROD"
 }
-let env = ENV.DEV;
+let env = ENV.PROD;
 
 export function activate(context: vscode.ExtensionContext) {
   // TODO: 在下方消息栏设置按钮
@@ -18,6 +18,16 @@ export function activate(context: vscode.ExtensionContext) {
   // statusBar.text = "touch fish";
   // statusBar.show();
   let disposable = vscode.commands.registerCommand("juejin.pins", () => {
+    function getMetaData() {
+      let headText = vscode.workspace
+        .getConfiguration()
+        .get("juejin.pins.head.text", "别看了，我在写代码。");
+      let commentBackgroundColor = vscode.workspace
+        .getConfiguration()
+        .get("juejin.pins.comment.background-color");
+      return { headText, commentBackgroundColor };
+    }
+
     const panel = vscode.window.createWebviewPanel(
       "juejin-pins",
       "掘金-沸点",
@@ -60,6 +70,12 @@ export function activate(context: vscode.ExtensionContext) {
     panel.webview.onDidReceiveMessage(
       async (message) => {
         switch (message.type) {
+          case "GET_META_DATA":
+            panel.webview.postMessage({
+              data: getMetaData(),
+              type: "GET_META_DATA"
+            });
+            break;
           case "GET_PINS":
             panel.webview.postMessage({
               data: await getPins(GET_PINS_TYPE.INIT),

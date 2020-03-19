@@ -110,13 +110,11 @@
   <body>
     <div class="top">
       <div>
-        <span onclick="debug()">
-          别看了，我在写代码。
-        </span>
+        <span id="head-text" onclick="debug()"></span>
         <div class="actions">
           <button onclick="renderPrevPins()"><</button>
           <button onclick="getPinsNext()">></button>
-          <button class="refresh-button" onclick="getPins()">
+          <button class="refresh-button" onclick="refresh()">
             刷新
           </button>
           <div class="checkbox">
@@ -144,23 +142,38 @@
     <script>
       let pinsEl = null;
       let _isShowImage = true;
-      // var isShowImage = true;
       let _minimalistStatus = false;
-      // var minimalistStatus = false;
       let commentEl;
       let pageCache = [];
       let pageNumber = 0;
       let vscode = acquireVsCodeApi();
       init({ el: "#pins" });
+
       // 初始化
       function init(options) {
         const { el } = options;
         pinsEl = document.querySelector(el);
         pinsEl.innerHTML = "加载数据中...请稍后";
         initListenMessage();
+        getMetaData();
         getPins();
+        // 监听 图片显示隐藏和极简模式
         listenImage();
         listenMinimalist();
+      }
+
+      // 初始化信息
+      function initMetaData(metaData) {
+        const { headText, commentBackgroundColor } = metaData;
+        if (commentBackgroundColor) {
+          let overrideStyleEl = document.createElement("style");
+          overrideStyleEl.textContent = `.comment-warp{
+            background-color: ${commentBackgroundColor};
+          }`;
+          document.body.append(overrideStyleEl);
+        }
+        const headTextEl = document.getElementById("head-text");
+        headTextEl.textContent = headText;
       }
 
       // vscode 发送 消息
@@ -171,11 +184,22 @@
         });
       }
 
+      // 刷新
+      function refresh() {
+        getPins();
+        getMetaData();
+      }
+
       // 获取沸点
       function getPins() {
         pageCache = [];
         pageNumber = 0;
         vscode.postMessage({ type: "GET_PINS" });
+      }
+
+      // 获取配置信息
+      function getMetaData() {
+        vscode.postMessage({ type: "GET_META_DATA" });
       }
 
       // 获取沸点 下一页
@@ -205,6 +229,9 @@
         window.addEventListener("message", (event) => {
           const message = event.data;
           switch (message.type) {
+            case "GET_META_DATA":
+              initMetaData(message.data);
+              break;
             case "GET_PINS":
               renderPins(message.data);
               break;
@@ -449,10 +476,6 @@
         isShowImage = show;
       }
 
-      function debug() {
-        console.log(pageNumber, pageCache);
-      }
-
       // 手动触发隐藏所有图片
       function hideAndShowAllImage(status) {
         if (status) {
@@ -471,6 +494,7 @@
           });
         }
       }
+
       // 监听图片显示隐藏
       function listenMinimalist() {
         Object.defineProperty(window, "minimalistStatus", {
@@ -482,10 +506,16 @@
           }
         });
       }
+
       // 开启/关闭极简模式
       function minimalistHandle(target) {
         let status = target.checked;
         minimalistStatus = status;
+      }
+
+      // 测试用
+      function debug() {
+        console.log(pageNumber, pageCache);
       }
     </script>
   </body>

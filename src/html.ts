@@ -29,9 +29,9 @@ export default `<!DOCTYPE html>
         margin: 20px;
       }
       .avatar-large {
-        width: 3.75rem !important;
-        height: 3.75rem !important;
-        border-radius: 50% !important;
+        width: 3.75rem;
+        height: 3.75rem;
+        border-radius: 50%;
       }
       .item {
         margin-bottom: 40px;
@@ -110,23 +110,29 @@ export default `<!DOCTYPE html>
   <body>
     <div class="top">
       <div>
-        <span onclick="debug()">
-          别看了，我在写代码。
-        </span>
+        <span id="head-text" onclick="debug()"></span>
         <div class="actions">
           <button onclick="renderPrevPins()"><</button>
           <button onclick="getPinsNext()">></button>
-          <button class="refresh-button" onclick="getPins()">
+          <button class="refresh-button" onclick="refresh()">
             刷新
           </button>
           <div class="checkbox">
             <input
               type="checkbox"
-              name="showImage"
+              id="showImage"
               checked
               onchange="showImage(this)"
             />
             <label>显示图片</label>
+          </div>
+          <div class="checkbox">
+            <input
+              type="checkbox"
+              name="minimalist"
+              onchange="minimalistHandle(this)"
+            />
+            <label>极简模式</label>
           </div>
         </div>
       </div>
@@ -136,20 +142,38 @@ export default `<!DOCTYPE html>
     <script>
       let pinsEl = null;
       let _isShowImage = true;
-      let isShowImage = true;
+      let _minimalistStatus = false;
       let commentEl;
       let pageCache = [];
       let pageNumber = 0;
       let vscode = acquireVsCodeApi();
       init({ el: "#pins" });
+
       // 初始化
       function init(options) {
         const { el } = options;
         pinsEl = document.querySelector(el);
         pinsEl.innerHTML = "加载数据中...请稍后";
         initListenMessage();
+        getMetaData();
         getPins();
+        // 监听 图片显示隐藏和极简模式
         listenImage();
+        listenMinimalist();
+      }
+
+      // 初始化信息
+      function initMetaData(metaData) {
+        const { headText, commentBackgroundColor } = metaData;
+        if (commentBackgroundColor) {
+          let overrideStyleEl = document.createElement("style");
+          overrideStyleEl.textContent = \`.comment-warp{
+            background-color: \${commentBackgroundColor};
+          }\`;
+          document.body.append(overrideStyleEl);
+        }
+        const headTextEl = document.getElementById("head-text");
+        headTextEl.textContent = headText;
       }
 
       // vscode 发送 消息
@@ -160,11 +184,22 @@ export default `<!DOCTYPE html>
         });
       }
 
+      // 刷新
+      function refresh() {
+        getPins();
+        getMetaData();
+      }
+
       // 获取沸点
       function getPins() {
         pageCache = [];
         pageNumber = 0;
         vscode.postMessage({ type: "GET_PINS" });
+      }
+
+      // 获取配置信息
+      function getMetaData() {
+        vscode.postMessage({ type: "GET_META_DATA" });
       }
 
       // 获取沸点 下一页
@@ -194,6 +229,9 @@ export default `<!DOCTYPE html>
         window.addEventListener("message", (event) => {
           const message = event.data;
           switch (message.type) {
+            case "GET_META_DATA":
+              initMetaData(message.data);
+              break;
             case "GET_PINS":
               renderPins(message.data);
               break;
@@ -204,7 +242,6 @@ export default `<!DOCTYPE html>
               break;
           }
           imageZoomInAndOut();
-          window.isShowImage = _isShowImage;
         });
       }
 
@@ -244,7 +281,7 @@ export default `<!DOCTYPE html>
         try {
           pinsEl.innerHTML = "<div class='items'>";
           pins.forEach((pin) => {
-            const {
+            let {
               id,
               avatarLarge,
               username,
@@ -265,6 +302,8 @@ export default `<!DOCTYPE html>
               if (company) jobInfo = company;
             }
             jobInfo += jobInfo ? \` · \${createdAt}\` : \` \${createdAt}\`;
+            // 处理内容换行
+            content = content.replace(/[\\r\\n]/g, "<br>");
             pinsEl.innerHTML += \`
             <div class='item'>
               <div class='userInfo'>
@@ -283,14 +322,20 @@ export default `<!DOCTYPE html>
                   .join(" ")}
               </div>
               \${title ? \`<div class="topic">\${title}</div>\` : ""}
+              \${
+                commentCount > 0
+                  ? \`
               <div class="comment-warp">
                 <span class="comment-label closed" id="\${id}" onclick="getComment(this)" data-status="closed">评论 \${commentCount}条</span>
                 <div class="comment-content"></div>
-              </div>
+              </div>\`
+                  : ""
+              }
             </div>\`;
           });
           pinsEl.innerHTML += \`</div>\`;
-          onShowImage(_isShowImage);
+          isShowImage = _isShowImage;
+          minimalistStatus = _minimalistStatus;
         } catch (e) {
           console.log("error:", e);
           pinsEl.innerHTML = \`加载数据失败\`;
@@ -303,7 +348,6 @@ export default `<!DOCTYPE html>
           if (!topComments) return "";
           if (Array.isArray(topComments)) {
             return topComments.map((comment) => {
-              console.log("comment:", comment);
               let {
                 username,
                 avatarLarge,
@@ -313,6 +357,8 @@ export default `<!DOCTYPE html>
                 content,
                 respUserInfo
               } = comment;
+              // 处理内容换行
+              content = content.replace(/[\\r\\n]/g, "<br>");
               let jobInfo = "";
               if (jobTitle && company) {
                 jobInfo = \`\${jobTitle} @ \${company}\`;
@@ -322,7 +368,7 @@ export default `<!DOCTYPE html>
               }
               jobInfo += jobInfo ? \` · \${createdAt}\` : \` \${createdAt}\`;
               if (respUserInfo && respUserInfo.username) {
-                content = \`回复 \${respUserInfo.username}: \${content}\`;
+                content = \`回复 <a class="username">\${respUserInfo.username}</a>: \${content}\`;
               }
               return \`
                 <div class="comments">
@@ -339,7 +385,7 @@ export default `<!DOCTYPE html>
             \`);
           }
         }
-        function genComment(comment) {
+        function renderComment(comment) {
           if (!comment) return "";
           let {
             createdAt,
@@ -350,6 +396,8 @@ export default `<!DOCTYPE html>
             content,
             topComment
           } = comment;
+          // 处理内容换行
+          content = content.replace(/[\\r\\n]/g, "<br>");
           let jobInfo = "";
           if (jobTitle && company) {
             jobInfo = \`\${jobTitle} @ \${company}\`;
@@ -375,7 +423,7 @@ export default `<!DOCTYPE html>
         if (!commentEl) return;
         commentEl.innerHTML += \`
         <div class="comments">
-          \${comments.map((comment) => genComment(comment)).join("")}
+          \${comments.map((comment) => renderComment(comment)).join("")}
         </div>
         \`;
       }
@@ -404,6 +452,7 @@ export default `<!DOCTYPE html>
         Object.defineProperty(window, "isShowImage", {
           set: (show) => {
             onShowImage(show);
+            _isShowImage = show;
           }
         });
       }
@@ -424,10 +473,47 @@ export default `<!DOCTYPE html>
       // 显示/隐藏图片
       function showImage(target) {
         let show = target.checked;
-        window.isShowImage = show;
-        _isShowImage = show;
+        isShowImage = show;
       }
 
+      // 手动触发隐藏所有图片
+      function hideAndShowAllImage(status) {
+        if (status) {
+          document.body.querySelectorAll("img").forEach((img) => {
+            img.style.display = "none";
+          });
+          document.body.querySelectorAll(".userInfoText").forEach((img) => {
+            img.style["margin-left"] = "0px";
+          });
+        } else {
+          document.body.querySelectorAll("img").forEach((img) => {
+            img.style.display = "inline-block";
+          });
+          document.body.querySelectorAll(".userInfoText").forEach((img) => {
+            img.style["margin-left"] = "20px";
+          });
+        }
+      }
+
+      // 监听图片显示隐藏
+      function listenMinimalist() {
+        Object.defineProperty(window, "minimalistStatus", {
+          set: (status) => {
+            hideAndShowAllImage(status);
+            _minimalistStatus = status;
+            let showImage = document.getElementById("showImage");
+            showImage.checked = !status;
+          }
+        });
+      }
+
+      // 开启/关闭极简模式
+      function minimalistHandle(target) {
+        let status = target.checked;
+        minimalistStatus = status;
+      }
+
+      // 测试用
       function debug() {
         console.log(pageNumber, pageCache);
       }
