@@ -11,9 +11,8 @@ const converter = (fileUri) => {
   return htmlResCodeConversion;
 };
 
-const htmlCreate = () => {
-  const htmlStr = converter("./src/juejin-pins.html");
-  const writeStream = fs.createWriteStream("./src/html.ts", {
+const htmlTsGenerator = (targetPath, htmlStr) => {
+  const writeStream = fs.createWriteStream(targetPath, {
     encoding: "utf-8"
   });
   writeStream.on("error", (err) => {
@@ -29,4 +28,19 @@ const htmlCreate = () => {
 `);
   writeStream.end();
 };
-htmlCreate();
+
+const htmlSrcPath = './src/html/src';// html 源代码路径
+const htmlTargetPath = './src/html/target';// html 生成后ts路径
+
+const generator = () => {
+  const htmlFileNameList = fs.readdirSync(htmlSrcPath);
+  htmlFileNameList.forEach(htmlFileName => {
+    const htmlStr = converter(path.resolve(htmlSrcPath, htmlFileName));
+    if (!fs.existsSync(htmlTargetPath)) {
+      fs.mkdirSync(htmlTargetPath);
+    }
+    htmlTsGenerator(path.resolve(htmlTargetPath, htmlFileName.replace('.html', '.ts')), htmlStr);
+  });
+};
+
+generator();

@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import * as fs from "fs";
 import * as path from "path";
 import { getPins, getComments, GET_PINS_TYPE } from "./getData";
-import html from "./html";
+import html from "./html/target/juejin-pins";
 
 enum ENV {
   "DEV" = "DEV",
@@ -11,13 +11,15 @@ enum ENV {
 let env = ENV.PROD;
 
 export function activate(context: vscode.ExtensionContext) {
-  // TODO: 在下方消息栏设置按钮
-  // var statusBar = vscode.window.createStatusBarItem(
-  //   vscode.StatusBarAlignment.Left
-  // );
-  // statusBar.text = "touch fish";
-  // statusBar.show();
+
   let disposable = vscode.commands.registerCommand("juejin.pins", () => {
+
+    // TODO: 在下方消息栏设置按钮
+    // var statusBar = vscode.window.createStatusBarItem(
+    //   vscode.StatusBarAlignment.Left
+    // );
+    // statusBar.text = "touch fish";
+    // statusBar.show();
 
     // 获取配置信息
     function getMetaData() {
@@ -64,60 +66,63 @@ export function activate(context: vscode.ExtensionContext) {
       // vscode.workspace
     }
 
-    const panel = vscode.window.createWebviewPanel(
-      "juejin-pins",
-      "掘金-沸点",
-      vscode.ViewColumn.Two,
-      {
-        enableScripts: true,
-        retainContextWhenHidden: true
-      }
-    );
+    // 创建webview
+    function createWebview() {
+      const panel = vscode.window.createWebviewPanel(
+        "juejin-pins",
+        "掘金-沸点",
+        vscode.ViewColumn.Two,
+        {
+          enableScripts: true,
+          retainContextWhenHidden: true
+        }
+      );
 
-    if (env === ENV.DEV) {
-      panel.webview.html = getHtmlContent();
-    } else if (env === ENV.PROD) {
-      panel.webview.html = html;
+      if (env === ENV.DEV) {
+        panel.webview.html = getHtmlContent();
+      } else if (env === ENV.PROD) {
+        panel.webview.html = html;
+      } panel.webview.onDidReceiveMessage(
+        async (message) => {
+          switch (message.type) {
+            case "GET_META_DATA":
+              panel.webview.postMessage({
+                data: getMetaData(),
+                type: "GET_META_DATA"
+              });
+              break;
+            case "GET_PINS":
+              panel.webview.postMessage({
+                data: await getPins(GET_PINS_TYPE.INIT),
+                type: "GET_PINS"
+              });
+              break;
+            case "GET_PINS_NEXT":
+              panel.webview.postMessage({
+                data: await getPins(GET_PINS_TYPE.NEXT),
+                type: "GET_PINS_NEXT"
+              });
+              break;
+            case "GET_COMMENT":
+              panel.webview.postMessage({
+                data: await getComments(message.id),
+                type: "GET_COMMENT"
+              });
+              break;
+            case "SET_COMMENT_BACKGROUND_COLOR":
+              setCommentBackgroundColor(message.value);
+              break;
+            case "INFO":
+              vscode.window.showInformationMessage(message.text);
+              break;
+          }
+        },
+        undefined,
+        context.subscriptions
+      );
     }
 
-    panel.webview.onDidReceiveMessage(
-      async (message) => {
-        switch (message.type) {
-          case "GET_META_DATA":
-            panel.webview.postMessage({
-              data: getMetaData(),
-              type: "GET_META_DATA"
-            });
-            break;
-          case "GET_PINS":
-            panel.webview.postMessage({
-              data: await getPins(GET_PINS_TYPE.INIT),
-              type: "GET_PINS"
-            });
-            break;
-          case "GET_PINS_NEXT":
-            panel.webview.postMessage({
-              data: await getPins(GET_PINS_TYPE.NEXT),
-              type: "GET_PINS_NEXT"
-            });
-            break;
-          case "GET_COMMENT":
-            panel.webview.postMessage({
-              data: await getComments(message.id),
-              type: "GET_COMMENT"
-            });
-            break;
-          case "SET_COMMENT_BACKGROUND_COLOR":
-            setCommentBackgroundColor(message.value);
-            break;
-          case "INFO":
-            vscode.window.showInformationMessage(message.text);
-            break;
-        }
-      },
-      undefined,
-      context.subscriptions
-    );
+    createWebview();
   });
 
   context.subscriptions.push(disposable);
