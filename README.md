@@ -2,7 +2,7 @@
 
 🎉 亲爱的掘友 ⛏️：
 
-掘金面向从初级，中级，高级到资深各个级别的程序员的技术成长问题，招揽业界顶级的大佬撰写小册、专栏和沸点为广大掘友提供职业和生活上的帮助。遗憾的是掘金不能在 vscode 中使用。于是我开发了vscode-juejin。
+掘金面向从初级，中级，高级到资深各个级别的程序员的技术成长问题，招揽业界顶级的大佬撰写小册、专栏和沸点为广大掘友提供职业和生活上的帮助。遗憾的是掘金不能在 vscode 中使用。于是我开发了 vscode-juejin。
 
 在编码时，你只需要一个快捷键，就可以快速在 vscode 中打开掘金沸点。
 
@@ -86,7 +86,7 @@ windows 使用 `ctrl + shift + p` / macOS 使用 `command + shift + p` 唤出插
 
 # 🏷️ 版本历史记录
 
-0.1.3 2020 年 3 月 20 日
+### 0.1.3 2020 年 3 月 20 日
 
 1. 添加评论区回复的目标用户名高亮效果。
 
@@ -104,19 +104,19 @@ windows 使用 `ctrl + shift + p` / macOS 使用 `command + shift + p` 唤出插
 
 <div style="border-bottom: 1px solid black; margin: 1em 0;"></div>
 
-0.1.2 2020 年 3 月 19 日
+### 0.1.2 2020 年 3 月 19 日
 
 v0.1.1 版本发布时出现失误，导致代码未能正确更新，BUG 未能正常修复，重新发布。
 
 <div style="border-bottom: 1px solid black; margin: 1em 0;"></div>
 
-0.1.1 2020 年 3 月 19 日
+### 0.1.1 2020 年 3 月 19 日
 
 修复评论显示问题。
 
 <div style="border-bottom: 1px solid black; margin: 1em 0;"></div>
 
-0.1.0 2020 年 3 月 18 日
+### 0.1.0 2020 年 3 月 18 日
 
 初始版本，基础功能。
 

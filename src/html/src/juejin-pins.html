@@ -28,6 +28,10 @@
         position: absolute;
         bottom: 20px;
       }
+      .actions > span {
+        cursor: pointer;
+        margin: 0 4px;
+      }
       .contentWarp {
         position: absolute;
         top: 15vh;
@@ -59,14 +63,6 @@
       .picture {
         max-width: 50%;
         margin-top: 5px;
-      }
-      .refresh-button {
-        background-color: var(--vscode-activityBarBadge-background);
-        outline: none;
-        border: none;
-        padding: 4px 10px;
-        border-radius: 50px;
-        display: inline-block;
       }
       .checkbox {
         display: inline-block;
@@ -117,11 +113,60 @@
       <div class="top">
         <div id="head-text" onclick="debug()"></div>
         <div class="actions">
-          <button onclick="renderPrevPins()"><</button>
-          <button onclick="getPinsNext()">></button>
-          <button class="refresh-button" onclick="refresh()">
-            刷新
-          </button>
+          <span onclick="renderPrevPins()" title="上一页">
+            <svg
+              t="1584670933631"
+              class="icon"
+              viewBox="0 0 1024 1024"
+              version="1.1"
+              xmlns="http://www.w3.org/2000/svg"
+              p-id="4126"
+              width="20"
+              height="20"
+            >
+              <path
+                d="M538.288 198.624l-11.312-11.312a16 16 0 0 0-22.64 0L187.312 504.336a16 16 0 0 0 0 22.64L504.336 844a16 16 0 0 0 22.64 0l11.312-11.312a16 16 0 0 0 0-22.624l-294.4-294.4 294.4-294.4a16 16 0 0 0 0-22.64z"
+                p-id="4127"
+                fill="#ffffff"
+              ></path>
+            </svg>
+          </span>
+          <span onclick="getPinsNext()" title="下一页">
+            <svg
+              t="1584670962233"
+              class="icon"
+              viewBox="0 0 1024 1024"
+              version="1.1"
+              xmlns="http://www.w3.org/2000/svg"
+              p-id="4263"
+              width="20"
+              height="20"
+            >
+              <path
+                d="M340.688 830.24l11.312 11.328a16 16 0 0 0 22.624 0L685.76 530.448a16 16 0 0 0 0-22.64L374.624 196.688a16 16 0 0 0-22.624 0l-11.312 11.312a16 16 0 0 0 0 22.624l288.496 288.496-288.496 288.512a16 16 0 0 0 0 22.624z"
+                p-id="4264"
+                fill="#ffffff"
+              ></path>
+            </svg>
+          </span>
+          <span onclick="refresh()" title="刷新">
+            <svg
+              t="1584670874792"
+              class="icon"
+              viewBox="0 0 1024 1024"
+              version="1.1"
+              xmlns="http://www.w3.org/2000/svg"
+              p-id="3989"
+              width="22"
+              height="22"
+            >
+              <path
+                d="M258.56 681.36l-12.704 44.288a16 16 0 0 1-7.616 9.584l-24.752 13.712a14.464 14.464 0 0 1-20.928-16.64l38.128-132.96a11.136 11.136 0 0 1 13.76-7.632l132.976 38.128a14.464 14.464 0 0 1 3.04 26.56l-24.768 13.712a16 16 0 0 1-12.16 1.392l-42.016-12.048a264.112 264.112 0 0 0 468.112-41.76 14.288 14.288 0 0 1 3.296-4.912 263.424 263.424 0 0 0 16.768-92.784c0-90.496-45.536-170.368-114.96-217.92a264.112 264.112 0 0 0-393.808 118.8 14.336 14.336 0 0 1-17.968 8.16l-20.256-7.024a12.352 12.352 0 0 1-7.456-16.192A312.112 312.112 0 0 1 525.696 208c66.112 0 128.256 20.752 179.44 56.736a313.12 313.12 0 0 1 108.656 135.312 311.04 311.04 0 0 1 23.904 119.952c0 172.32-139.68 312-312 312v-0.208h-0.832c-110.96 0-210.768-59.296-266.304-150.432z"
+                p-id="3990"
+                fill="#ffffff"
+              ></path>
+            </svg>
+          </span>
           <div class="checkbox">
             <input
               type="checkbox"
@@ -246,7 +291,7 @@
 
       // 初始化 message 监听
       function initListenMessage() {
-        window.addEventListener("message", event => {
+        window.addEventListener("message", (event) => {
           const message = event.data;
           switch (message.type) {
             case "GET_META_DATA":
@@ -300,7 +345,7 @@
       function renderPins(pins) {
         try {
           pinsEl.innerHTML = "<div class='items'>";
-          pins.forEach(pin => {
+          pins.forEach((pin) => {
             let {
               id,
               avatarLarge,
@@ -338,7 +383,7 @@
                   <p>${content}</p>
                 </div>
                 ${pictures
-                  .map(picture => `<img class="picture" src="${picture}"/>`)
+                  .map((picture) => `<img class="picture" src="${picture}"/>`)
                   .join(" ")}
               </div>
               ${title ? `<div class="topic">${title}</div>` : ""}
@@ -367,7 +412,7 @@
         function renderTopComments(topComments) {
           if (!topComments) return "";
           if (Array.isArray(topComments)) {
-            return topComments.map(comment => {
+            return topComments.map((comment) => {
               let {
                 username,
                 avatarLarge,
@@ -443,14 +488,14 @@
         if (!commentEl) return;
         commentEl.innerHTML += `
         <div class="comments">
-          ${comments.map(comment => renderComment(comment)).join("")}
+          ${comments.map((comment) => renderComment(comment)).join("")}
         </div>
         `;
       }
 
       // 放大缩小图片
       function imageZoomInAndOut() {
-        document.querySelectorAll(".picture").forEach(pictureEl => {
+        document.querySelectorAll(".picture").forEach((pictureEl) => {
           pictureEl.style.cursor = "zoom-in";
           function zoomIn() {
             pictureEl.style["max-width"] = "100%";
@@ -470,7 +515,7 @@
       // 监听图片显示隐藏
       function listenImage() {
         Object.defineProperty(window, "isShowImage", {
-          set: show => {
+          set: (show) => {
             onShowImage(show);
             _isShowImage = show;
           }
@@ -480,11 +525,11 @@
       // 手动触发图片显示/隐藏
       function onShowImage(show) {
         if (show) {
-          document.querySelectorAll(".picture").forEach(picture => {
+          document.querySelectorAll(".picture").forEach((picture) => {
             picture.style["display"] = "inline-block";
           });
         } else {
-          document.querySelectorAll(".picture").forEach(picture => {
+          document.querySelectorAll(".picture").forEach((picture) => {
             picture.style["display"] = "none";
           });
         }
@@ -499,17 +544,17 @@
       // 手动触发隐藏所有图片
       function hideAndShowAllImage(status) {
         if (status) {
-          document.body.querySelectorAll("img").forEach(img => {
+          document.body.querySelectorAll("img").forEach((img) => {
             img.style.display = "none";
           });
-          document.body.querySelectorAll(".userInfoText").forEach(img => {
+          document.body.querySelectorAll(".userInfoText").forEach((img) => {
             img.style["margin-left"] = "0px";
           });
         } else {
-          document.body.querySelectorAll("img").forEach(img => {
+          document.body.querySelectorAll("img").forEach((img) => {
             img.style.display = "inline-block";
           });
-          document.body.querySelectorAll(".userInfoText").forEach(img => {
+          document.body.querySelectorAll(".userInfoText").forEach((img) => {
             img.style["margin-left"] = "20px";
           });
         }
@@ -518,7 +563,7 @@
       // 监听图片显示隐藏
       function listenMinimalist() {
         Object.defineProperty(window, "minimalistStatus", {
-          set: status => {
+          set: (status) => {
             hideAndShowAllImage(status);
             _minimalistStatus = status;
             let showImage = document.getElementById("showImage");

@@ -20,11 +20,14 @@ function timeFromNow(time: string) {
   if (tm) return tm + "分钟前";
   if (ts) return ts + "秒前";
 }
-let afterId = "";
+
+let afterId = ""; // 获取下一页沸点时用到的参数，为当前页最后一条沸点的 id
+
 export enum GET_PINS_TYPE {
   "INIT" = "INIT",
   "NEXT" = "NEXT"
 }
+
 export async function getPins(type: GET_PINS_TYPE) {
   let _afterId;
   if (type === GET_PINS_TYPE.INIT) {

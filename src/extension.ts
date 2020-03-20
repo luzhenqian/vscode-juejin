@@ -8,12 +8,10 @@ enum ENV {
   "DEV" = "DEV",
   "PROD" = "PROD"
 }
-let env = ENV.PROD;
+let env = ENV.DEV;
 
 export function activate(context: vscode.ExtensionContext) {
-
   let disposable = vscode.commands.registerCommand("juejin.pins", () => {
-
     // TODO: 在下方消息栏设置按钮
     // var statusBar = vscode.window.createStatusBarItem(
     //   vscode.StatusBarAlignment.Left
@@ -28,16 +26,19 @@ export function activate(context: vscode.ExtensionContext) {
         .get("juejin.pins.head.text", "别看了，我在写代码。");
       let commentBackgroundColor = vscode.workspace
         .getConfiguration()
-        .get("juejin.pins.comment.background-color", 'var(--vscode-badge-background)');
+        .get(
+          "juejin.pins.comment.background-color",
+          "var(--vscode-badge-background)"
+        );
       return { headText, commentBackgroundColor };
     }
 
     // 获取本地资源的方式，开发时使用
     function getHtmlContent() {
-      vscode.window.showInformationMessage("current env is dev");
+      vscode.window.showInformationMessage("Development environment.");
       let templatePath = path.join(
         context.extensionPath,
-        "./src/juejin-pins.html"
+        "./src/html/src/juejin-pins.html"
       );
       let htmlStr = fs.readFileSync(templatePath, "utf-8");
       const dirPath = path.dirname(templatePath);
@@ -82,7 +83,8 @@ export function activate(context: vscode.ExtensionContext) {
         panel.webview.html = getHtmlContent();
       } else if (env === ENV.PROD) {
         panel.webview.html = html;
-      } panel.webview.onDidReceiveMessage(
+      }
+      panel.webview.onDidReceiveMessage(
         async (message) => {
           switch (message.type) {
             case "GET_META_DATA":
@@ -128,4 +130,4 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(disposable);
 }
 
-export function deactivate() { }
+export function deactivate() {}
