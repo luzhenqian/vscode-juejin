@@ -363,10 +363,11 @@ export default `<!DOCTYPE html>
         setAppStatus();
       }
 
-      // 重新设置状态
+      // 重新设置状态 和 添加监听
       function setAppStatus() {
         isShowImage = _isShowImage;
         minimalistStatus = _minimalistStatus;
+        imageZoomInAndOut();
       }
 
       // 渲染沸点
