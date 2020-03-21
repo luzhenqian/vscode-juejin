@@ -1,9 +1,25 @@
-# Change Log
+2020-03-21 卢振千 <15753140326@163.com>
 
-All notable changes to the "juejin" extension will be documented in this file.
+## Added
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+* 添加沸点 icon。
 
-## [Unreleased]
+* 添加当前页数显示。
 
-- Initial release
+## Changed
+
+* 优化操作区 UI。
+
+* 最大页数调整为 5 页。
+
+## Fixed
+
+* 修复偶尔翻页时会出现的 undefined 页面的 BUG。 _（该变动后将不再进行页面缓存，会提高内存性能，但会降低渲染下一页时的性能。）_
+
+* 修复显示图片和极简模式的状态错乱的 BUG。
+
+* 修复开启极简模式后，评论区头像不隐藏的 BUG。
+
+* 修复回到上一页后图片无法正常缩放的 BUG。
+
+* 修复同时打开多个评论面板时，无法正常收起评论面板的 BUG。

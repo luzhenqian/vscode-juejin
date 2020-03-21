@@ -78,7 +78,7 @@ export function activate(context: vscode.ExtensionContext) {
           retainContextWhenHidden: true
         }
       );
-
+      panel.iconPath = vscode.Uri.file(path.resolve(context.extensionPath, './icon/icon.png'));
       if (env === ENV.DEV) {
         panel.webview.html = getHtmlContent();
       } else if (env === ENV.PROD) {
@@ -117,6 +117,10 @@ export function activate(context: vscode.ExtensionContext) {
             case "INFO":
               vscode.window.showInformationMessage(message.text);
               break;
+            case "SCROLL_TO_DOWN":
+              // vscode.window.showErrorMessage('下来了。');
+              // vscode.commands.executeCommand('editorScroll', { to: 'down', by: "page", revealCursor: true, });
+              break;
           }
         },
         undefined,
@@ -130,4 +134,4 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(disposable);
 }
 
-export function deactivate() {}
+export function deactivate() { }

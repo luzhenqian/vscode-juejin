@@ -33,6 +33,12 @@ export default `<!DOCTYPE html>
         cursor: pointer;
         margin: 0 4px;
       }
+      .page-number {
+        position: absolute;
+        bottom: 5px;
+        left: 22px;
+        color: #f27573;
+      }
       .contentWarp {
         position: absolute;
         top: 15vh;
@@ -58,9 +64,6 @@ export default `<!DOCTYPE html>
         justify-content: space-evenly;
         margin-left: 20px;
       }
-      label {
-        color: var(--vscode-dropdown-foreground) !important;
-      }
       .picture {
         max-width: 50%;
         margin-top: 5px;
@@ -68,11 +71,11 @@ export default `<!DOCTYPE html>
       .checkbox {
         display: inline-block;
       }
-      .closed::before {
-        content: "+";
+      .comment-closed::before {
+        content: "+ 展开评论";
       }
-      .open::before {
-        content: "- ";
+      .comment-open::before {
+        content: "- 收起评论";
       }
       .comment {
         margin: 10px 0;
@@ -132,6 +135,7 @@ export default `<!DOCTYPE html>
               ></path>
             </svg>
           </span>
+          <span class="page-number"></span>
           <span onclick="getPinsNext()" title="下一页">
             <svg
               t="1584670962233"
@@ -204,6 +208,9 @@ export default `<!DOCTYPE html>
               ></path>
             </svg>
           </span>
+          <!-- <span onclick="scrollToDown()">
+            go down
+          </span> -->
           <!-- 暂时无法通过此方式修改配置文件 -->
           <!-- <div>
             <span>自定义评论区背景色：</span
@@ -221,6 +228,7 @@ export default `<!DOCTYPE html>
       let commentEl;
       let pageCache = [];
       let pageNumber = 0;
+      let openCommentEl = {};
       let vscode = acquireVsCodeApi();
       init({ el: "#pins" });
 
@@ -235,6 +243,7 @@ export default `<!DOCTYPE html>
         // 监听 图片显示隐藏和极简模式
         listenImage();
         listenMinimalist();
+        changePageNumber();
       }
 
       // 初始化信息
@@ -265,10 +274,17 @@ export default `<!DOCTYPE html>
         getMetaData();
       }
 
+      function scrollToDown() {
+        vscode.postMessage({
+          type: "SCROLL_TO_DOWN"
+        });
+      }
+
       // 获取沸点
       function getPins() {
         pageCache = [];
         pageNumber = 0;
+        changePageNumber();
         vscode.postMessage({ type: "GET_PINS" });
       }
 
@@ -293,25 +309,27 @@ export default `<!DOCTYPE html>
       }
 
       // 获取评论
-      function getComment(target) {
+      function getComment(target, commentId) {
         const status = target.dataset.status;
         if (status === "open") {
           target.dataset.status = "closed";
-          target.classList.remove("open");
-          target.classList.add("closed");
-          commentEl.innerHTML = "";
+          target.classList.remove("comment-open");
+          target.classList.add("comment-closed");
+          openCommentEl[commentId].innerHTML = "";
+          delete openCommentEl[commentId];
         } else if (status === "closed") {
           commentEl = target.nextElementSibling;
+          openCommentEl[commentId] = commentEl;
           target.dataset.status = "open";
-          target.classList.remove("closed");
-          target.classList.add("open");
+          target.classList.remove("comment-closed");
+          target.classList.add("comment-open");
           vscode.postMessage({ type: "GET_COMMENT", id: target.id });
         }
       }
 
       // 初始化 message 监听
       function initListenMessage() {
-        window.addEventListener("message", (event) => {
+        window.addEventListener("message", event => {
           const message = event.data;
           switch (message.type) {
             case "GET_META_DATA":
@@ -332,7 +350,7 @@ export default `<!DOCTYPE html>
 
       // 渲染下一页的沸点
       function renderNextPins(pins) {
-        if (pageNumber > 4) {
+        if (pageNumber > 3) {
           info("消息太过久远，已经埋没在历史的长河中了。");
         } else {
           if (pageCache.length > pageNumber) {
@@ -348,6 +366,8 @@ export default `<!DOCTYPE html>
           pageNumber++;
         }
         setAppStatus();
+        closeAllComment();
+        changePageNumber();
       }
 
       // 渲染上一页的沸点
@@ -361,6 +381,13 @@ export default `<!DOCTYPE html>
           pinsEl.innerHTML = prevHtml;
         }
         setAppStatus();
+        closeAllComment();
+        changePageNumber();
+      }
+
+      // 改变页码
+      function changePageNumber() {
+        document.querySelector(".page-number").innerHTML = pageNumber + 1;
       }
 
       // 重新设置状态 和 添加监听
@@ -370,11 +397,21 @@ export default `<!DOCTYPE html>
         imageZoomInAndOut();
       }
 
+      // 关闭所有评论
+      function closeAllComment() {
+        openCommentEl = [];
+        document.querySelectorAll(".comment-open").forEach(openCommentEl => {
+          openCommentEl.classList.remove("comment-open");
+          openCommentEl.classList.add("comment-closed");
+          openCommentEl.nextElementSibling.innerHTML = "";
+        });
+      }
+
       // 渲染沸点
       function renderPins(pins) {
         try {
           pinsEl.innerHTML = "<div class='items'>";
-          pins.forEach((pin) => {
+          pins.forEach(pin => {
             let {
               id,
               avatarLarge,
@@ -412,7 +449,7 @@ export default `<!DOCTYPE html>
                   <p>\${content}</p>
                 </div>
                 \${pictures
-                  .map((picture) => \`<img class="picture" src="\${picture}"/>\`)
+                  .map(picture => \`<img class="picture" src="\${picture}"/>\`)
                   .join(" ")}
               </div>
               \${title ? \`<div class="topic">\${title}</div>\` : ""}
@@ -420,7 +457,7 @@ export default `<!DOCTYPE html>
                 commentCount > 0
                   ? \`
               <div class="comment-warp">
-                <span class="comment-label closed" id="\${id}" onclick="getComment(this)" data-status="closed">评论 \${commentCount}条</span>
+                <span class="comment-label comment-closed" id="\${id}" onclick="getComment(this, '\${id}')" data-status="closed"> \${commentCount}条</span>
                 <div class="comment-content"></div>
               </div>\`
                   : ""
@@ -440,7 +477,7 @@ export default `<!DOCTYPE html>
         function renderTopComments(topComments) {
           if (!topComments) return "";
           if (Array.isArray(topComments)) {
-            return topComments.map((comment) => {
+            return topComments.map(comment => {
               let {
                 username,
                 avatarLarge,
@@ -516,7 +553,7 @@ export default `<!DOCTYPE html>
         if (!commentEl) return;
         commentEl.innerHTML += \`
         <div class="comments">
-          \${comments.map((comment) => renderComment(comment)).join("")}
+          \${comments.map(comment => renderComment(comment)).join("")}
         </div>
         \`;
         setAppStatus();
@@ -524,7 +561,7 @@ export default `<!DOCTYPE html>
 
       // 放大缩小图片
       function imageZoomInAndOut() {
-        document.querySelectorAll(".picture").forEach((pictureEl) => {
+        document.querySelectorAll(".picture").forEach(pictureEl => {
           pictureEl.style.cursor = "zoom-in";
           function zoomIn() {
             pictureEl.style["max-width"] = "100%";
@@ -544,7 +581,7 @@ export default `<!DOCTYPE html>
       // 监听图片显示隐藏
       function listenImage() {
         Object.defineProperty(window, "isShowImage", {
-          set: (show) => {
+          set: show => {
             onShowImage(show);
             _isShowImage = show;
             showImageReact();
@@ -556,11 +593,11 @@ export default `<!DOCTYPE html>
       // 手动触发图片显示/隐藏
       function onShowImage(show) {
         if (show) {
-          document.querySelectorAll(".picture").forEach((picture) => {
+          document.querySelectorAll(".picture").forEach(picture => {
             picture.style["display"] = "inline-block";
           });
         } else {
-          document.querySelectorAll(".picture").forEach((picture) => {
+          document.querySelectorAll(".picture").forEach(picture => {
             picture.style["display"] = "none";
           });
         }
@@ -569,23 +606,23 @@ export default `<!DOCTYPE html>
       // 隐藏所有图片
       function hideAndShowAllImage(status) {
         if (status) {
-          document.body.querySelectorAll("img").forEach((img) => {
+          document.body.querySelectorAll("img").forEach(img => {
             img.style.display = "none";
           });
-          document.body.querySelectorAll(".userInfoText").forEach((img) => {
+          document.body.querySelectorAll(".userInfoText").forEach(img => {
             img.style["margin-left"] = "0px";
           });
-          document.body.querySelectorAll(".comment-user").forEach((img) => {
+          document.body.querySelectorAll(".comment-user").forEach(img => {
             img.style["margin-left"] = "0px";
           });
         } else {
-          document.body.querySelectorAll("img").forEach((img) => {
+          document.body.querySelectorAll("img").forEach(img => {
             img.style.display = "inline-block";
           });
-          document.body.querySelectorAll(".userInfoText").forEach((img) => {
+          document.body.querySelectorAll(".userInfoText").forEach(img => {
             img.style["margin-left"] = "20px";
           });
-          document.body.querySelectorAll(".comment-user").forEach((img) => {
+          document.body.querySelectorAll(".comment-user").forEach(img => {
             img.style["margin-left"] = "10px";
           });
         }
@@ -594,7 +631,7 @@ export default `<!DOCTYPE html>
       // 监听极简模式
       function listenMinimalist() {
         Object.defineProperty(window, "minimalistStatus", {
-          set: (status) => {
+          set: status => {
             hideAndShowAllImage(status);
             isShowImage = !status;
             _minimalistStatus = status;
@@ -622,8 +659,6 @@ export default `<!DOCTYPE html>
         if (!target) {
           target = document.getElementById("showImage");
         }
-        console.log(isShowImage);
-
         if (isShowImage) {
           target.innerHTML = \`
             <svg
