@@ -31,6 +31,7 @@
     </style>
   </head>
   <body>
+    <div id="top"></div>
     <div class="actions">
       <button onclick="goBack()">返回文章列表页</button>
     </div>
@@ -145,7 +146,15 @@
           ...script,
           overrideStyle
         );
+        goTop();
         pageId = "post";
+      }
+
+      // 回到页面顶部
+      function goTop() {
+        let topEl = document.createElement("a");
+        topEl.href = "#top";
+        topEl.click();
       }
 
       function goBack() {

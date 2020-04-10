@@ -113,6 +113,7 @@
     </style>
   </head>
   <body>
+    <div id="top"></div>
     <div class="top-warp">
       <div class="top">
         <div id="head-text" onclick="debug()"></div>
@@ -264,7 +265,7 @@
       function info(text, options) {
         vscode.postMessage({
           type: "INFO",
-          text
+          text,
         });
       }
 
@@ -276,7 +277,7 @@
 
       function scrollToDown() {
         vscode.postMessage({
-          type: "SCROLL_TO_DOWN"
+          type: "SCROLL_TO_DOWN",
         });
       }
 
@@ -329,7 +330,7 @@
 
       // 初始化 message 监听
       function initListenMessage() {
-        window.addEventListener("message", event => {
+        window.addEventListener("message", (event) => {
           const message = event.data;
           switch (message.type) {
             case "GET_META_DATA":
@@ -388,6 +389,14 @@
       // 改变页码
       function changePageNumber() {
         document.querySelector(".page-number").innerHTML = pageNumber + 1;
+        goTop();
+      }
+
+      // 回到顶部
+      function goTop() {
+        let topEl = document.createElement("a");
+        topEl.href = "#top";
+        topEl.click();
       }
 
       // 重新设置状态 和 添加监听
@@ -400,7 +409,7 @@
       // 关闭所有评论
       function closeAllComment() {
         openCommentEl = [];
-        document.querySelectorAll(".comment-open").forEach(openCommentEl => {
+        document.querySelectorAll(".comment-open").forEach((openCommentEl) => {
           openCommentEl.classList.remove("comment-open");
           openCommentEl.classList.add("comment-closed");
           openCommentEl.nextElementSibling.innerHTML = "";
@@ -411,7 +420,7 @@
       function renderPins(pins) {
         try {
           pinsEl.innerHTML = "<div class='items'>";
-          pins.forEach(pin => {
+          pins.forEach((pin) => {
             let {
               id,
               avatarLarge,
@@ -423,7 +432,7 @@
               likeCount,
               commentCount,
               pictures,
-              title
+              title,
             } = pin;
             let jobInfo = "";
             if (jobTitle && company) {
@@ -449,7 +458,7 @@
                   <p>${content}</p>
                 </div>
                 ${pictures
-                  .map(picture => `<img class="picture" src="${picture}"/>`)
+                  .map((picture) => `<img class="picture" src="${picture}"/>`)
                   .join(" ")}
               </div>
               ${title ? `<div class="topic">${title}</div>` : ""}
@@ -477,7 +486,7 @@
         function renderTopComments(topComments) {
           if (!topComments) return "";
           if (Array.isArray(topComments)) {
-            return topComments.map(comment => {
+            return topComments.map((comment) => {
               let {
                 username,
                 avatarLarge,
@@ -485,7 +494,7 @@
                 company,
                 createdAt,
                 content,
-                respUserInfo
+                respUserInfo,
               } = comment;
               // 处理内容换行
               content = content.replace(/[\r\n]/g, "<br>");
@@ -524,7 +533,7 @@
             jobTitle,
             company,
             content,
-            topComment
+            topComment,
           } = comment;
           // 处理内容换行
           content = content.replace(/[\r\n]/g, "<br>");
@@ -553,7 +562,7 @@
         if (!commentEl) return;
         commentEl.innerHTML += `
         <div class="comments">
-          ${comments.map(comment => renderComment(comment)).join("")}
+          ${comments.map((comment) => renderComment(comment)).join("")}
         </div>
         `;
         setAppStatus();
@@ -561,7 +570,7 @@
 
       // 放大缩小图片
       function imageZoomInAndOut() {
-        document.querySelectorAll(".picture").forEach(pictureEl => {
+        document.querySelectorAll(".picture").forEach((pictureEl) => {
           pictureEl.style.cursor = "zoom-in";
           function zoomIn() {
             pictureEl.style["max-width"] = "100%";
@@ -581,23 +590,23 @@
       // 监听图片显示隐藏
       function listenImage() {
         Object.defineProperty(window, "isShowImage", {
-          set: show => {
+          set: (show) => {
             onShowImage(show);
             _isShowImage = show;
             showImageReact();
           },
-          get: () => _isShowImage
+          get: () => _isShowImage,
         });
       }
 
       // 手动触发图片显示/隐藏
       function onShowImage(show) {
         if (show) {
-          document.querySelectorAll(".picture").forEach(picture => {
+          document.querySelectorAll(".picture").forEach((picture) => {
             picture.style["display"] = "inline-block";
           });
         } else {
-          document.querySelectorAll(".picture").forEach(picture => {
+          document.querySelectorAll(".picture").forEach((picture) => {
             picture.style["display"] = "none";
           });
         }
@@ -606,23 +615,23 @@
       // 隐藏所有图片
       function hideAndShowAllImage(status) {
         if (status) {
-          document.body.querySelectorAll("img").forEach(img => {
+          document.body.querySelectorAll("img").forEach((img) => {
             img.style.display = "none";
           });
-          document.body.querySelectorAll(".userInfoText").forEach(img => {
+          document.body.querySelectorAll(".userInfoText").forEach((img) => {
             img.style["margin-left"] = "0px";
           });
-          document.body.querySelectorAll(".comment-user").forEach(img => {
+          document.body.querySelectorAll(".comment-user").forEach((img) => {
             img.style["margin-left"] = "0px";
           });
         } else {
-          document.body.querySelectorAll("img").forEach(img => {
+          document.body.querySelectorAll("img").forEach((img) => {
             img.style.display = "inline-block";
           });
-          document.body.querySelectorAll(".userInfoText").forEach(img => {
+          document.body.querySelectorAll(".userInfoText").forEach((img) => {
             img.style["margin-left"] = "20px";
           });
-          document.body.querySelectorAll(".comment-user").forEach(img => {
+          document.body.querySelectorAll(".comment-user").forEach((img) => {
             img.style["margin-left"] = "10px";
           });
         }
@@ -631,14 +640,14 @@
       // 监听极简模式
       function listenMinimalist() {
         Object.defineProperty(window, "minimalistStatus", {
-          set: status => {
+          set: (status) => {
             hideAndShowAllImage(status);
             isShowImage = !status;
             _minimalistStatus = status;
             // let showImage = document.getElementById("showImage");
             // showImage.checked = !status;
           },
-          get: () => _minimalistStatus
+          get: () => _minimalistStatus,
         });
       }
 
