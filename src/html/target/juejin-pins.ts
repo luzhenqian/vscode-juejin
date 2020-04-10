@@ -117,7 +117,7 @@ export default `<!DOCTYPE html>
       <div class="top">
         <div id="head-text" onclick="debug()"></div>
         <div class="actions">
-          <span onclick="renderPrevPins()" title="上一页">
+          <span onclick="prePageBtnClick()" title="上一页">
             <svg
               t="1584670933631"
               class="icon"
@@ -274,6 +274,10 @@ export default `<!DOCTYPE html>
         getMetaData();
       }
 
+      function scrollToTop() {
+        window.scrollTo(0, 0);
+      }
+
       function scrollToDown() {
         vscode.postMessage({
           type: "SCROLL_TO_DOWN"
@@ -337,9 +341,11 @@ export default `<!DOCTYPE html>
               break;
             case "GET_PINS":
               renderPins(message.data);
+              scrollToTop();
               break;
             case "GET_PINS_NEXT":
               renderNextPins(message.data);
+              scrollToTop();
             case "GET_COMMENT":
               renderComments(message.data);
               break;
@@ -385,6 +391,11 @@ export default `<!DOCTYPE html>
         changePageNumber();
       }
 
+      // 
+      function prePageBtnClick() {
+        scrollToTop();
+        renderPrevPins();
+      }
       // 改变页码
       function changePageNumber() {
         document.querySelector(".page-number").innerHTML = pageNumber + 1;
