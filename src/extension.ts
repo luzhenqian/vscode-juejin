@@ -10,7 +10,8 @@ enum ENV {
   "DEV" = "DEV",
   "PROD" = "PROD",
 }
-let env = ENV.DEV;
+
+let env = ENV.PROD;
 
 export function activate(context: vscode.ExtensionContext) {
   let pins = vscode.commands.registerCommand("juejin.pins", () => {
@@ -157,11 +158,10 @@ export function activate(context: vscode.ExtensionContext) {
     }
     createPostWebview();
   });
-  context.subscriptions.push(pins);
-  context.subscriptions.push(post);
+  context.subscriptions.splice(context.subscriptions.length, 0, post, pins);
 }
 
-export function deactivate() {}
+export function deactivate() { }
 
 // 获取本地资源的方式，开发时使用
 function getHtmlContent(context: vscode.ExtensionContext, paths: string) {

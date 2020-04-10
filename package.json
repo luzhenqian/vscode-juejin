@@ -2,7 +2,7 @@
   "name": "juejin",
   "displayName": "掘金",
   "description": "A juejin plugin in vscode",
-  "version": "0.1.4",
+  "version": "0.1.5-beta",
   "publisher": "luzhenqian",
   "homepage": "https://github.com/luzhenqian/vscode-juejin",
   "repository": {
@@ -16,7 +16,8 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:juejin.pins"
+    "onCommand:juejin.pins",
+    "onCommand:juejin.post"
   ],
   "main": "./out/extension.js",
   "icon": "icon/icon.png",
@@ -37,22 +38,22 @@
     },
     "commands": [
       {
-        "command": "juejin.pins",
-        "title": "juejin pins"
+        "command": "juejin.post",
+        "title": "掘金-文章"
       },
       {
-        "command": "juejin.post",
-        "title": "juejin post"
+        "command": "juejin.pins",
+        "title": "掘金-沸点"
       }
     ],
     "keybindings": [
       {
-        "command": "juejin.pins",
-        "key": "ctrl+j ctrl+j"
+        "command": "juejin.post",
+        "key": "ctrl+p ctrl+p"
       },
       {
-        "command": "juejin.post",
-        "key": "ctrl+j ctrl+k"
+        "command": "juejin.pins",
+        "key": "ctrl+j ctrl+j"
       }
     ]
   },
@@ -63,7 +64,7 @@
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint",
     "test": "node ./out/test/runTest.js",
-    "build": "npm run htmlts && vsce package",
+    "build": "NODE_ENV=production npm run htmlts && vsce package",
     "htmlts": "node ./scripts/ts.html-generator.js",
     "publish": "npm run htmlts && vsce publish"
   },
