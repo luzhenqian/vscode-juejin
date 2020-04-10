@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>掘金-文章</title>
+    <style>
+      .post-list-warp {
+        padding: 20px;
+        border-bottom: 1px solid pink;
+        transition: all 0.5s ease-out;
+      }
+      .post-list-warp:hover {
+        background: var(--vscode-activityBar-background);
+      }
+      .post-title {
+        font-weight: 800;
+        padding-bottom: 10px;
+        color: var(--vscode-activityBar-activeBorder);
+      }
+      .post-title:hover {
+        color: pink;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script>
+      let vscode = acquireVsCodeApi();
+      let rootEl = document.querySelector("#app");
+
+      // 渲染组件
+      function renderPostList(postList) {
+        rootEl.innerHTML = `${postList
+          .map((post) => {
+            let {
+              title,
+              originalUrl,
+              time,
+              user,
+              tags,
+              category,
+              likeCount,
+            } = post;
+            let { username } = user;
+            return `<div class="post-list-warp">
+                <div class="post-title" onclick="toPost('${originalUrl}')">${title}</div>
+                <div>
+                  <span>${username} · ${time} · ${tags
+              .map((tag) => tag.title)
+              .join("/")}</span>
+                </div>
+                </div>`;
+          })
+          .join("")}`;
+      }
+
+      // 初始化 message 监听
+      function initListenMessage() {
+        window.addEventListener("message", (event) => {
+          console.log(123);
+          const message = event.data;
+          switch (message.type) {
+            case "POST_INIT":
+              renderPostList(message.data);
+              break;
+            case "GET_POST":
+              renderPost(message.data);
+              break;
+          }
+        });
+      }
+
+      initListenMessage();
+      vscode.postMessage({ type: "POST_INIT" });
+
+      // 获取文章信息
+      function toPost(url) {
+        vscode.postMessage({ type: "GET_POST", data: url });
+      }
+
+      // 渲染文章
+      function renderPost(data) {
+        let overrideStyle = `
+        <style>.main-area[data-v-7407bc26] {
+            background-color: var(--vscode-editor-background) !important;
+        }</style>`;
+        let tempEl = document.createElement("div");
+
+        tempEl.innerHTML = data;
+        // TODO: 还需要获取 head
+        let juejinRootEl = tempEl.querySelector("#juejin");
+        juejinRootEl = juejinRootEl.querySelector("article");
+        rootEl.innerHTML = "";
+        rootEl.append(juejinRootEl);
+      }
+    </script>
+  </body>
+</html>

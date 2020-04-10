@@ -39,12 +39,20 @@
       {
         "command": "juejin.pins",
         "title": "juejin pins"
+      },
+      {
+        "command": "juejin.post",
+        "title": "juejin post"
       }
     ],
     "keybindings": [
       {
         "command": "juejin.pins",
         "key": "ctrl+j ctrl+j"
+      },
+      {
+        "command": "juejin.post",
+        "key": "ctrl+j ctrl+k"
       }
     ]
   },

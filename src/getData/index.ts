@@ -2,7 +2,7 @@ import * as axios from "axios";
 import * as moment from "moment";
 
 // 获取相对于当前时间的表现形式
-function timeFromNow(time: string) {
+export function timeFromNow(time: string) {
   let oldTime = moment(time).format("x");
   let now = moment(moment.now()).format("x");
   let dura = +now - +oldTime;
@@ -25,7 +25,7 @@ let afterId = ""; // 获取下一页沸点时用到的参数，为当前页最�
 
 export enum GET_PINS_TYPE {
   "INIT" = "INIT",
-  "NEXT" = "NEXT"
+  "NEXT" = "NEXT",
 }
 
 export async function getPins(type: GET_PINS_TYPE) {
@@ -41,12 +41,12 @@ export async function getPins(type: GET_PINS_TYPE) {
       operationName: "",
       query: "",
       variables: { first: 20, after: _afterId, afterPosition: "" },
-      extensions: { query: { id: "249431a8e4d85e459f6c29eb808e76d0" } }
+      extensions: { query: { id: "249431a8e4d85e459f6c29eb808e76d0" } },
     },
     {
       headers: {
-        "X-Agent": "Juejin/Web"
-      }
+        "X-Agent": "Juejin/Web",
+      },
     }
   );
   try {
@@ -62,7 +62,7 @@ export async function getPins(type: GET_PINS_TYPE) {
         likeCount,
         commentCount,
         topic,
-        pictures
+        pictures,
       } = targets["0"];
       createdAt = timeFromNow(createdAt);
       avatarLarge =
@@ -80,7 +80,7 @@ export async function getPins(type: GET_PINS_TYPE) {
         likeCount,
         commentCount,
         pictures,
-        title
+        title,
       };
     });
     console.log("pinsParse:", pinsParse);
@@ -98,8 +98,8 @@ export async function getComments(commentId: string) {
         "X-Juejin-Src": "Juejin/Web",
         "X-Juejin-Client": "",
         "X-Juejin-Token": "",
-        "X-Juejin-Uid": ""
-      }
+        "X-Juejin-Uid": "",
+      },
     }
   );
   try {
@@ -131,7 +131,7 @@ export async function getComments(commentId: string) {
         jobTitle,
         company,
         content,
-        topComment
+        topComment,
       };
     });
     console.log("commentsParse:", commentsParse);
