@@ -1,10 +1,11 @@
 import * as vscode from "vscode";
 import * as fs from "fs";
 import * as path from "path";
-import { getPins, getComments, GET_PINS_TYPE } from "./getData";
+import { getPins, GET_PINS_TYPE } from "./server/pins/getPins";
+import { getComments } from "./server/pins/getComments";
+import { getPost, getPostList, GET_POST_LIST_TYPE } from "./server/post";
 import pinsHtml from "./html/target/juejin-pins";
 import postHtml from "./html/target/juejin-post";
-import { getPost, getPostList } from "./server/post";
 
 enum ENV {
   "DEV" = "DEV",
@@ -97,10 +98,6 @@ export function activate(context: vscode.ExtensionContext) {
             case "INFO":
               vscode.window.showInformationMessage(message.text);
               break;
-            case "SCROLL_TO_DOWN":
-              // vscode.window.showErrorMessage('下来了。');
-              // vscode.commands.executeCommand('editorScroll', { to: 'down', by: "page", revealCursor: true, });
-              break;
           }
         },
         undefined,
@@ -139,6 +136,12 @@ export function activate(context: vscode.ExtensionContext) {
               panel.webview.postMessage({
                 data: await getPostList(),
                 type: "POST_INIT",
+              });
+              break;
+            case "POST_NEXT":
+              panel.webview.postMessage({
+                data: await getPostList(GET_POST_LIST_TYPE.NEXT),
+                type: "POST_NEXT",
               });
               break;
             case "GET_POST":

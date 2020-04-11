@@ -31,6 +31,7 @@ export default `<!DOCTYPE html>
     </style>
   </head>
   <body>
+    <div id="top"></div>
     <div class="actions">
       <button onclick="goBack()">返回文章列表页</button>
     </div>
@@ -39,7 +40,10 @@ export default `<!DOCTYPE html>
       let vscode = acquireVsCodeApi();
       let rootEl = document.querySelector("#app");
       let postListPageCache = "";
-      let _pageId;
+      let _pageId; // 页面 ID ，分为 list 和 postId 两种，用于控制顶部操作区
+      let postTitle; // 打开文章后记录文章的id，用于返回时控制滚动条定位到该锚点
+      // let avatarLarge; // 作者头像，用于填充文章头像
+      // let username; // 作者昵称
 
       Object.defineProperty(window, "pageId", {
         get: () => _pageId,
@@ -53,14 +57,16 @@ export default `<!DOCTYPE html>
               .querySelector(".actions")
               .querySelector("button").style.display = "block";
           }
+          _pageId = val;
         },
       });
 
-      // 渲染组件
+      // 渲染文章列表
       function renderPostList(postList) {
-        rootEl.innerHTML = \`\${postList
+        rootEl.innerHTML += \`\${postList
           .map((post) => {
             let {
+              id,
               title,
               originalUrl,
               time,
@@ -69,9 +75,9 @@ export default `<!DOCTYPE html>
               category,
               likeCount,
             } = post;
-            let { username } = user;
-            return \`<div class="post-list-warp">
-                <div class="post-title" onclick="toPost('\${originalUrl}')">\${title}</div>
+            let { username, avatarLarge } = user;
+            return \`<div class="post-list-warp" id="\${id}">
+                <div class="post-title" onclick="toPost('\${originalUrl}', '\${id}', '\${avatarLarge}', '\${username}')">\${title}</div>
                 <div>
                   <span>\${username} · \${time} · \${tags
               .map((tag) => tag.title)
@@ -88,6 +94,7 @@ export default `<!DOCTYPE html>
           const message = event.data;
           switch (message.type) {
             case "POST_INIT":
+            case "POST_NEXT":
               renderPostList(message.data);
               break;
             case "GET_POST":
@@ -97,21 +104,31 @@ export default `<!DOCTYPE html>
         });
       }
 
-      initListenMessage();
       init();
 
       function init() {
+        initListenMessage();
         pageId = "list";
-        vscode.postMessage({ type: "POST_INIT" });
+        getPostList();
+        scrollListener();
+      }
+
+      // 获取文章列表
+      function getPostList(type = "POST_INIT") {
+        vscode.postMessage({ type });
       }
 
       // 获取文章信息
-      function toPost(url) {
+      function toPost(url, title, avatarLarge, username) {
+        window.avatarLarge = avatarLarge;
+        window.username = username;
+        postTitle = title;
         vscode.postMessage({ type: "GET_POST", data: url });
       }
 
       // 渲染文章
       function renderPost(data) {
+        // TODO: 切换两种模式 原版阅读模式/vscode编辑器阅读模式
         postListPageCache = rootEl.innerHTML;
         // 覆盖样式
         let overrideStyle = document.createElement("style");
@@ -136,6 +153,29 @@ export default `<!DOCTYPE html>
         let link = tempEl.querySelectorAll("link");
         let juejinRootEl = tempEl.querySelector("#juejin");
         juejinRootEl = juejinRootEl.querySelector("article");
+
+        // 掘金原生的 html 只有 data-src，而不是直接在 background-image 中设置src的。
+        // 所以要在这里通过 js 添加图片。
+        let nodeList = juejinRootEl.querySelectorAll("div, img");
+        nodeList.forEach((node) => {
+          let src = node.dataset.src;
+          if (src) {
+            console.log(node.tagName);
+            if (node.tagName === "IMG") {
+              node.src = src;
+              node.style.visibility = "visible";
+            } else {
+              node.style.backgroundImage = \`url(\${src})\`;
+            }
+          }
+        });
+        let avatarEl = juejinRootEl.querySelector(".avatar");
+        avatarEl.style.backgroundImage = \`url(\${window.avatarLarge})\`;
+        avatarEl.style.backgroundColor = \`transparent\`;
+
+        let usernamerEl = juejinRootEl.querySelector(".username");
+        usernamerEl.textContent = window.username;
+
         rootEl.innerHTML = "";
         rootEl.append(
           ...meta,
@@ -145,16 +185,47 @@ export default `<!DOCTYPE html>
           ...script,
           overrideStyle
         );
+        goTop();
         pageId = "post";
       }
 
+      // 回到页面顶部
+      function goTop() {
+        scrollTo("#top");
+      }
+
+      // 控制滚动条到某一个位置，原生的 scrollTo 和 scrollBy 在 vscode 中不正常
+      // 只能使用 id 和 a 的跳转锚点方案。
+      function scrollTo(elId) {
+        let topEl = document.createElement("a");
+        topEl.href = elId;
+        topEl.click();
+      }
+
+      // 从文章页回到列表页
       function goBack() {
         pageId = "list";
         if (postListPageCache) {
           rootEl.innerHTML = postListPageCache;
+          console.log("pt:", postTitle);
+          scrollTo(\`#\${postTitle}\`);
         } else {
           init();
         }
+      }
+
+      // 监听滚动条是否已经到达底部
+      function scrollListener() {
+        window.addEventListener("scroll", (x) => {
+          if (pageId === "list") {
+            let wScrollY = window.scrollY; // 滚动条位置
+            let wInnerH = window.innerHeight; // 设备窗口的高度
+            let bScrollH = document.body.scrollHeight; //  滚动条的总高度
+            if (wScrollY + wInnerH >= bScrollH) {
+              getPostList("POST_NEXT");
+            }
+          }
+        });
       }
     </script>
   </body>
