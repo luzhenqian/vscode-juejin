@@ -2,7 +2,7 @@
   "name": "juejin",
   "displayName": "掘金",
   "description": "A juejin plugin in vscode",
-  "version": "0.2.0-beta",
+  "version": "0.2.0",
   "publisher": "luzhenqian",
   "homepage": "https://github.com/luzhenqian/vscode-juejin",
   "repository": {
@@ -64,7 +64,7 @@
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint",
     "test": "node ./out/test/runTest.js",
-    "build": "NODE_ENV=production npm run htmlts && vsce package",
+    "build": "npm run htmlts && vsce package",
     "htmlts": "node ./scripts/ts.html-generator.js",
     "publish": "npm run htmlts && vsce publish"
   },
@@ -82,7 +82,9 @@
     "vscode-test": "^1.3.0"
   },
   "dependencies": {
+    "@types/qs": "^6.9.1",
+    "axios": "^0.19.2",
     "moment": "^2.24.0",
-    "axios": "^0.19.2"
+    "qs": "^6.9.3"
   }
 }
