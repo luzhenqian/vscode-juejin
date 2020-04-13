@@ -209,9 +209,6 @@ export default `<!DOCTYPE html>
               ></path>
             </svg>
           </span>
-          <!-- <span onclick="scrollToDown()">
-            go down
-          </span> -->
           <!-- 暂时无法通过此方式修改配置文件 -->
           <!-- <div>
             <span>自定义评论区背景色：</span
@@ -273,12 +270,6 @@ export default `<!DOCTYPE html>
       function refresh() {
         getPins();
         getMetaData();
-      }
-
-      function scrollToDown() {
-        vscode.postMessage({
-          type: "SCROLL_TO_DOWN",
-        });
       }
 
       // 获取沸点
@@ -362,8 +353,6 @@ export default `<!DOCTYPE html>
           } else {
             return;
           }
-          // FIXME: 无效
-          document.body.scrollTop = 0;
           pageNumber++;
         }
         setAppStatus();

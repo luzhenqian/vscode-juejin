@@ -160,8 +160,8 @@ export function activate(context: vscode.ExtensionContext) {
       );
     }
     createPostWebview();
+    context.subscriptions.splice(context.subscriptions.length, 0, post, pins);
   });
-  context.subscriptions.splice(context.subscriptions.length, 0, post, pins);
 }
 
 export function deactivate() { }

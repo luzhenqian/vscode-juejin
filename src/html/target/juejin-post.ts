@@ -42,24 +42,10 @@ export default `<!DOCTYPE html>
       let postListPageCache = "";
       let _pageId; // 页面 ID ，分为 list 和 postId 两种，用于控制顶部操作区
       let postTitle; // 打开文章后记录文章的id，用于返回时控制滚动条定位到该锚点
-      // let avatarLarge; // 作者头像，用于填充文章头像
-      // let username; // 作者昵称
+      var avatarLarge; // 作者头像，用于填充文章头像
+      var username; // 作者昵称
 
-      Object.defineProperty(window, "pageId", {
-        get: () => _pageId,
-        set: (val) => {
-          if (val === "list") {
-            document
-              .querySelector(".actions")
-              .querySelector("button").style.display = "none";
-          } else {
-            document
-              .querySelector(".actions")
-              .querySelector("button").style.display = "block";
-          }
-          _pageId = val;
-        },
-      });
+      init();
 
       // 渲染文章列表
       function renderPostList(postList) {
@@ -104,11 +90,30 @@ export default `<!DOCTYPE html>
         });
       }
 
-      init();
+      // 启用变量代理
+      function r() {
+        Object.defineProperty(window, "pageId", {
+          get: () => _pageId,
+          set: (val) => {
+            if (val === "list") {
+              document
+                .querySelector(".actions")
+                .querySelector("button").style.display = "none";
+            } else {
+              document
+                .querySelector(".actions")
+                .querySelector("button").style.display = "block";
+            }
+            _pageId = val;
+          },
+        });
+      }
 
+      // 初始化
       function init() {
+        r();
         initListenMessage();
-        pageId = "list";
+        window.pageId = "list";
         getPostList();
         scrollListener();
       }
@@ -154,7 +159,7 @@ export default `<!DOCTYPE html>
         let juejinRootEl = tempEl.querySelector("#juejin");
         juejinRootEl = juejinRootEl.querySelector("article");
 
-        // 掘金原生的 html 只有 data-src，而不是直接在 background-image 中设置src的。
+        // 从掘金接口获取到的 html 只有 data-src，而不是直接在 background-image 中设置src的。
         // 所以要在这里通过 js 添加图片。
         let nodeList = juejinRootEl.querySelectorAll("div, img");
         nodeList.forEach((node) => {
@@ -172,7 +177,7 @@ export default `<!DOCTYPE html>
         let avatarEl = juejinRootEl.querySelector(".avatar");
         avatarEl.style.backgroundImage = \`url(\${window.avatarLarge})\`;
         avatarEl.style.backgroundColor = \`transparent\`;
-
+        // 获取到的 html 没有用户头像和昵称，需要自己填充
         let usernamerEl = juejinRootEl.querySelector(".username");
         usernamerEl.textContent = window.username;
 
@@ -186,10 +191,10 @@ export default `<!DOCTYPE html>
           overrideStyle
         );
         goTop();
-        pageId = "post";
+        window.pageId = "post";
       }
 
-      // 回到页面顶部
+      // 回到顶部
       function goTop() {
         scrollTo("#top");
       }

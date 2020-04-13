@@ -1,4 +1,5 @@
-// TODO
+// TODO: 掘金对每个用户有接口调用次数限制，无法用一个号来发表评论或回复评论。
+// 登陆的接口没有返回 token，所以登陆的功能暂时不好做。
 let url = 'https://short-msg-ms.juejin.im/v1/create';
 
 let fromData = {
