@@ -121,59 +121,232 @@
         }
       }
 
+      (function (global) {
+        const utils = {
+          isElement(target) {
+            return (
+              typeof HTMLElement === "object" &&
+              typeof target.nodeName === "string" &&
+              target instanceof HTMLElement
+            );
+          },
+        };
+
+        class Render {
+          constructor({ target, data, generator, effect }) {
+            this.afterEffect;
+            this.target = target;
+            this.data = data;
+            this.generator = generator;
+            this.effect = effect;
+            this.execEffect = true;
+            this.rendering = false; // 防止重复 render 进入无限递归
+            this.update = this.update.bind(this);
+            this.render();
+          }
+          render() {
+            if (this.rendering) {
+              throw Error("不能在rendering过程中执行render");
+            }
+            this.rendering = true;
+            this.execEffect &&
+              typeof this.effect === "function" &&
+              (this.afterEffect = this.effect(this.data, this.target));
+
+            let child = this.generator(this.data, this.target);
+            if (utils.isElement(child)) {
+              this.target.append(child);
+            } else if (Array.isArray(child)) {
+              for (let i = 0; i < child.length; i++) {
+                if (utils.isElement(child[i])) {
+                  this.target.append(child[i]);
+                }
+              }
+            } else if (typeof child === "string") {
+              this.target.innerHTML += child;
+            }
+            this.execEffect &&
+              typeof this.afterEffect === "function" &&
+              this.afterEffect();
+            this.rendering = false;
+          }
+          update(newData, execEffect) {
+            this.data = newData;
+            typeof execEffect === "boolean" && (this.execEffect = execEffect);
+            this.render();
+            this.execEffect = true;
+          }
+        }
+
+        /**
+         * @param {object} config
+         * @param {Element} config.target - warp el
+         * @param {object} config.data - view model
+         * @param {Function} config.generator - logic
+         * @param {Function} config.effect - render effect
+         */
+        function render({ target, data, generator, effect }) {
+          if (!target) throw Error("没有根元素");
+          if (!data) throw Error("没有数据");
+          if (!generator) throw Error("没有生成器");
+          return new Render({ target, data, generator, effect });
+        }
+
+        global["VR"] = { render };
+      })(window);
+
       let vscode = acquireVsCodeApi();
-      let rootEl = document.querySelector("#app");
-      let postListPageCache = "";
+      let rootEl = document.querySelector("#app"); // 根元素
+      let postListPageCache = ""; // 缓存页面
       let _pageId; // 页面 ID ，分为 list 和 postId 两种，用于控制顶部操作区
       let _readMode; // 阅读模式
       let postTitle; // 打开文章后记录文章的id，用于返回时控制滚动条定位到该锚点
       let isFetching = false; // 是否正在获取文章列表
       let loading = new Loading();
+      let updatePostList;
+      let updatePost;
 
+      let actionsType = {
+        POST_INIT: "POST_INIT",
+        POST_NEXT: "POST_NEXT",
+        GET_POST: "GET_POST",
+      };
+
+      let actions = {
+        [actionsType.POST_INIT]() {
+          renderPostList(message.data);
+        },
+        [actionsType.POST_NEXT]() {
+          renderPostList(message.data);
+        },
+        [actionsType.GET_POST]() {
+          renderPost(message.data);
+        },
+      };
       init();
 
       // 渲染文章列表
       function renderPostList(postList) {
-        rootEl.innerHTML += `${postList
-          .map((post) => {
-            let {
-              id,
-              title,
-              originalUrl,
-              time,
-              user,
-              tags,
-              category,
-              likeCount,
-            } = post;
-            let { username } = user;
-            return `<div class="post-list-warp" id="${id}">
+        if (updatePostList) {
+          return updatePostList(postList);
+        }
+        updatePostList = VR.render({
+          target: rootEl,
+          data: postList,
+          generator(data) {
+            return `${data
+              .map((post) => {
+                let {
+                  id,
+                  title,
+                  originalUrl,
+                  time,
+                  user,
+                  tags,
+                  category,
+                  likeCount,
+                } = post;
+                let { username } = user;
+                return `<div class="post-list-warp" id="${id}">
                 <div class="post-title" onclick="toPost('${originalUrl}', '${id}')">${title}</div>
                 <div>
                   <span>${username} · ${time} · ${tags
-              .map((tag) => tag.title)
-              .join("/")}</span>
+                  .map((tag) => tag.title)
+                  .join("/")}</span>
                 </div>
                 </div>`;
-          })
-          .join("")}`;
-        isFetching = false;
-        loading.hide();
+              })
+              .join("")}`;
+          },
+          effect(_, target) {
+            return () => {
+              isFetching = false;
+              loading.hide();
+            };
+          },
+        }).update;
+      }
+
+      // 渲染文章
+      function renderPost(post) {
+        if (updatePost) {
+          return updatePost(post);
+        }
+        updatePost = VR.render({
+          target: rootEl,
+          data: post,
+          generator(data) {
+            let { html, detailData } = data;
+            // 覆盖样式
+            let overrideStyle = document.createElement("style");
+            overrideStyle.textContent = `
+              .main-area[data-v-7407bc26] {
+                background-color: var(--vscode-editor-background) !important;
+              }
+              article {
+                margin-bottom: 0 !important;
+              }
+              h1, h2, h3, h4, h5, h6{
+                color: var(--vscode-editor-foreground) !important;
+              }`;
+            // 过滤掉无用的元素，只保留 meta、style、link、script和 id 为 juejin 的元素中的 article 元素
+            let tempEl = document.createElement("div");
+            tempEl.innerHTML = html;
+            let meta = tempEl.querySelectorAll("meta");
+            let style = tempEl.querySelectorAll("style");
+            let script = tempEl.querySelectorAll("script");
+            let link = tempEl.querySelectorAll("link");
+            let juejinRootEl = tempEl.querySelector("#juejin");
+            juejinRootEl = juejinRootEl.querySelector("article");
+            window.overrideStyle = overrideStyle;
+            // 从掘金接口获取到的 html 只有 data-src，而不是直接在 background-image 中设置src的。
+            // 所以要在这里通过 js 添加图片。
+            let nodeList = juejinRootEl.querySelectorAll("div, img");
+            nodeList.forEach((node) => {
+              let src = node.dataset.src;
+              if (src) {
+                if (node.tagName === "IMG") {
+                  node.src = src;
+                  node.style.visibility = "visible";
+                } else {
+                  node.style.backgroundImage = `url(${src})`;
+                }
+              }
+            });
+            // 获取到的 html 没有用户头像和昵称，需要自己填充
+            let { avatarLarge, username } = detailData.user || {};
+            let avatarEl = juejinRootEl.querySelector(".avatar");
+            avatarEl.style.backgroundImage = `url(${avatarLarge})`;
+            avatarEl.style.backgroundColor = `transparent`;
+            let usernamerEl = juejinRootEl.querySelector(".username");
+            usernamerEl.textContent = username;
+            return [
+              ...meta,
+              ...style,
+              ...link,
+              juejinRootEl,
+              ...script,
+              overrideStyle,
+            ];
+          },
+          effect(_, target) {
+            _readMode = "dark";
+            postListPageCache = target.innerHTML;
+            target.innerHTML = "";
+            return () => {
+              goTop();
+              window.pageId = "post";
+              loading.hide();
+            };
+          },
+        }).update;
       }
 
       // 初始化 message 监听
       function initListenMessage() {
         window.addEventListener("message", (event) => {
           const message = event.data;
-          switch (message.type) {
-            case "POST_INIT":
-            case "POST_NEXT":
-              renderPostList(message.data);
-              break;
-            case "GET_POST":
-              renderPost(message.data);
-              break;
-          }
+          actions[message] && actions[message]();
         });
       }
 
@@ -230,7 +403,7 @@
       }
 
       // 获取文章列表
-      function getPostList(type = "POST_INIT") {
+      function getPostList(type = actionsType.POST_INIT) {
         isFetching = true;
         vscode.postMessage({ type });
       }
@@ -239,70 +412,7 @@
       function toPost(url, title) {
         loading.show();
         postTitle = title;
-        vscode.postMessage({ type: "GET_POST", data: url });
-      }
-
-      // 渲染文章
-      function renderPost(data) {
-        let { html, detailData } = data;
-        _readMode = "dark";
-        postListPageCache = rootEl.innerHTML;
-        // 覆盖样式
-        let overrideStyle = document.createElement("style");
-        overrideStyle.textContent = `
-          .main-area[data-v-7407bc26] {
-            background-color: var(--vscode-editor-background) !important;
-          }
-          article {
-            margin-bottom: 0 !important;
-          }
-          h1, h2, h3, h4, h5, h6{
-            color: var(--vscode-editor-foreground) !important;
-          }`;
-        // 过滤掉无用的元素，只保留 meta、style、link、script和 id 为 juejin 的元素中的 article 元素
-        let tempEl = document.createElement("div");
-        tempEl.innerHTML = html;
-        let meta = tempEl.querySelectorAll("meta");
-        let style = tempEl.querySelectorAll("style");
-        let script = tempEl.querySelectorAll("script");
-        let link = tempEl.querySelectorAll("link");
-        let juejinRootEl = tempEl.querySelector("#juejin");
-        juejinRootEl = juejinRootEl.querySelector("article");
-        window.overrideStyle = overrideStyle;
-        // 从掘金接口获取到的 html 只有 data-src，而不是直接在 background-image 中设置src的。
-        // 所以要在这里通过 js 添加图片。
-        let nodeList = juejinRootEl.querySelectorAll("div, img");
-        nodeList.forEach((node) => {
-          let src = node.dataset.src;
-          if (src) {
-            if (node.tagName === "IMG") {
-              node.src = src;
-              node.style.visibility = "visible";
-            } else {
-              node.style.backgroundImage = `url(${src})`;
-            }
-          }
-        });
-        // 获取到的 html 没有用户头像和昵称，需要自己填充
-        let { avatarLarge, username } = detailData.user || {};
-        let avatarEl = juejinRootEl.querySelector(".avatar");
-        avatarEl.style.backgroundImage = `url(${avatarLarge})`;
-        avatarEl.style.backgroundColor = `transparent`;
-        let usernamerEl = juejinRootEl.querySelector(".username");
-        usernamerEl.textContent = username;
-
-        rootEl.innerHTML = "";
-        rootEl.append(
-          ...meta,
-          ...style,
-          ...link,
-          juejinRootEl,
-          ...script,
-          overrideStyle
-        );
-        goTop();
-        window.pageId = "post";
-        loading.hide();
+        vscode.postMessage({ type: actionsType.GET_POST, data: url });
       }
 
       // 回到顶部
@@ -337,7 +447,7 @@
             let wInnerH = window.innerHeight; // 设备窗口的高度
             let bScrollH = document.body.scrollHeight; //  滚动条的总高度
             if (wScrollY + wInnerH >= bScrollH - 20 && !isFetching) {
-              getPostList("POST_NEXT");
+              getPostList(actionsType.POST_NEXT);
             }
           }
         });
