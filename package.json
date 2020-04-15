@@ -2,7 +2,7 @@
   "name": "juejin",
   "displayName": "掘金",
   "description": "A juejin plugin in vscode",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "publisher": "luzhenqian",
   "homepage": "https://github.com/luzhenqian/vscode-juejin",
   "repository": {

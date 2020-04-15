@@ -26,7 +26,7 @@ export default `<!DOCTYPE html>
         color: var(--vscode-activityBar-activeBorder);
       }
       .post-title:hover {
-        color: pink;
+        color: #f27573;
         cursor: pointer;
       }
       #scroll-to-top {
@@ -56,6 +56,14 @@ export default `<!DOCTYPE html>
         width: 16px;
         height: 16px;
       }
+      @keyframes rotate {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
     </style>
   </head>
   <body>
@@ -71,8 +79,48 @@ export default `<!DOCTYPE html>
       <button onclick="goBack()">返回文章列表页</button>
       <button onclick="changeReadMode()">切换阅读模式</button>
     </div>
-    <div id="app">文章加载中</div>
+    <div id="app"></div>
     <script>
+      // loading 加载文章时防止用户进行其它操作
+      class Loading {
+        constructor() {
+          this.loadingWarpEl = window.document.createElement("div");
+          this.loadingWarpEl.style.backgroundColor =
+            "var(--vscode-editor-background)";
+          this.loadingWarpEl.style.position = "fixed";
+          this.loadingWarpEl.style.top = "0";
+          this.loadingWarpEl.style.left = "0";
+          this.loadingWarpEl.style.bottom = "0";
+          this.loadingWarpEl.style.right = "0";
+          this.loadingWarpEl.style.zIndex = "10000";
+          this.loadingWarpEl.style.display = "flex";
+          this.loadingWarpEl.id = "__REQUEST_BEFORE_SEND__";
+          let loadingEl = window.document.createElement("div");
+          loadingEl.style.animation = "rotate 1.8s linear infinite";
+          loadingEl.innerHTML =
+            '<svg t="1586931554977" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1510" width="100" height="100"><path d="M755.0464 862.72a34.7648 34.7648 0 0 1-12.8512 48.0256 34.6624 34.6624 0 0 1-47.7696-12.8512 34.7648 34.7648 0 0 1 12.288-48.0256 35.4816 35.4816 0 0 1 48.3328 12.8z m-207.3088 74.9056c0 19.1488-15.8208 35.1744-35.6864 35.1744a35.2768 35.2768 0 0 1-35.1744-35.1744v-24.6272a35.4816 35.4816 0 0 1 70.8608 0v24.6272z m-216.9856-39.7312a35.072 35.072 0 0 1-48.3328 13.0048 34.8672 34.8672 0 0 1-13.0048-48.2816l26.112-45.7728a36.1472 36.1472 0 0 1 48.7936-13.056 35.328 35.328 0 0 1 12.5952 48.3328l-26.1632 45.7728zM162.304 755.712a35.5328 35.5328 0 0 1-48.3328-13.056 35.1744 35.1744 0 0 1 12.5952-48.2816l70.3488-40.7552a35.584 35.584 0 0 1 48.2816 13.0048 35.84 35.84 0 0 1-13.056 48.3328l-69.888 40.7552zM87.3984 547.84a35.1232 35.1232 0 0 1-35.1744-35.1744c0-19.6096 15.5648-35.4304 35.1744-35.4304h109.568c19.5584 0 35.1232 15.872 35.1232 35.1744a35.1744 35.1744 0 0 1-35.1744 35.4304h-109.568z m39.2192-217.3952a34.4576 34.4576 0 0 1-12.5952-48.0256 35.0208 35.0208 0 0 1 48.2816-13.0048l119.0912 69.12a35.2256 35.2256 0 0 1 13.056 47.7696 35.4816 35.4816 0 0 1-48.2304 13.056L126.6688 330.4448z m142.7456-168.3456l82.944 143.9744a35.2256 35.2256 0 1 0 61.0816-35.4304L330.0352 126.976a35.1232 35.1232 0 0 0-60.7232 35.1744z m207.5648-74.3936a35.84 35.84 0 0 1 35.1744-35.4304c19.6096 0 35.6864 15.9232 35.6864 35.4304v165.888a35.84 35.84 0 0 1-35.6864 35.6864 35.328 35.328 0 0 1-35.1744-35.7376V87.7056z m217.0368 39.2192a35.4304 35.4304 0 0 1 48.2816-13.056 34.816 34.816 0 0 1 13.056 48.3328L672.2048 306.176a35.4304 35.4304 0 0 1-48.2816 13.056 35.9424 35.9424 0 0 1-12.8512-48.5888l82.944-143.7184z m168.8576 142.4896l-144.128 83.0976a35.4816 35.4816 0 0 0-13.056 48.2816 36.2496 36.2496 0 0 0 48.2816 12.8512l144.2816-83.0976a34.9184 34.9184 0 0 0 12.5952-48.0256 34.6624 34.6624 0 0 0-47.9744-13.1072z m74.1376 207.872c19.7632 0 35.4304 15.7696 35.1744 35.3792a34.9184 34.9184 0 0 1-35.1744 35.1744h-166.0416a35.5328 35.5328 0 0 1-35.2256-35.4304c0-19.3536 16.0768-35.1744 35.2256-35.1744h166.0416z" fill="#F27573" p-id="1511"></path></svg>';
+          loadingEl.style.margin = "auto";
+          loadingEl.style.textAlign = "center";
+          this.loadingWarpEl.append(loadingEl);
+        }
+        show() {
+          if (!window.document.body.querySelector("#__REQUEST_BEFORE_SEND__")) {
+            window.document.body.append(this.loadingWarpEl);
+          } else {
+            this.loadingWarpEl.style.display = "flex";
+          }
+        }
+        hide() {
+          setTimeout(() => {
+            if (
+              window.document.body.querySelector("#__REQUEST_BEFORE_SEND__")
+            ) {
+              this.loadingWarpEl.style.display = "none";
+            }
+          }, 400);
+        }
+      }
+
       let vscode = acquireVsCodeApi();
       let rootEl = document.querySelector("#app");
       let postListPageCache = "";
@@ -80,6 +128,7 @@ export default `<!DOCTYPE html>
       let _readMode; // 阅读模式
       let postTitle; // 打开文章后记录文章的id，用于返回时控制滚动条定位到该锚点
       let isFetching = false; // 是否正在获取文章列表
+      let loading = new Loading();
 
       init();
 
@@ -109,6 +158,7 @@ export default `<!DOCTYPE html>
           })
           .join("")}\`;
         isFetching = false;
+        loading.hide();
       }
 
       // 初始化 message 监听
@@ -170,6 +220,7 @@ export default `<!DOCTYPE html>
 
       // 初始化
       function init() {
+        loading.show();
         r();
         initListenMessage();
         window.pageId = "list";
@@ -186,6 +237,7 @@ export default `<!DOCTYPE html>
 
       // 获取文章信息
       function toPost(url, title) {
+        loading.show();
         postTitle = title;
         vscode.postMessage({ type: "GET_POST", data: url });
       }
@@ -217,7 +269,6 @@ export default `<!DOCTYPE html>
         let juejinRootEl = tempEl.querySelector("#juejin");
         juejinRootEl = juejinRootEl.querySelector("article");
         window.overrideStyle = overrideStyle;
-
         // 从掘金接口获取到的 html 只有 data-src，而不是直接在 background-image 中设置src的。
         // 所以要在这里通过 js 添加图片。
         let nodeList = juejinRootEl.querySelectorAll("div, img");
@@ -251,6 +302,7 @@ export default `<!DOCTYPE html>
         );
         goTop();
         window.pageId = "post";
+        loading.hide();
       }
 
       // 回到顶部

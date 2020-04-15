@@ -104,11 +104,19 @@ Removed 现在已删除的功能。
 Fixed 对于任何错误修复。
 Security 以防万一。 -->
 
+### 0.2.0 2020 年 4 月 15 日
+
+1. 添加文章加载时的遮罩。
+
+<div style="border-bottom: 1px solid black; margin: 1em 0;"></div>
+
 ### 0.2.0 2020 年 4 月 13 日
 
 1. 添加文章功能。
 
 2. 修复沸点切换页面时滚动条仍然在原位置的 BUG。
+
+<div style="border-bottom: 1px solid black; margin: 1em 0;"></div>
 
 ### 0.1.4 2020 年 3 月 21 日
 
@@ -129,6 +137,8 @@ Security 以防万一。 -->
 8. 添加当前页数显示。
 
 9. 最大页数调整为 5 页。
+
+<div style="border-bottom: 1px solid black; margin: 1em 0;"></div>
 
 ### 0.1.3 2020 年 3 月 20 日
 
