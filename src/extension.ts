@@ -6,6 +6,7 @@ import { getComments } from "./server/pins/getComments";
 import { getPost, getPostList, GET_POST_LIST_TYPE } from "./server/post";
 import pinsHtml from "./html/target/juejin-pins";
 import postHtml from "./html/target/juejin-post";
+import { postMain } from "./controllers/post";
 
 enum ENV {
   "DEV" = "DEV",
@@ -131,29 +132,7 @@ export function activate(context: vscode.ExtensionContext) {
       }
       panel.webview.onDidReceiveMessage(
         async (message) => {
-          switch (message.type) {
-            case "POST_INIT":
-              panel.webview.postMessage({
-                data: await getPostList(),
-                type: "POST_INIT",
-              });
-              break;
-            case "POST_NEXT":
-              panel.webview.postMessage({
-                data: await getPostList(GET_POST_LIST_TYPE.NEXT),
-                type: "POST_NEXT",
-              });
-              break;
-            case "GET_POST":
-              panel.webview.postMessage({
-                data: await getPost(message.data),
-                type: "GET_POST",
-              });
-              break;
-            case "INFO":
-              vscode.window.showInformationMessage(message.text);
-              break;
-          }
+          await postMain(message, panel.webview);
         },
         undefined,
         context.subscriptions
@@ -164,7 +143,7 @@ export function activate(context: vscode.ExtensionContext) {
   });
 }
 
-export function deactivate() { }
+export function deactivate() {}
 
 // 获取本地资源的方式，开发时使用
 function getHtmlContent(context: vscode.ExtensionContext, paths: string) {

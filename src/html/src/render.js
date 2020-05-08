@@ -2,12 +2,14 @@
   const utils = {
     isElement(target) {
       return (
-        typeof HTMLElement === "object" &&
+        typeof target === "object" &&
         typeof target.nodeName === "string" &&
         target instanceof HTMLElement
       );
     },
   };
+
+  let _render = Symbol("render");
 
   class Render {
     constructor({ target, data, generator, effect }) {
@@ -19,9 +21,9 @@
       this.execEffect = true;
       this.rendering = false; // 防止重复 render 进入无限递归
       this.update = this.update.bind(this);
-      this.render();
+      this[_render]();
     }
-    render() {
+    [_render]() {
       if (this.rendering) {
         throw Error("不能在rendering过程中执行render");
       }
@@ -50,7 +52,7 @@
     update(newData, execEffect) {
       this.data = newData;
       typeof execEffect === "boolean" && (this.execEffect = execEffect);
-      this.render();
+      this[_render]();
       this.execEffect = true;
     }
   }
