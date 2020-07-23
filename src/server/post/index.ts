@@ -9,11 +9,31 @@ export enum GET_POST_LIST_TYPE {
 }
 
 // 获取文章列表
-export async function getPostList(type = GET_POST_LIST_TYPE.INIT, variables: any = {}) {
+export async function getPostList(
+  type: string = GET_POST_LIST_TYPE.INIT,
+  variables: any = {}
+) {
+  let category;
+  let { defaultCategory } = variables;
+  if (type === GET_POST_LIST_TYPE.INIT && defaultCategory) {
+    (await getCategories()).forEach(
+      (_category: { name: string; id: string }) => {
+        if (_category.name === defaultCategory) {
+          category = _category.id;
+        }
+      }
+    );
+  } else {
+    category = variables.category;
+  }
+
   let url = "https://web-api.juejin.im/query";
-  let after = type === GET_POST_LIST_TYPE.INIT ?
-    "" : type === GET_POST_LIST_TYPE.NEXT ?
-      endCursor : "";
+  let after =
+    type === GET_POST_LIST_TYPE.INIT
+      ? ""
+      : type === GET_POST_LIST_TYPE.NEXT
+      ? endCursor
+      : "";
 
   let result = await axios.default.post(
     url,
@@ -52,7 +72,7 @@ export async function getPostList(type = GET_POST_LIST_TYPE.INIT, variables: any
       };
     });
     console.log("postlist parser:", postListParser);
-    return postListParser;
+    return { category, postList: postListParser };
   } catch (e) {
     console.log("err:", e);
     return [];
@@ -62,7 +82,7 @@ export async function getPostList(type = GET_POST_LIST_TYPE.INIT, variables: any
 // 获取文章内容
 // 因为掘金禁止了 iframe，只能通过接口获取
 export async function getPost(url: string) {
-  let temp = url.split('/');
+  let temp = url.split("/");
   let postId = temp[temp.length - 1];
   let detailData = await getDetailData(postId);
   let result = await axios.default.get(url);
@@ -75,31 +95,36 @@ export async function getPost(url: string) {
 
 //获取分类
 export async function getCategories() {
-  let result = await axios.default.get('https://gold-tag-ms.juejin.im/v1/categories', {
-    headers: {
-      'X-Juejin-Src': 'web'
+  let result = await axios.default.get(
+    "https://gold-tag-ms.juejin.im/v1/categories",
+    {
+      headers: {
+        "X-Juejin-Src": "web",
+      },
     }
-  });
+  );
   try {
-    return result?.data?.d;
+    return result?.data?.d?.categoryList;
   } catch (err) {
-    return "文章加载出错：" + err.toString();
+    return "分类加载出错：" + err.toString();
   }
 }
 
 // 获取文章详细信息
 export async function getDetailData(postId: string) {
-  let result = await axios.default
-    .get('https://post-storage-api-ms.juejin.im/v1/getDetailData', {
+  let result = await axios.default.get(
+    "https://post-storage-api-ms.juejin.im/v1/getDetailData",
+    {
       params: {
-        uid: '',
+        uid: "",
         device_id: 0,
-        token: '',
-        src: 'web',
-        type: 'entry',
-        postId
-      }
-    });
+        token: "",
+        src: "web",
+        type: "entry",
+        postId,
+      },
+    }
+  );
   let { d } = result?.data;
   let { user } = d;
   return { user };

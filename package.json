@@ -2,7 +2,7 @@
   "name": "juejin",
   "displayName": "掘金",
   "description": "A juejin plugin in vscode",
-  "version": "0.2.1",
+  "version": "0.2.2-beta",
   "publisher": "luzhenqian",
   "homepage": "https://github.com/luzhenqian/vscode-juejin",
   "repository": {
@@ -28,11 +28,15 @@
         "juejin.pins.head.text": {
           "type": "string",
           "default": "别看了，我在写代码。",
-          "description": "自定义顶部的文字"
+          "description": "自定义沸点顶部的文字"
         },
         "juejin.pins.comment.background-color": {
           "type": "string",
-          "description": "评论区背景色。必须按照css颜色标准格式填写，如：white、#FFFFFF、rgb(255, 255, 255)"
+          "description": "沸点评论区背景色。必须按照css颜色标准格式填写，如：white、#FFFFFF、rgb(255, 255, 255)"
+        },
+        "juejin.post.default-category": {
+          "type": "string",
+          "description": "文章默认分类。必须设置掘金官方的分类，如：前端、后端。"
         }
       }
     },

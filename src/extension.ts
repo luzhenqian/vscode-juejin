@@ -13,7 +13,7 @@ enum ENV {
   "PROD" = "PROD",
 }
 
-let env = ENV.DEV;
+let env = ENV.PROD;
 
 export function activate(context: vscode.ExtensionContext) {
   let pins = vscode.commands.registerCommand("juejin.pins", () => {
@@ -107,7 +107,18 @@ export function activate(context: vscode.ExtensionContext) {
     }
     createPinsWebview();
   });
+
   let post = vscode.commands.registerCommand("juejin.post", () => {
+    let pageFirstOpen = true;
+
+    // 获取配置信息
+    function getMetaData() {
+      let defaultCategory = vscode.workspace
+        .getConfiguration()
+        .get("juejin.post.default-category");
+      return { defaultCategory };
+    }
+
     // 创建webview
     function createPostWebview() {
       const panel = vscode.window.createWebviewPanel(
@@ -132,12 +143,18 @@ export function activate(context: vscode.ExtensionContext) {
       }
       panel.webview.onDidReceiveMessage(
         async (message) => {
+          if (pageFirstOpen)
+            message.data = { ...getMetaData(), ...message.data };
+
+          if (message.type === "POST_INIT") pageFirstOpen = false;
+
           await postMain(message, panel.webview);
         },
         undefined,
         context.subscriptions
       );
     }
+
     createPostWebview();
     context.subscriptions.splice(context.subscriptions.length, 0, post, pins);
   });

@@ -29,6 +29,39 @@
         color: #f27573;
         cursor: pointer;
       }
+      .category {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 26px;
+        background-color: var(--vscode-editor-background);
+        display: flex;
+        justify-content: space-around;
+        min-width: 600px;
+        z-index: 1200;
+        padding: 10px 0;
+        /* box-sizing: border-box; */
+      }
+      .category > div {
+        line-height: 26px;
+        padding: 0px 10px;
+        border-radius: 12px;
+        user-select: none;
+        box-sizing: border-box;
+        color: #ffffff;
+        border: 1px solid var(--vscode-activityBarBadge-background);
+      }
+      .category > div:hover {
+        color: var(--vscode-activityBarBadge-background);
+      }
+      .category-active {
+        color: #ffffff;
+        background-color: var(--vscode-activityBarBadge-background);
+      }
+      .category-active:hover {
+        color: #ffffff !important;
+      }
     </style>
   </head>
   <body>
@@ -191,8 +224,6 @@
               this.target.append(child);
             } else if (Array.isArray(child)) {
               for (let i = 0; i < child.length; i++) {
-                console.log(child[i], utils.isElement(child[i]));
-
                 if (utils.isElement(child[i])) {
                   this.target.append(child[i]);
                 }
@@ -206,7 +237,7 @@
             this.rendering = false;
           }
           update(newData, execEffect) {
-            this.data = newData;
+            this.data = Object.assign({}, this.data, newData);
             typeof execEffect === "boolean" && (this.execEffect = execEffect);
             this[_render]();
             this.execEffect = true;
@@ -241,6 +272,7 @@
       CP.goTop.load(); // 添加 goTop
       let updatePostList;
       let updatePost;
+      let categoryId; // 分类 ID
 
       let actionsType = {
         POST_INIT: "POST_INIT",
@@ -262,14 +294,40 @@
       init();
 
       // 渲染文章列表
-      function renderPostList(postList) {
-        if (updatePostList) return updatePostList(postList);
+      function renderPostList({
+        listData: { postList, category },
+        categoryList,
+      }) {
+        if (category) {
+          let currentCategory = categoryList.find(
+            (cate) => cate.id === category
+          );
+          if (currentCategory) {
+            categoryId = currentCategory.id;
+          }
+        }
+
+        if (updatePostList) return updatePostList({ postList, categoryList });
         updatePostList = VR.render({
           target: rootEl,
-          data: postList,
+          data: { categoryList, postList },
           generator(data) {
-            return `${data
-              .map((post) => {
+            return `
+              <div class='category'>
+                ${data.categoryList
+                  .map(
+                    (category) => `
+                  <div class="${
+                    category.id === categoryId ? "category-active" : ""
+                  }" onclick="changeCategory('${category.id}')">${
+                      category.name
+                    }</div>
+                  `
+                  )
+                  .join("")}
+              </div>
+            ${data.postList
+              .map((post, index) => {
                 let {
                   id,
                   title,
@@ -281,7 +339,9 @@
                   likeCount,
                 } = post;
                 let { username } = user;
-                return `<div class="post-list-warp" id="${id}">
+                return `<div class="post-list-warp" id="${id}" style="${
+                  index === 0 ? "padding-top: 46px;" : ""
+                }">
                 <div class="post-title" onclick="toPost('${originalUrl}', '${id}')">${title}</div>
                 <div>
                   <span>${username} · ${time} · ${tags
@@ -299,6 +359,20 @@
             };
           },
         }).update;
+      }
+
+      // 改变分类
+      function changeCategory(id) {
+        isFetching = true;
+        loading.show();
+        categoryId = id; // 设置分类 id
+        // 清空列表
+        Array.from(document.querySelectorAll(".post-list-warp")).forEach(
+          (el) => {
+            el.remove();
+          }
+        );
+        getPostList(); // 重新获取文章列表
       }
 
       // 渲染文章
@@ -440,7 +514,8 @@
       // 获取文章列表
       function getPostList(type = actionsType.POST_INIT) {
         isFetching = true;
-        vscode.postMessage({ type });
+        const data = { category: categoryId };
+        vscode.postMessage({ type, data });
       }
 
       // 获取文章信息

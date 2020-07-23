@@ -53,7 +53,7 @@ windows 使用 `ctrl + shift + p` / macOS 使用 `command + shift + p` 唤出插
 
 根据一段时间的观察，我发现很多掘友和我一样，每天都刷沸点、看评论。但就是自己不发、不赞、不评论。我想，现在这个插件可能更适合这种人使用吧。
 
-<div style="border-bottom: 1px solid black; margin: 1em 0;"></div>
+---
 
 ## 🧐 为什么在 vscode 扩展商店搜索不到？
 
@@ -61,7 +61,7 @@ windows 使用 `ctrl + shift + p` / macOS 使用 `command + shift + p` 唤出插
 
 出现这个问题的原因八成是网络导致的，请尝试在 [vscode 扩展商店官网中安装](https://marketplace.visualstudio.com/items?itemName=luzhenqian.juejin)，如果你无法打开这个网页，那么几乎确定就是你的网络有问题。
 
-<div style="border-bottom: 1px solid black; margin: 1em 0;"></div>
+---
 
 ## 🧐 我们提的新需求，你会做吗？
 
@@ -69,7 +69,7 @@ windows 使用 `ctrl + shift + p` / macOS 使用 `command + shift + p` 唤出插
 
 刚开始写这个插件只是为了我自己用，使用一段时间后，觉得还不错。出于开源精神，好东西不能自己独享，所以拿出来奉献给广大掘友，最近在社区也收到很多掘友提出的新需求。我们都是做开发的，都明白需求是永无止境的。我一个人精力有限，没办法满足所有人的需求，请见谅。我只能去做我认为合理且有必要做的功能。
 
-<div style="border-bottom: 1px solid black; margin: 1em 0;"></div>
+---
 
 # 🐛 已知但尚未修复的 BUG
 
@@ -86,7 +86,6 @@ windows 使用 `ctrl + shift + p` / macOS 使用 `command + shift + p` 唤出插
 <!-- TODO: 13. 翻页时会产生undefined页面 -->
 <!-- TODO: 14. 点击下一页和上一页时加 1s 防抖 -->
 <!-- TODO: 16. 评论条数并不会完全显示，这个BUG是掘金接口数据导致的，暂时不做修改。-->
-<!-- TODO: 17. 文章分类 -->
 <!-- TODO: 18. 文章搜索 -->
 <!-- TODO: 19. 文章列表刷新 -->
 <!-- TODO: 20. 文章阅读模式 （原版/简洁版） -->
@@ -104,11 +103,19 @@ Removed 现在已删除的功能。
 Fixed 对于任何错误修复。
 Security 以防万一。 -->
 
-### 0.2.0 2020 年 4 月 15 日
+### 0.2.2 2020 年 7 月 23 日
+
+1. 添加文章分类。
+
+2. 添加文章默认分类可配置功能。
+
+---
+
+### 0.2.1 2020 年 4 月 15 日
 
 1. 添加文章加载时的遮罩。
 
-<div style="border-bottom: 1px solid black; margin: 1em 0;"></div>
+---
 
 ### 0.2.0 2020 年 4 月 13 日
 
@@ -116,7 +123,7 @@ Security 以防万一。 -->
 
 2. 修复沸点切换页面时滚动条仍然在原位置的 BUG。
 
-<div style="border-bottom: 1px solid black; margin: 1em 0;"></div>
+---
 
 ### 0.1.4 2020 年 3 月 21 日
 
@@ -138,7 +145,7 @@ Security 以防万一。 -->
 
 9. 最大页数调整为 5 页。
 
-<div style="border-bottom: 1px solid black; margin: 1em 0;"></div>
+---
 
 ### 0.1.3 2020 年 3 月 20 日
 
@@ -156,22 +163,22 @@ Security 以防万一。 -->
 
 7. 添加默认快捷键 ctrl + j + j。
 
-<div style="border-bottom: 1px solid black; margin: 1em 0;"></div>
+---
 
 ### 0.1.2 2020 年 3 月 19 日
 
 1. v0.1.1 版本发布时出现失误，导致代码未能正确更新，BUG 未能正常修复，重新发布。
 
-<div style="border-bottom: 1px solid black; margin: 1em 0;"></div>
+---
 
 ### 0.1.1 2020 年 3 月 19 日
 
 1. 修复评论显示问题。
 
-<div style="border-bottom: 1px solid black; margin: 1em 0;"></div>
+---
 
 ### 0.1.0 2020 年 3 月 18 日
 
 1. 初始版本，基础功能。
 
-<div style="border-bottom: 1px solid black; margin: 1em 0;"></div>
+---
