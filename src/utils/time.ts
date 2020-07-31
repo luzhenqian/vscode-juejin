@@ -1,21 +1,23 @@
 import * as moment from "moment";
 
-// 获取相对于当前时间的表现形式
+/**
+ * 获取相对于当前时间的表现形式
+ * @param time 13 位 时间戳
+ */
 export function timeFromNow(time: string) {
-  let oldTime = moment(time).format("x");
-  let now = moment(moment.now()).format("x");
-  let dura = +now - +oldTime;
-  let tempTime = moment.duration(dura);
-  let ty = tempTime.years();
-  let tM = tempTime.months();
-  let td = tempTime.days();
-  let th = tempTime.hours();
-  let tm = tempTime.minutes();
-  let ts = tempTime.seconds();
-  if (ty) return ty + "年前";
-  if (tM) return tM + "月前";
-  if (td) return td + "天前";
-  if (th) return th + "小时前";
-  if (tm) return tm + "分钟前";
-  if (ts) return ts + "秒前";
+  let d1 = moment(time, "x");
+  let currentTime = moment();
+  let years = currentTime.diff(d1, "year");
+  let months = currentTime.diff(d1, "month");
+  let days = currentTime.diff(d1, "day");
+  let hours = currentTime.diff(d1, "hour");
+  let minutes = currentTime.diff(d1, "minute");
+  let seconds = currentTime.diff(d1, "second");
+
+  if (years) return years + "年前";
+  if (months) return months + "月前";
+  if (days) return days + "天前";
+  if (hours) return hours + "小时前";
+  if (minutes) return minutes + "分钟前";
+  if (seconds) return seconds + "秒前";
 }

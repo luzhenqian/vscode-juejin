@@ -3,7 +3,7 @@ import { timeFromNow } from "../../utils/time";
 import { getPinsURL } from "../urls/pins";
 import { defaultAvatarLargeURL } from "../urls/common";
 
-let _afterId = "0"; // 获取下一页沸点时用到的参数，为当前页最后一条沸点的 id
+let _cursor = "0"; // 获取下一页沸点时用到的参数，为当前页最后一条沸点的 id
 
 export enum GET_PINS_TYPE {
   "INIT" = "INIT",
@@ -11,22 +11,22 @@ export enum GET_PINS_TYPE {
 }
 
 export async function getPins(type: GET_PINS_TYPE) {
-  let afterId;
+  let cursor;
   if (type === GET_PINS_TYPE.NEXT) {
-    afterId = _afterId;
+    cursor = _cursor;
   }
 
   const res = await axios.default.post(getPinsURL, {
-    cursor: afterId,
+    cursor,
     id_type: 4,
     limit: 20,
     sort_type: 300,
   });
   try {
     let { data, cursor } = res.data;
-    _afterId = cursor;
+    _cursor = cursor;
     let pinsParse = (data as []).map(
-      ({ msg_Info, author_user_info, topic }) => {
+      ({ msg_id, msg_Info, author_user_info, topic }) => {
         console.log(msg_Info, author_user_info);
         let {
           id,
@@ -36,6 +36,7 @@ export async function getPins(type: GET_PINS_TYPE) {
           comment_count, // 评论数
           pic_list, // 图片列表
         } = msg_Info;
+
         let {
           user_name, // 创建人
           company, // 公司
@@ -46,13 +47,14 @@ export async function getPins(type: GET_PINS_TYPE) {
           title, // 主题
         } = topic;
         return {
-          id,
+          id: msg_id,
           avatarLarge: avatar_large || defaultAvatarLargeURL,
           username: user_name,
           company,
           jobTitle: job_title,
           content,
-          createdAt: timeFromNow(ctime),
+          // 返回的是 11 位时间戳，应该使用 13 位时间戳
+          createdAt: timeFromNow(ctime + "000"),
           likeCount: digg_count,
           commentCount: comment_count,
           pictures: pic_list,
@@ -62,41 +64,6 @@ export async function getPins(type: GET_PINS_TYPE) {
     );
     // console.log("pinsParse:", pinsParse);
     return pinsParse;
-    // const pinsList = data.data.data.recommendedActivityFeed.items.edges;
-    // const { endCursor } = data.data.data.recommendedActivityFeed.items.pageInfo;
-    // afterId = endCursor;
-    // const pinsParse = pinsList.map((item: any) => {
-    //   const { actors, targets, id } = item.node;
-    //   let { avatarLarge, username, company, jobTitle } = actors["0"];
-    //   let {
-    //     content,
-    //     createdAt,
-    //     likeCount,
-    //     commentCount,
-    //     topic,
-    //     pictures,
-    //   } = targets["0"];
-    //   createdAt = timeFromNow(createdAt);
-    //   avatarLarge =
-    //     avatarLarge ||
-    //     "https://b-gold-cdn.xitu.io/v3/static/img/default-avatar.e30559a.svg";
-    //   let { title } = topic ? topic : { title: "" };
-    // return {
-    //   id,
-    //   avatarLarge,
-    //   username,
-    //   company,
-    //   jobTitle,
-    //   content,
-    //   createdAt,
-    //   likeCount,
-    //   commentCount,
-    //   pictures,
-    //   title,
-    // };
-    // });
-    // console.log("pinsParse:", pinsParse);
-    // return pinsParse;
   } catch (e) {
     console.log("error:", e);
   }

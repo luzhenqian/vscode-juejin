@@ -1,48 +1,47 @@
 import * as axios from "axios";
 import { timeFromNow } from "../../utils/time";
+import { getCommentsURL } from "../urls/pins";
+import { defaultAvatarLargeURL } from "../urls/common";
 
-export async function getComments(commentId: string) {
-  const data = await axios.default.get(
-    `https://hot-topic-comment-wrapper-ms.juejin.im/v1/comments/${commentId}?pageNum=1&pageSize=100`,
-    {
-      headers: {
-        "X-Juejin-Src": "Juejin/Web",
-        "X-Juejin-Client": "",
-        "X-Juejin-Token": "",
-        "X-Juejin-Uid": "",
-      },
-    }
-  );
+/**
+ * 获取评论
+ * @param pinsId 沸点id
+ */
+export async function getComments(pinsId: string) {
+  console.log(pinsId);
+
+  const res = await axios.default.post(getCommentsURL, {
+    client_type: 2608,
+    cursor: "0",
+    item_id: pinsId,
+    item_type: 4,
+    limit: 100,
+  });
   try {
-    const { comments } = data.data.d;
-    console.log("comments:", comments);
-    const commentsParse = comments.map((comment: any) => {
-      let { createdAt, userInfo, content, topComment } = comment;
-      createdAt = timeFromNow(createdAt);
-      let { avatarLarge, username, jobTitle, company } = userInfo;
-      function formatData(dataList: any[] | undefined) {
-        if (Array.isArray(dataList) && dataList.length > 0) {
-          dataList.forEach((data) => {
-            let { createdAt, userInfo, content, topComment } = data;
-            let { avatarLarge, username, jobTitle, company } = userInfo;
-            data.avatarLarge = avatarLarge;
-            data.username = username;
-            data.jobTitle = jobTitle;
-            data.company = company;
-            data.createdAt = timeFromNow(data.createdAt);
-            data.topComment ? formatData(data.topComment) : void 0;
-          });
-        }
-      }
-      formatData(topComment);
+    let {
+      data: { data },
+    } = res;
+    let commentsParse = (data as []).map((comment) => {
+      let { comment_info, user_info } = comment;
+      let {
+        comment_content, // 评论内容
+        ctime, // 创建时间
+      } = comment_info;
+      let {
+        avatar_large, // 头像
+        user_name, // 用户名
+        job_title, // 工作
+        company, // 公司
+      } = user_info;
+
       return {
-        createdAt,
-        avatarLarge,
-        username,
-        jobTitle,
+        createdAt: timeFromNow(ctime + "000"),
+        avatarLarge: avatar_large || defaultAvatarLargeURL,
+        username: user_name,
+        jobTitle: job_title,
         company,
-        content,
-        topComment,
+        content: comment_content,
+        topComment: undefined,
       };
     });
     console.log("commentsParse:", commentsParse);
