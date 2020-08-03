@@ -345,7 +345,7 @@
                 <div class="post-title" onclick="toPost('${originalUrl}', '${id}')">${title}</div>
                 <div>
                   <span>${username} · ${time} · ${tags
-                  .map((tag) => tag.title)
+                  .map((tag) => tag.tag_name)
                   .join("/")}</span>
                 </div>
                 </div>`;
