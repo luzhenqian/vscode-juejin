@@ -383,6 +383,7 @@
           data: post,
           generator(data) {
             let { html, detailData } = data;
+            // return html;
             // 覆盖样式
             let overrideStyle = document.createElement("style");
             overrideStyle.textContent = `
@@ -403,7 +404,9 @@
             let script = tempEl.querySelectorAll("script");
             let link = tempEl.querySelectorAll("link");
             let juejinRootEl = tempEl.querySelector("#juejin");
+            console.log("j,", juejinRootEl);
             juejinRootEl = juejinRootEl.querySelector("article");
+
             window.overrideStyle = overrideStyle;
             // 从掘金接口获取到的 html 只有 data-src，而不是直接在 background-image 中设置src的。
             // 所以要在这里通过 js 添加图片。
@@ -424,8 +427,12 @@
             let avatarEl = juejinRootEl.querySelector(".avatar");
             avatarEl.style.backgroundImage = `url(${avatarLarge})`;
             avatarEl.style.backgroundColor = `transparent`;
-            let usernamerEl = juejinRootEl.querySelector(".username");
-            usernamerEl.textContent = username;
+            juejinRootEl.removeChild(
+              juejinRootEl.querySelector(".author-info-block")
+            );
+            // TODO: DOM 结构发生了变化
+            // let usernamerEl = juejinRootEl.querySelector(".author-info-box");
+            // usernamerEl.textContent = username;
             let result = [
               ...meta,
               ...style,
