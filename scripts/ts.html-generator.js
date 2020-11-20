@@ -45,7 +45,8 @@ const htmlTargetPath = './src/html/target';// html 生成后 ts 文件路径
 
 // 生成 ts 文件的入口函数，主要是遍历 src 目录下所有 html 文件。
 const generator = () => {
-  const htmlFileNameList = fs.readdirSync(htmlSrcPath);
+  // 过滤非html文件
+  const htmlFileNameList = fs.readdirSync(htmlSrcPath).filter(name => name.endsWith('html'));
   htmlFileNameList.forEach(htmlFileName => {
     const htmlStr = converter(path.resolve(htmlSrcPath, htmlFileName));
     if (!fs.existsSync(htmlTargetPath)) {

@@ -115,7 +115,7 @@ export function activate(context: vscode.ExtensionContext) {
     function getMetaData() {
       let defaultCategory = vscode.workspace
         .getConfiguration()
-        .get("juejin.post.default-category");
+        .get("juejin.post.default-category") || '前端'; // 增加未配置分类时设置前端为默认分类
       return { defaultCategory };
     }
 
