@@ -5,6 +5,9 @@ export default `<!DOCTYPE html>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>掘金-文章</title>
     <style>
+      ::-webkit-scrollbar {
+        height: 0;
+      }
       .actions {
         padding: 10px 20px;
         position: sticky;
@@ -37,10 +40,11 @@ export default `<!DOCTYPE html>
         height: 26px;
         background-color: var(--vscode-editor-background);
         display: flex;
-        justify-content: space-around;
-        min-width: 600px;
+        width: 100%;
         z-index: 1200;
         padding: 10px 0;
+        overflow-x: overlay;
+        white-space: nowrap;
         /* box-sizing: border-box; */
       }
       .category > div {
@@ -50,6 +54,7 @@ export default `<!DOCTYPE html>
         user-select: none;
         box-sizing: border-box;
         color: #ffffff;
+        margin-left: 10px;
         border: 1px solid var(--vscode-activityBarBadge-background);
       }
       .category > div:hover {
@@ -345,7 +350,7 @@ export default `<!DOCTYPE html>
                 <div class="post-title" onclick="toPost('\${originalUrl}', '\${id}')">\${title}</div>
                 <div>
                   <span>\${username} · \${time} · \${tags
-                  .map((tag) => tag.title)
+                  .map((tag) => tag.tag_name)
                   .join("/")}</span>
                 </div>
                 </div>\`;
@@ -383,9 +388,17 @@ export default `<!DOCTYPE html>
           data: post,
           generator(data) {
             let { html, detailData } = data;
+            // return html;
             // 覆盖样式
             let overrideStyle = document.createElement("style");
+            // 样式覆盖：背景和字体颜色自动适配编辑器主题颜色
             overrideStyle.textContent = \`
+              html {
+                background-color: inherit;
+              }
+              .markdown-body {
+                color: inherit;
+              }
               .main-area[data-v-7407bc26] {
                 background-color: var(--vscode-editor-background) !important;
               }
@@ -424,8 +437,12 @@ export default `<!DOCTYPE html>
             let avatarEl = juejinRootEl.querySelector(".avatar");
             avatarEl.style.backgroundImage = \`url(\${avatarLarge})\`;
             avatarEl.style.backgroundColor = \`transparent\`;
-            let usernamerEl = juejinRootEl.querySelector(".username");
-            usernamerEl.textContent = username;
+            juejinRootEl.removeChild(
+              juejinRootEl.querySelector(".author-info-block")
+            );
+            // TODO: DOM 结构发生了变化
+            // let usernamerEl = juejinRootEl.querySelector(".author-info-box");
+            // usernamerEl.textContent = username;
             let result = [
               ...meta,
               ...style,

@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>掘金-文章</title>
     <style>
+      ::-webkit-scrollbar {
+        height: 0;
+      }
       .actions {
         padding: 10px 20px;
         position: sticky;
@@ -37,10 +40,11 @@
         height: 26px;
         background-color: var(--vscode-editor-background);
         display: flex;
-        justify-content: space-around;
-        min-width: 600px;
+        width: 100%;
         z-index: 1200;
         padding: 10px 0;
+        overflow-x: overlay;
+        white-space: nowrap;
         /* box-sizing: border-box; */
       }
       .category > div {
@@ -50,6 +54,7 @@
         user-select: none;
         box-sizing: border-box;
         color: #ffffff;
+        margin-left: 10px;
         border: 1px solid var(--vscode-activityBarBadge-background);
       }
       .category > div:hover {
@@ -386,7 +391,14 @@
             // return html;
             // 覆盖样式
             let overrideStyle = document.createElement("style");
+            // 样式覆盖：背景和字体颜色自动适配编辑器主题颜色
             overrideStyle.textContent = `
+              html {
+                background-color: inherit;
+              }
+              .markdown-body {
+                color: inherit;
+              }
               .main-area[data-v-7407bc26] {
                 background-color: var(--vscode-editor-background) !important;
               }
@@ -404,9 +416,7 @@
             let script = tempEl.querySelectorAll("script");
             let link = tempEl.querySelectorAll("link");
             let juejinRootEl = tempEl.querySelector("#juejin");
-            console.log("j,", juejinRootEl);
             juejinRootEl = juejinRootEl.querySelector("article");
-
             window.overrideStyle = overrideStyle;
             // 从掘金接口获取到的 html 只有 data-src，而不是直接在 background-image 中设置src的。
             // 所以要在这里通过 js 添加图片。
