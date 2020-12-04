@@ -21,12 +21,14 @@ export default `<!DOCTYPE html>
         transition: all 0.5s ease-out;
       }
       .post-list-warp:hover {
-        background: var(--vscode-activityBar-background);
+        /* background: var(--vscode-activityBar-background); */
+        background: var(--vscode-editor-foreground);
+        color: var(--vscode-editor-background);
       }
       .post-title {
         font-weight: 800;
         padding-bottom: 10px;
-        color: var(--vscode-activityBar-activeBorder);
+        /* color: var(--vscode-editor-foreground); */
       }
       .post-title:hover {
         color: #f27573;
@@ -53,7 +55,7 @@ export default `<!DOCTYPE html>
         border-radius: 12px;
         user-select: none;
         box-sizing: border-box;
-        color: #ffffff;
+        color: var(--vscode-editor-foreground);
         margin-left: 10px;
         border: 1px solid var(--vscode-activityBarBadge-background);
       }
