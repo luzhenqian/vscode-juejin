@@ -87,7 +87,7 @@
     "vscode-test": "^1.3.0"
   },
   "dependencies": {
-    "axios": "^0.21.1",
+    "axios": "^0.21.2",
     "moment": "^2.29.2",
     "qs": "^6.9.3"
   }
