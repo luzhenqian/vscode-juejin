@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "module": "esnext",
+        "moduleResolution": "node",
+        "target": "es6",
+        "outDir": "views",
+        "lib": [
+            "es6",
+            "dom"
+        ],
+        "jsx": "react",
+        "sourceMap": true,
+        "rootDir": "..",
+        "noUnusedLocals": true,
+        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true,
+        "experimentalDecorators": true
+    }
+}

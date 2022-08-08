@@ -17,7 +17,8 @@
   ],
   "activationEvents": [
     "onCommand:juejin.pins",
-    "onCommand:juejin.post"
+    "onCommand:juejin.post",
+    "onCommand:juejin.t"
   ],
   "main": "./out/extension.js",
   "icon": "icon/icon.png",
@@ -48,6 +49,10 @@
       {
         "command": "juejin.pins",
         "title": "掘金-沸点"
+      },
+      {
+        "command": "juejin.t",
+        "title": "掘金-测试"
       }
     ],
     "keybindings": [
@@ -63,9 +68,13 @@
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./",
+    "compile": "npm-run-all compile:*",
+    "watch": "npm-run-all -p watch:*",
+    "compile:extension": "tsc -p ./",
+    "compile:views": "webpack --mode development",
     "lint": "eslint src --ext ts",
-    "watch": "tsc -watch -p ./",
+    "watch:extension": "tsc -watch -p ./",
+    "watch:views": "webpack --watch --mode development",
     "pretest": "npm run compile && npm run lint",
     "test": "node ./out/test/runTest.js",
     "build": "npm run htmlts && vsce package",
@@ -77,18 +86,32 @@
     "@types/mocha": "^7.0.1",
     "@types/node": "^12.11.7",
     "@types/qs": "^6.9.5",
+    "@types/react": "^18.0.16",
+    "@types/react-dom": "^18.0.6",
     "@types/vscode": "^1.43.0",
     "@typescript-eslint/eslint-plugin": "^2.18.0",
     "@typescript-eslint/parser": "^2.18.0",
+    "autoprefixer": "^10.4.8",
+    "css-loader": "^6.7.1",
     "eslint": "^6.8.0",
     "glob": "^7.1.6",
     "mocha": "^7.0.1",
+    "npm-run-all": "^4.1.5",
+    "postcss": "^8.4.16",
+    "postcss-loader": "^7.0.1",
+    "style-loader": "^3.3.1",
+    "tailwindcss": "^3.1.8",
+    "ts-loader": "^9.3.1",
     "typescript": "^3.7.5",
-    "vscode-test": "^1.3.0"
+    "vscode-test": "^1.3.0",
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0"
   },
   "dependencies": {
     "axios": "^0.21.2",
     "moment": "^2.29.2",
-    "qs": "^6.9.3"
+    "qs": "^6.9.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   }
 }

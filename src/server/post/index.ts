@@ -128,8 +128,9 @@ export async function getPost(url: string) {
   let result = await axios.default.get(getPostContentURL + url);
   try {
     return { html: result?.data, detailData: {} };
-  } catch (err) {
-    return "文章加载出错：" + err.toString();
+  } catch (_) {
+    // return "文章加载出错：" + err.toString();
+    return "文章加载出错";
   }
 }
 
@@ -143,8 +144,9 @@ export async function getCategories() {
       d.id = category_id;
     });
     return result?.data?.data;
-  } catch (err) {
-    return "分类加载出错：" + err.toString();
+  } catch (_) {
+    // return "分类加载出错：" + err.toString();
+    return "分类加载出错";
   }
 }
 

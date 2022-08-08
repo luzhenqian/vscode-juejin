@@ -7,6 +7,7 @@ import { getPost, getPostList, GET_POST_LIST_TYPE } from "./server/post";
 import pinsHtml from "./html/target/juejin-pins";
 import postHtml from "./html/target/juejin-post";
 import { postMain } from "./controllers/post";
+import ViewLoader from "./views/ViewLoader";
 
 enum ENV {
   "DEV" = "DEV",
@@ -113,9 +114,10 @@ export function activate(context: vscode.ExtensionContext) {
 
     // 获取配置信息
     function getMetaData() {
-      let defaultCategory = vscode.workspace
-        .getConfiguration()
-        .get("juejin.post.default-category") || '前端'; // 增加未配置分类时设置前端为默认分类
+      let defaultCategory =
+        vscode.workspace
+          .getConfiguration()
+          .get("juejin.post.default-category") || "前端"; // 增加未配置分类时设置前端为默认分类
       return { defaultCategory };
     }
 
@@ -157,6 +159,10 @@ export function activate(context: vscode.ExtensionContext) {
 
     createPostWebview();
     context.subscriptions.splice(context.subscriptions.length, 0, post, pins);
+  });
+
+  vscode.commands.registerCommand("juejin.t", () => {
+    new ViewLoader(context.extensionPath);
   });
 }
 
