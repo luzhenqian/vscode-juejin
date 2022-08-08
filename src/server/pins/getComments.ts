@@ -1,7 +1,7 @@
 import * as axios from "axios";
 import { timeFromNow } from "../../utils/time";
-import { getCommentsURL } from "../urls/pins";
-import { defaultAvatarLargeURL } from "../urls/common";
+import { getCommentsURL } from "../requests/urls/pins";
+import { defaultAvatarLargeURL } from "../requests/urls/common";
 
 /**
  * 获取评论

@@ -3,9 +3,6 @@ import * as fs from "fs";
 import * as path from "path";
 import { getPins, GET_PINS_TYPE } from "./server/pins/getPins";
 import { getComments } from "./server/pins/getComments";
-import { getPost, getPostList, GET_POST_LIST_TYPE } from "./server/post";
-import pinsHtml from "./html/target/juejin-pins";
-import postHtml from "./html/target/juejin-post";
 import { postMain } from "./controllers/post";
 import ViewLoader from "./views/ViewLoader";
 
@@ -65,7 +62,7 @@ export function activate(context: vscode.ExtensionContext) {
           "./src/html/src/juejin-pins.html"
         );
       } else if (env === ENV.PROD) {
-        panel.webview.html = pinsHtml;
+        panel.webview.html = "<div>1</div>";
       }
       panel.webview.onDidReceiveMessage(
         async (message) => {
@@ -141,7 +138,7 @@ export function activate(context: vscode.ExtensionContext) {
           "./src/html/src/juejin-post.html"
         );
       } else if (env === ENV.PROD) {
-        panel.webview.html = postHtml;
+        panel.webview.html = "<div>2</div>";
       }
       panel.webview.onDidReceiveMessage(
         async (message) => {
@@ -162,7 +159,7 @@ export function activate(context: vscode.ExtensionContext) {
   });
 
   vscode.commands.registerCommand("juejin.t", () => {
-    new ViewLoader(context.extensionPath);
+    new ViewLoader(context.extensionPath, "post");
   });
 }
 

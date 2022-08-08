@@ -1,10 +1,6 @@
-import {
-  getPostList,
-  getPost,
-  getCategories,
-  GET_POST_LIST_TYPE,
-} from "../server/post";
+import { getPost, getCategories } from "../server/post";
 import { Webview } from "vscode";
+import { getPostList } from "../server/requests";
 
 enum ActionsType {
   POST_INIT = "POST_INIT",
@@ -33,13 +29,13 @@ let postController = {
     console.log("data:", data);
 
     return {
-      listData: await getPostList(GET_POST_LIST_TYPE.INIT, data),
+      listData: await getPostList("INIT", data),
       categoryList: await getCategories(),
     };
   },
   async [ActionsType.POST_NEXT](data: any) {
     return {
-      listData: await getPostList(GET_POST_LIST_TYPE.NEXT, data),
+      listData: await getPostList("NEXT", data),
       categoryList: await getCategories(),
     };
   },

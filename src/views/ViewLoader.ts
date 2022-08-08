@@ -1,16 +1,27 @@
 import * as vscode from "vscode";
 import * as path from "path";
+import { postMain } from "../controllers/post";
+import { PageName } from "../types";
+import { viewConfig } from "./viewconfig";
+import { createDispatch } from "../flux";
+import { reducer } from "../server/reducers/post";
 
+function getMetaData() {
+  let defaultCategory =
+    vscode.workspace.getConfiguration().get("juejin.post.default-category") ||
+    "前端"; // 增加未配置分类时设置前端为默认分类
+  return { defaultCategory };
+}
 export default class ViewLoader {
   private readonly _panel: vscode.WebviewPanel | undefined;
   private readonly _extensionPath: string;
 
-  constructor(extensionPath: string) {
+  constructor(extensionPath: string, pageName: PageName) {
     this._extensionPath = extensionPath;
 
     this._panel = vscode.window.createWebviewPanel(
-      "react 页面",
-      "react 页面",
+      viewConfig[pageName].title,
+      viewConfig[pageName].title,
       vscode.ViewColumn.One,
       {
         enableScripts: true,
@@ -20,13 +31,24 @@ export default class ViewLoader {
       }
     );
 
-    this._panel.webview.html = this.getWebviewContent();
+    this._panel.webview.html = this.getWebviewContent(pageName);
+
+    const dispatch = createDispatch(reducer);
+    const panel = this._panel;
+    this._panel.webview.onDidReceiveMessage((message) => {
+      dispatch({
+        type: message.type,
+        payload: {
+          panel,
+        },
+      });
+    });
   }
 
-  private getWebviewContent(): string {
+  private getWebviewContent(pageName: PageName): string {
     // Local path to main script run in the webview
     const reactAppPathOnDisk = vscode.Uri.file(
-      path.join(this._extensionPath, "views", "post.js")
+      path.join(this._extensionPath, "views", `${pageName}.js`)
     );
     const reactAppUri = reactAppPathOnDisk.with({ scheme: "vscode-resource" });
 

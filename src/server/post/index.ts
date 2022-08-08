@@ -4,23 +4,19 @@ import {
   getPostListCateURL,
   getPostCategoryURL,
   getPostContentURL,
-} from "../urls/post";
+} from "../requests/urls/post";
+import { GET_POST_LIST_TYPE } from "../../types";
 
 let endCursor = "";
 
-export enum GET_POST_LIST_TYPE {
-  "INIT" = "INIT",
-  "NEXT" = "NEXT",
-}
-
 // 获取文章列表
 export async function getPostList(
-  type: string = GET_POST_LIST_TYPE.INIT,
+  type: GET_POST_LIST_TYPE = "INIT",
   variables: any = {}
 ) {
   let category;
   let { defaultCategory } = variables;
-  if (type === GET_POST_LIST_TYPE.INIT && defaultCategory) {
+  if (type === 'INIT' && defaultCategory) {
     (await getCategories()).forEach(
       (_category: { category_name: string; category_id: string }) => {
         if (_category.category_name === defaultCategory) {
@@ -33,9 +29,9 @@ export async function getPostList(
   }
 
   let cursor =
-    type === GET_POST_LIST_TYPE.INIT
+    type === 'INIT'
       ? "0"
-      : type === GET_POST_LIST_TYPE.NEXT
+      : type === 'NEXT'
       ? endCursor
       : "0";
   console.log("id:", category);

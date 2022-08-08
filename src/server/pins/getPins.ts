@@ -1,7 +1,7 @@
 import * as axios from "axios";
 import { timeFromNow } from "../../utils/time";
-import { getPinsURL } from "../urls/pins";
-import { defaultAvatarLargeURL } from "../urls/common";
+import { getPinsURL } from "../requests/urls/pins";
+import { defaultAvatarLargeURL } from "../requests/urls/common";
 
 let _cursor = "0"; // 获取下一页沸点时用到的参数，为当前页最后一条沸点的 id
 
