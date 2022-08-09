@@ -6,6 +6,7 @@ import { Webview } from "vscode";
 import { Category } from "../../types";
 import { reducer } from "../reducers/post";
 import "./index.css";
+import { Header } from "./header";
 
 declare global {
   interface Window {
@@ -25,16 +26,17 @@ window.addEventListener("message", ({ data: action }) => {
 const PostContext = React.createContext<{
   categories: Category[];
   setCategories: Function;
+  darkMode: boolean;
+  setDarkMode: Function;
 }>({
   categories: [],
   setCategories: () => {},
+  darkMode: false,
+  setDarkMode: () => {},
 });
 
 function Categories() {
-  const { categories, setCategories } = React.useContext(PostContext);
-  React.useEffect(() => {
-    dispatch({ type: "GET_CATEGORIES", payload: { setCategories } });
-  }, []);
+  const { categories } = React.useContext(PostContext);
   return (
     <div>
       {categories.map((category) => (
@@ -50,14 +52,28 @@ function Loading() {
 
 function App() {
   const [categories, setCategories] = React.useState([]);
+  const [darkMode, setDarkMode] = React.useState(false);
+  React.useEffect(() => {
+    dispatch({ type: "GET_CATEGORIES", payload: { setCategories } });
+  }, []);
+  console.log('darkMode', darkMode);
   return (
     <PostContext.Provider
       value={{
         categories,
         setCategories,
+        darkMode,
+        setDarkMode,
       }}
     >
-      <Categories />
+      <div
+        className={`${
+          darkMode && " dark "
+        } flex h-screen flex-col bg-white text-gray-900 dark:bg-gray-900 dark:text-white`}
+      >
+        <Header context={PostContext} />
+        <div className="flex-1 bg-white dark:bg-slate-800"></div>
+      </div>
     </PostContext.Provider>
   );
 }
