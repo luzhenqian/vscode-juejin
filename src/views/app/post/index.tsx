@@ -39,7 +39,7 @@ export const PostContext = React.createContext<{
 
 function App() {
   const [categories, setCategories] = React.useState([]);
-  const [darkMode, setDarkMode] = React.useState(false);
+  const [darkMode, setDarkMode] = React.useState(true);
   const [postList, setPostList] = React.useState([]);
   const [currentPostID, setCurrentPostID] = React.useState(null);
   const [postHTML, setPostHTML] = React.useState(null);

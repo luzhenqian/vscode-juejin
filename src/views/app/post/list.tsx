@@ -16,7 +16,27 @@ function Categories() {
 }
 
 function Loading() {
-  return <div>Loading...</div>;
+  return (
+    <div className="flex flex-col gap-3 w-full max-h-screen pt-14 px-3 overflow-hidden">
+      {[...Array(10)].map((_, i) => (
+        <div key={i} className=" rounded-md border p-4 shadow">
+          <div className="flex w-full animate-pulse space-x-4">
+            <div className="h-10 w-10 rounded-full bg-slate-700"></div>
+            <div className="flex-1 space-y-6 py-1">
+              <div className="h-2 rounded bg-slate-700"></div>
+              <div className="space-y-3">
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="col-span-2 h-2 rounded bg-slate-700"></div>
+                  <div className="col-span-1 h-2 rounded bg-slate-700"></div>
+                </div>
+                <div className="h-2 rounded bg-slate-700"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
 }
 
 function Article({ id, info, author, tags }: Post) {
@@ -97,7 +117,8 @@ function Articles() {
 }
 
 export const List = React.memo(function _List() {
-  const { darkMode, currentPostID } = React.useContext(PostContext);
+  const { darkMode, postList, currentPostID } = React.useContext(PostContext);
+
   return (
     <div
       className={`${darkMode && " dark "} min-w-[800px] 
@@ -107,7 +128,7 @@ export const List = React.memo(function _List() {
         className={`flex max-h-screen h-screen flex-col bg-white text-gray-900 dark:bg-gray-900 dark:text-white`}
       >
         <Header context={PostContext} />
-        <Articles />
+        {postList.length === 0 ? <Loading /> : <Articles />}
         {currentPostID && <PostComponent />}
       </div>
     </div>

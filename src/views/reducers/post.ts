@@ -17,7 +17,6 @@ export async function reducer(action: Action) {
     case "GET_POST_LIST":
       setPostList = action.payload.setPostList;
       delete action.payload.setPostList;
-      console.log("send pppp");
       window.vscode.postMessage(action);
       return;
     case "GET_POST":
