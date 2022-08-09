@@ -3,7 +3,12 @@ export type GET_POST_LIST_TYPE = "INIT" | "NEXT";
 export type PageName = "post";
 
 export type Action = {
-  type: GET_CATEGORORIES | GET_POST_LIST | GET_POST | SEND_CATEGORORIES;
+  type:
+    | GET_CATEGORORIES
+    | GET_POST_LIST
+    | GET_POST
+    | SEND_CATEGORORIES
+    | SEND_POST_LIST;
   payload?: any;
 };
 
@@ -14,10 +19,33 @@ export type GET_POST_LIST = "GET_POST_LIST";
 export type GET_POST = "GET_POST";
 
 export type SEND_CATEGORORIES = "SEND_CATEGORIES";
+export type SEND_POST_LIST = "SEND_POST_LIST";
 
 export type Category = {
   id: string;
   name: string;
+};
+
+export type Post = {
+  id: string;
+  info: {
+    title: string;
+    briefContent: string;
+    coverImage: string;
+    viewCount: string;
+    diggCount: number;
+    commentCount: number;
+    collectCount: number;
+    hotIndex: number;
+    createdAt: string;
+  };
+  author: {
+    id: string;
+    avatar: string;
+    name: string;
+  };
+  category: any;
+  tags: any;
 };
 
 export type RawData = {

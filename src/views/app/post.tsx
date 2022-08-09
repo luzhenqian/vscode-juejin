@@ -1,9 +1,8 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom/client";
 import { createDispatch } from "../../flux";
-// import { reducer } from "../reducers/post";
 import { Webview } from "vscode";
-import { Category } from "../../types";
+import { Category, Post } from "../../types";
 import { reducer } from "../reducers/post";
 import "./index.css";
 import { Header } from "./header";
@@ -28,14 +27,10 @@ const PostContext = React.createContext<{
   setCategories: Function;
   darkMode: boolean;
   setDarkMode: Function;
+  postList: Post[];
+  setPostList: Function;
   reload: Function;
-}>({
-  categories: [],
-  setCategories: () => {},
-  darkMode: false,
-  setDarkMode: () => {},
-  reload: () => {},
-});
+} | null>(null);
 
 function Categories() {
   const { categories } = React.useContext(PostContext);
@@ -52,47 +47,48 @@ function Loading() {
   return <div>Loading...</div>;
 }
 
-function Article() {
+function Article({ info, author, tags }: Post) {
   return (
     <article className="flex justify-between items-center border-b mt-2 pb-2 gap-2">
       <div className="flex flex-col flex-1">
         <div className="mb-1 flex items-center gap-2 text-sm">
           <a>
-            <img
-              className="h-8 w-8"
-              src="https://miro.medium.com/fit/c/48/48/1*03sCDoeUWtfyReSN91LtAw.jpeg"
-            />
+            <img className="h-8 w-8" src={author.avatar} />
           </a>
-          <span className="">李小龙</span>
+          <span className="">{author.name}</span>
           <span className="font-light text-gray-600 dark:text-gray-500">
-            2021年2月1日
+            {info.createdAt}
           </span>
         </div>
 
-        <div className="mb-1 flex flex-col">
+        <div className="mb-2 flex flex-col">
           <div className="mb-2 text-xl font-bold cursor-pointer">
-            我遇到了一个有钱的程序员，他给了我 3 条改变人生的建议
+            {info.title}
           </div>
           <div className="font-light cursor-pointer line-clamp-2">
-            永远不要放弃你的工作——在你作为程序员的早期，你的脑海中会有一个一致的感觉，“篱笆另一边的草总是更绿”。永远不要放弃你的工作——在你作为程序员的早期，你的脑海中会有一个一致的感觉，“篱笆另一边的草总是更绿”。永远不要放弃你的工作——在你作为程序员的早期，你的脑海中会有一个一致的感觉，“篱笆另一边的草总是更绿”。永远不要放弃你的工作——在你作为程序员的早期，你的脑海中会有一个一致的感觉，“篱笆另一边的草总是更绿”。永远不要放弃你的工作——在你作为程序员的早期，你的脑海中会有一个一致的感觉，“篱笆另一边的草总是更绿”。永远不要放弃你的工作——在你作为程序员的早期，你的脑海中会有一个一致的感觉，“篱笆另一边的草总是更绿”。
+            {info.briefContent}
           </div>
         </div>
 
         <div className="flex justify-between text-xs">
           <div className="flex items-center">
             <div className="flex gap-2 mr-3">
-              <span className="inline-flex items-center rounded-lg bg-gray-200 px-1.5 py-0.5 cursor-pointer dark:bg-gray-600">
-                前端
-              </span>
-              <span className="inline-flex items-center rounded-lg bg-gray-200 px-1.5 py-0.5 cursor-pointer dark:bg-gray-600">
-                JavaScript
-              </span>
+              {tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="inline-flex items-center rounded-lg bg-gray-200 px-1.5 py-0.5 cursor-pointer dark:bg-gray-600"
+                >
+                  {tag}
+                </span>
+              ))}
             </div>
 
             <div className="flex gap-2">
-              <span>10000人阅读</span>
-              <span>200人点赞</span>
-              <span>122人评论</span>
+              <span>{info.viewCount}阅读</span>
+              <span>{info.diggCount}点赞</span>
+              <span>{info.commentCount}评论</span>
+              <span>{info.collectCount}收藏</span>
+              <span>{info.hotIndex}热度</span>
             </div>
           </div>
           <div className="flex gap-2 text-sm">
@@ -102,18 +98,24 @@ function Article() {
         </div>
       </div>
 
-      <img
-        className="h-16 w-24 object-contain"
-        src="https://miro.medium.com/fit/c/224/224/0*5HWA6yLX2ljJjNq5"
-      />
+      {info.coverImage && (
+        <img
+          className="h-16 w-24 object-contain"
+          src={info.coverImage}
+          alt={info.title}
+        />
+      )}
     </article>
   );
 }
 
 function Articles() {
+  const { postList } = React.useContext(PostContext);
   return (
     <main className="flex-1 bg-white px-10 py-2 dark:bg-slate-800">
-      <Article />
+      {postList.map((post) => (
+        <Article key={post.id} {...post} />
+      ))}
     </main>
   );
 }
@@ -121,8 +123,14 @@ function Articles() {
 function App() {
   const [categories, setCategories] = React.useState([]);
   const [darkMode, setDarkMode] = React.useState(false);
+  const [postList, setPostList] = React.useState([]);
   React.useEffect(() => {
+    // TODO: one load all
     dispatch({ type: "GET_CATEGORIES", payload: { setCategories } });
+    dispatch({
+      type: "GET_POST_LIST",
+      payload: { cursor: 0, cateID: "", setPostList },
+    });
   }, []);
 
   return (
@@ -132,12 +140,14 @@ function App() {
         setCategories,
         darkMode,
         setDarkMode,
+        postList,
+        setPostList,
         reload,
       }}
     >
-      <div className={`${darkMode && " dark "} `}>
+      <div className={`${darkMode && " dark "}`}>
         <div
-          className={`flex h-screen flex-col bg-white text-gray-900 dark:bg-gray-900 dark:text-white`}
+          className={`flex max-h-screen h-screen flex-col bg-white text-gray-900 dark:bg-gray-900 dark:text-white`}
         >
           <Header context={PostContext} />
           <Articles />
@@ -152,6 +162,8 @@ const root = ReactDOM.createRoot(container);
 root.render(<App />);
 
 function reload() {
-  root.unmount();
-  root.render(<App />);
+  root.unmount()
+  setTimeout(() => {
+    root.render(<App />);
+  },2000);
 }

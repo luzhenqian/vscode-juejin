@@ -14,7 +14,7 @@ function Item({ onClick = () => {}, children }) {
 export function Header({ context }) {
   const { darkMode, setDarkMode, reload } = React.useContext(context);
   return (
-    <header className="min-h-10 gap2 flex items-center justify-end border-b border-gray-200 p-3 text-gray-500 dark:border-gray-800 dark:bg-gray-900">
+    <header className="min-h-10 gap2 flex items-center justify-end border-b border-gray-200 p-3 text-gray-500 dark:border-gray-800 dark:bg-gray-900 sticky z-10 top-0 left-0 right-0 bg-white">
       <div className="dark:shadow-highlight/4 inline-flex gap-2 rounded-md p-2 shadow-sm ring-1 ring-gray-900/5 dark:bg-gray-800 dark:text-gray-400 dark:ring-0">
         <Item onClick={reload}>刷新</Item>
         <Item>分类</Item>
@@ -29,7 +29,9 @@ export function Header({ context }) {
       <div className="inline-flex gap-2 rounded-md p-2 shadow-sm ring-1 ring-gray-900/5 dark:bg-gray-800 dark:ring-0">
         <Item>禅模式</Item>
         <Item>纯净模式</Item>
-        <Item onClick={() => setDarkMode(!darkMode)}>主题</Item>
+        <Item onClick={() => setDarkMode(!darkMode)}>
+          {darkMode ? "浅色模式" : "暗色模式"}
+        </Item>
       </div>
     </header>
   );
