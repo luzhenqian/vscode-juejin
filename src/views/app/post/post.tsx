@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Loading } from "../components/loading";
 import { dispatch, PostContext } from ".";
 
 export function Post() {
@@ -10,9 +11,14 @@ export function Post() {
   return (
     <div
       className="fixed overflow-scroll top-14 left-[20px] bottom-0 right-[20px]
-    bg-white text-gray-900 dark:bg-gray-900 dark:text-white"
+    bg-white text-gray-900 dark:bg-gray-900 dark:text-white
+    "
     >
-      {postHTML && <div dangerouslySetInnerHTML={{ __html: postHTML.html }} />}
+      {postHTML ? (
+        <div dangerouslySetInnerHTML={{ __html: postHTML.html }} />
+      ) : (
+        <Loading />
+      )}
     </div>
   );
 }

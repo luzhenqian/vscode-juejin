@@ -21,12 +21,11 @@ export async function reducer(action: Action) {
       return;
     case "GET_POST":
       setPostHTML = action.payload.setPostHTML;
+      setPostHTML(null)
       delete action.payload.setPostHTML;
-      console.log("send ddd");
       window.vscode.postMessage(action);
       return;
     case "SEND_POST":
-      console.log("send post mmm");
       setPostHTML && setPostHTML(action.payload);
       return;
     case "SEND_POST_LIST":

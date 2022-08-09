@@ -19,7 +19,7 @@ function Loading() {
   return (
     <div className="flex flex-col gap-3 w-full max-h-screen pt-14 px-3 overflow-hidden">
       {[...Array(10)].map((_, i) => (
-        <div key={i} className=" rounded-md border p-4 shadow">
+        <div key={i} className=" rounded-md border p-4 shadow dark:border-gray-800">
           <div className="flex w-full animate-pulse space-x-4">
             <div className="h-10 w-10 rounded-full bg-slate-700"></div>
             <div className="flex-1 space-y-6 py-1">
