@@ -1,5 +1,9 @@
 import { Category, Post } from "../../types";
 
+import { parse } from "node-html-parser";
+import * as vm from "vm";
+import { marked } from "marked";
+
 export function categoriesMapping(raw: any[]): Category[] {
   return raw.map(({ category_id, category_name }) => ({
     id: category_id,
@@ -51,4 +55,19 @@ export function postListMapping(raw: any[]): Post[] {
         tags: tags.map((tag: any) => tag.tag_name),
       })
     );
+}
+
+export function postMapping(raw: any): { html: string } {
+  const root = parse(raw.html);
+  const body = root.getElementsByTagName("body")[0];
+  const script = body.getElementsByTagName("script")[0];
+  const scriptContent = script.childNodes[0].rawText;
+  let data: any = {};
+  vm.runInNewContext(`${scriptContent}`, {
+    window: data,
+  });
+  const markdown =
+    data.__NUXT__.state.view.column.entry.article_info.mark_content;
+  const html = marked.parse(markdown);
+  return { html };
 }

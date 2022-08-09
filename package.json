@@ -17,8 +17,7 @@
   ],
   "activationEvents": [
     "onCommand:juejin.pins",
-    "onCommand:juejin.post",
-    "onCommand:juejin.t"
+    "onCommand:juejin.post"
   ],
   "main": "./out/extension.js",
   "icon": "icon/icon.png",
@@ -49,10 +48,6 @@
       {
         "command": "juejin.pins",
         "title": "掘金-沸点"
-      },
-      {
-        "command": "juejin.t",
-        "title": "掘金-测试"
       }
     ],
     "keybindings": [
@@ -84,6 +79,7 @@
   "devDependencies": {
     "@tailwindcss/line-clamp": "^0.4.0",
     "@types/glob": "^7.1.1",
+    "@types/marked": "^4.0.3",
     "@types/mocha": "^7.0.1",
     "@types/node": "^12.11.7",
     "@types/qs": "^6.9.5",
@@ -96,7 +92,9 @@
     "css-loader": "^6.7.1",
     "eslint": "^6.8.0",
     "glob": "^7.1.6",
+    "marked": "^4.0.18",
     "mocha": "^7.0.1",
+    "node-html-parser": "^5.3.3",
     "npm-run-all": "^4.1.5",
     "postcss": "^8.4.16",
     "postcss-loader": "^7.0.1",
@@ -113,6 +111,8 @@
     "moment": "^2.29.2",
     "qs": "^6.9.3",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.3.0",
+    "tailwind-scrollbar-hide": "^1.1.7"
   }
 }

@@ -1,6 +1,10 @@
 import axios from "axios";
 import { RawData } from "../../types";
-import { getPostCategoryConfig, getPostListConfig } from "./configs/post";
+import {
+  getPostCategoryConfig,
+  getPostConfig,
+  getPostListConfig,
+} from "./configs/post";
 
 export async function getCategories() {
   return extractData(await axios(getPostCategoryConfig));
@@ -20,6 +24,13 @@ export async function getPostList(params: GetPostListParams) {
     // cate_id: params.cateId,
   };
   const data = await axios(getPostListConfig);
+  return extractData(data);
+}
+
+export async function getPost(id: string) {
+  getPostConfig.url += id;
+  const data = await axios(getPostConfig);
+  debugger
   return extractData(data);
 }
 

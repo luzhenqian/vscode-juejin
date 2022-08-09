@@ -2,7 +2,7 @@ const path = require("path");
 
 module.exports = {
   entry: {
-    post: "./src/views/app/post.tsx"
+    post: "./src/views/app/post/index.tsx"
   },
   output: {
     path: path.resolve(__dirname, "views"),

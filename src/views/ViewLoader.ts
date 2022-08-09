@@ -22,7 +22,7 @@ export default class ViewLoader {
     this._panel = vscode.window.createWebviewPanel(
       viewConfig[pageName].title,
       viewConfig[pageName].title,
-      vscode.ViewColumn.One,
+      vscode.ViewColumn.Two,
       {
         enableScripts: true,
         localResourceRoots: [
@@ -45,6 +45,7 @@ export default class ViewLoader {
             panel.webview.html = "";
             panel.webview.html = this.getWebviewContent(pageName);
           },
+          ...message.payload,
         },
       });
     });

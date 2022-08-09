@@ -9,6 +9,7 @@ export type Action = {
     | GET_POST
     | SEND_CATEGORORIES
     | SEND_POST_LIST
+    | 'SEND_POST'
     | "RELOAD";
   payload?: any;
 };

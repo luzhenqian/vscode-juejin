@@ -1,36 +1,8 @@
 import * as React from "react";
-import * as ReactDOM from "react-dom/client";
-import { createDispatch } from "../../flux";
-import { Webview } from "vscode";
-import { Category, Post } from "../../types";
-import { reducer } from "../reducers/post";
-import "./index.css";
-import { Header } from "./header";
-
-declare global {
-  interface Window {
-    acquireVsCodeApi(): Webview;
-    vscode: any;
-  }
-}
-
-window.vscode = window.acquireVsCodeApi();
-
-export const dispatch = createDispatch(reducer);
-
-window.addEventListener("message", ({ data: action }) => {
-  dispatch(action);
-});
-
-const PostContext = React.createContext<{
-  categories: Category[];
-  setCategories: Function;
-  darkMode: boolean;
-  setDarkMode: Function;
-  postList: Post[];
-  setPostList: Function;
-  reload: Function;
-} | null>(null);
+import { PostContext } from ".";
+import { Post } from "../../../types";
+import { Header } from "../components/header";
+import { Post as PostComponent } from "./post";
 
 function Categories() {
   const { categories } = React.useContext(PostContext);
@@ -47,7 +19,8 @@ function Loading() {
   return <div>Loading...</div>;
 }
 
-function Article({ info, author, tags }: Post) {
+function Article({ id, info, author, tags }: Post) {
+  const { setCurrentPostID } = React.useContext(PostContext);
   return (
     <article className="flex justify-between items-center border-b mt-2 pb-2 gap-2">
       <div className="flex flex-col flex-1">
@@ -61,7 +34,10 @@ function Article({ info, author, tags }: Post) {
           </span>
         </div>
 
-        <div className="mb-2 flex flex-col">
+        <div
+          className="mb-2 flex flex-col"
+          onClick={setCurrentPostID.bind(null, id)}
+        >
           <div className="mb-2 text-xl font-bold cursor-pointer">
             {info.title}
           </div>
@@ -120,47 +96,20 @@ function Articles() {
   );
 }
 
-function App() {
-  const [categories, setCategories] = React.useState([]);
-  const [darkMode, setDarkMode] = React.useState(false);
-  const [postList, setPostList] = React.useState([]);
-  React.useEffect(() => {
-    // TODO: one load all
-    dispatch({ type: "GET_CATEGORIES", payload: { setCategories } });
-    dispatch({
-      type: "GET_POST_LIST",
-      payload: { cursor: 0, cateID: "", setPostList },
-    });
-  }, []);
-
+export const List = React.memo(function _List() {
+  const { darkMode, currentPostID } = React.useContext(PostContext);
   return (
-    <PostContext.Provider
-      value={{
-        categories,
-        setCategories,
-        darkMode,
-        setDarkMode,
-        postList,
-        setPostList,
-        reload,
-      }}
+    <div
+      className={`${darkMode && " dark "} min-w-[800px] 
+      ${currentPostID && "max-h-screen overflow-hidden"}`}
     >
-      <div className={`${darkMode && " dark "} min-w-[800px]`}>
-        <div
-          className={`flex max-h-screen h-screen flex-col bg-white text-gray-900 dark:bg-gray-900 dark:text-white`}
-        >
-          <Header context={PostContext} />
-          <Articles />
-        </div>
+      <div
+        className={`flex max-h-screen h-screen flex-col bg-white text-gray-900 dark:bg-gray-900 dark:text-white`}
+      >
+        <Header context={PostContext} />
+        <Articles />
+        {currentPostID && <PostComponent />}
       </div>
-    </PostContext.Provider>
+    </div>
   );
-}
-
-const container = document.getElementById("root");
-const root = ReactDOM.createRoot(container);
-root.render(<App />);
-
-function reload() {
-  dispatch({ type: "RELOAD" });
-}
+});

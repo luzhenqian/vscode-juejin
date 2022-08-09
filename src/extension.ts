@@ -106,7 +106,7 @@ export function activate(context: vscode.ExtensionContext) {
     createPinsWebview();
   });
 
-  let post = vscode.commands.registerCommand("juejin.post", () => {
+  let post = vscode.commands.registerCommand("juejin.post_", () => {
     let pageFirstOpen = true;
 
     // 获取配置信息
@@ -158,7 +158,7 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.splice(context.subscriptions.length, 0, post, pins);
   });
 
-  vscode.commands.registerCommand("juejin.t", () => {
+  vscode.commands.registerCommand("juejin.post", () => {
     new ViewLoader(context.extensionPath, "post");
   });
 }
