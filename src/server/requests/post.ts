@@ -13,14 +13,14 @@ export type GetPostListParams = {
 export async function getPostList(params: GetPostListParams) {
   getPostListConfig.data = {
     id_type: 2,
-    client_type: 2608,
+    // client_type: 2608,
     sort_type: 200,
     cursor: params.cursor + "",
     limit: 20,
-    cate_id: params.cateId,
+    // cate_id: params.cateId,
   };
-
-  return extractData(await axios(getPostListConfig));
+  const data = await axios(getPostListConfig);
+  return extractData(data);
 }
 
 function extractData({ status, data }: RawData) {

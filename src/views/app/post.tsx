@@ -112,7 +112,7 @@ function Article({ info, author, tags }: Post) {
 function Articles() {
   const { postList } = React.useContext(PostContext);
   return (
-    <main className="flex-1 bg-white px-10 py-2 dark:bg-slate-800">
+    <main className="flex-1 bg-white px-10 py-2 dark:bg-slate-800 mt-14">
       {postList.map((post) => (
         <Article key={post.id} {...post} />
       ))}
@@ -145,7 +145,7 @@ function App() {
         reload,
       }}
     >
-      <div className={`${darkMode && " dark "}`}>
+      <div className={`${darkMode && " dark "} min-w-[800px]`}>
         <div
           className={`flex max-h-screen h-screen flex-col bg-white text-gray-900 dark:bg-gray-900 dark:text-white`}
         >
@@ -162,8 +162,5 @@ const root = ReactDOM.createRoot(container);
 root.render(<App />);
 
 function reload() {
-  root.unmount()
-  setTimeout(() => {
-    root.render(<App />);
-  },2000);
+  dispatch({ type: "RELOAD" });
 }

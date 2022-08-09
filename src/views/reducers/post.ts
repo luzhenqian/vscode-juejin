@@ -21,5 +21,8 @@ export async function reducer(action: Action) {
     case "SEND_POST_LIST":
       setPostList && setPostList(action.payload);
       return;
+    case "RELOAD":
+      window.vscode.postMessage(action);
+      return;
   }
 }

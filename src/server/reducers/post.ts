@@ -10,6 +10,9 @@ export async function reducer(action: Action) {
         payload: categoriesMapping(await getCategories()),
       });
       return;
+    case "RELOAD":
+      action.payload.reload();
+      return;
     case "GET_POST_LIST":
       action.payload.panel.webview.postMessage({
         type: "SEND_POST_LIST",

@@ -35,11 +35,16 @@ export default class ViewLoader {
 
     const dispatch = createDispatch(reducer);
     const panel = this._panel;
+
     this._panel.webview.onDidReceiveMessage((message) => {
       dispatch({
         type: message.type,
         payload: {
           panel,
+          reload: () => {
+            panel.webview.html = "";
+            panel.webview.html = this.getWebviewContent(pageName);
+          },
         },
       });
     });
