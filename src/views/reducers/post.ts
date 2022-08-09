@@ -21,7 +21,6 @@ export async function reducer(action: Action) {
       return;
     case "GET_POST":
       setPostHTML = action.payload.setPostHTML;
-      setPostHTML(null)
       delete action.payload.setPostHTML;
       window.vscode.postMessage(action);
       return;

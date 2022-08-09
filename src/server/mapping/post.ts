@@ -66,8 +66,9 @@ export function postMapping(raw: any): { html: string } {
   vm.runInNewContext(`${scriptContent}`, {
     window: data,
   });
-  const markdown =
-    data.__NUXT__.state.view.column.entry.article_info.mark_content;
+  const markdown = (
+    data.__NUXT__.state.view.column.entry.article_info.mark_content as string
+  ).replace(/^---$.*^---$/ms, "");
   const html = marked.parse(markdown);
   return { html };
 }

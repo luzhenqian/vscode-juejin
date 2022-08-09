@@ -22,13 +22,21 @@ function Button({ children }) {
 
 export function Header({ context }) {
   const { darkMode, setDarkMode, reload } = React.useContext(context);
-  const { currentPostID, setCurrentPostID } = React.useContext(PostContext);
+  const { currentPostID, setCurrentPostID, setPostHTML } =
+    React.useContext(PostContext);
 
   return (
     <header className="h-14 gap2 flex items-center justify-between border-b border-gray-200 p-3 text-gray-500 dark:border-gray-800 dark:bg-gray-900 fixed z-10 top-0 left-[20px] right-[20px] bg-white">
       {currentPostID ? (
         <Button>
-          <Item onClick={() => setCurrentPostID(null)}>关闭</Item>
+          <Item
+            onClick={() => {
+              setCurrentPostID(null);
+              setPostHTML("");
+            }}
+          >
+            关闭
+          </Item>
         </Button>
       ) : (
         <span />
@@ -49,7 +57,6 @@ export function Header({ context }) {
 
         <Button>
           <Item>禅模式</Item>
-          <Item>纯净模式</Item>
           <Item onClick={() => setDarkMode(!darkMode)}>
             {darkMode ? "浅色模式" : "暗色模式"}
           </Item>

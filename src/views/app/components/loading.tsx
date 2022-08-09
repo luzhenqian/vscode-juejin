@@ -4,7 +4,7 @@ export function Loading() {
   return (
     <div className="h-full flex justify-center items-center">
       <svg
-        className="animate-spin h-10 w-10 text-white "
+        className="animate-spin h-10 w-10 text-gray-800 dark:text-white "
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
         viewBox="0 0 24 24"

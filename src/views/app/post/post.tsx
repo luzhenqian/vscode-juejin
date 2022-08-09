@@ -15,8 +15,9 @@ export function Post() {
     "
     >
       {postHTML ? (
-        <div dangerouslySetInnerHTML={{ __html: postHTML.html }} />
+        <iframe srcDoc={`${postHTML.html}<style>img {display: block;max-width: 100%;margin: auto;}</style>`} className="w-full h-full" />
       ) : (
+        // <div dangerouslySetInnerHTML={{ __html: postHTML.html }} />
         <Loading />
       )}
     </div>
