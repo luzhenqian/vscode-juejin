@@ -14,7 +14,7 @@ export function Post() {
     bg-white text-gray-900 dark:bg-gray-900 dark:text-white
     "
     >
-      {postHTML ? (
+      {postHTML && postHTML.html ? (
         <iframe srcDoc={`${postHTML.html}<style>img {display: block;max-width: 100%;margin: auto;}</style>`} className="w-full h-full" />
       ) : (
         // <div dangerouslySetInnerHTML={{ __html: postHTML.html }} />

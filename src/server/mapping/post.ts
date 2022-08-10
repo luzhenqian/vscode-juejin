@@ -12,11 +12,10 @@ export function categoriesMapping(raw: any[]): Category[] {
 }
 
 export function postListMapping(raw: any[]): Post[] {
-  return raw
-    .filter(({ item_type }) => item_type === 2)
-    .map(
-      ({
-        item_info: {
+  return (
+    raw
+      .map(
+        ({
           article_info: {
             article_id,
             title,
@@ -32,29 +31,29 @@ export function postListMapping(raw: any[]): Post[] {
           author_user_info: { avatar_large, user_id, user_name },
           category,
           tags,
-        },
-      }) => ({
-        id: article_id,
-        info: {
-          title,
-          briefContent: brief_content,
-          coverImage: cover_image,
-          viewCount: view_count,
-          diggCount: digg_count,
-          commentCount: comment_count,
-          collectCount: collect_count,
-          hotIndex: hot_index,
-          createdAt: ctime,
-        },
-        author: {
-          id: user_id,
-          avatar: avatar_large,
-          name: user_name,
-        },
-        category: category.category_name,
-        tags: tags.map((tag: any) => tag.tag_name),
-      })
-    );
+        }) => ({
+          id: article_id,
+          info: {
+            title,
+            briefContent: brief_content,
+            coverImage: cover_image,
+            viewCount: view_count,
+            diggCount: digg_count,
+            commentCount: comment_count,
+            collectCount: collect_count,
+            hotIndex: hot_index,
+            createdAt: ctime,
+          },
+          author: {
+            id: user_id,
+            avatar: avatar_large,
+            name: user_name,
+          },
+          category: category.category_name,
+          tags: tags.map((tag: any) => tag.tag_name),
+        })
+      )
+  );
 }
 
 export function postMapping(raw: any): { html: string } {

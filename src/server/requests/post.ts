@@ -3,7 +3,7 @@ import { RawData } from "../../types";
 import {
   getPostCategoryConfig,
   getPostConfig,
-  getPostListConfig,
+  getPostListCateConfig,
 } from "./configs/post";
 
 export async function getCategories() {
@@ -15,22 +15,21 @@ export type GetPostListParams = {
   cateId: string;
 };
 export async function getPostList(params: GetPostListParams) {
-  getPostListConfig.data = {
+  getPostListCateConfig.data = {
     id_type: 2,
-    // client_type: 2608,
+    client_type: 2608,
     sort_type: 200,
     cursor: params.cursor + "",
     limit: 20,
-    // cate_id: params.cateId,
+    cate_id: params.cateId,
   };
-  const data = await axios(getPostListConfig);
+  const data = await axios(getPostListCateConfig);
   return extractData(data);
 }
 
 export async function getPost(id: string) {
   getPostConfig.url += id;
   const data = await axios(getPostConfig);
-  debugger
   return extractData(data);
 }
 

@@ -47,12 +47,10 @@ function App() {
   const [currentPostID, setCurrentPostID] = React.useState(null);
   const [postHTML, setPostHTML] = React.useState(null);
   const [currentCategoryID, setCurrentCategoryID] = React.useState(
-    window.config.defaultCategory
+    window.config.defaultCategory || "前端"
   );
 
   React.useEffect(() => {
-    // TODO: one load all
-    // dispatch({ type: "GET_CATEGORIES", payload: { setCategories } });
     dispatch({
       type: "GET_INITIAL",
       payload: {
@@ -62,10 +60,6 @@ function App() {
         setCurrentCategoryID,
       },
     });
-    // dispatch({
-    //   type: "GET_POST_LIST",
-    //   payload: { cursor: 0, cateID: "", setPostList },
-    // });
   }, []);
 
   return (

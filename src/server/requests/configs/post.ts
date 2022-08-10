@@ -10,6 +10,12 @@ export const getPostListConfig: AxiosRequestConfig = {
   method: "POST",
 };
 
+export const getPostListCateConfig: AxiosRequestConfig = {
+  url: "https://api.juejin.cn/recommend_api/v1/article/recommend_cate_feed",
+  method: "POST",
+};
+
+
 export const getPostConfig: AxiosRequestConfig = {
   url: "https://juejin.cn/post/",
   method: "GET",
