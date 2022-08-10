@@ -4,6 +4,7 @@ export type PageName = "post";
 
 export type Action = {
   type:
+    | "SET_CURRENT_CATEGORY_ID"
     | "GET_INITIAL"
     | "SEND_INITIAL"
     | GET_CATEGORORIES

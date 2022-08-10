@@ -4,30 +4,19 @@ import { Post } from "../../../types";
 import { Header } from "../components/header";
 import { Post as PostComponent } from "./post";
 
-function Categories() {
-  const { categories } = React.useContext(PostContext);
-  return (
-    <div>
-      {categories.map((category) => (
-        <div key={category.id}>{category.name}</div>
-      ))}
-    </div>
-  );
-}
-
 function Loading() {
   return (
-    <div className="flex flex-col gap-3 w-full max-h-screen pt-14 px-3 overflow-hidden">
+    <div className="flex flex-col w-full max-h-screen gap-3 px-3 overflow-hidden pt-14">
       {[...Array(10)].map((_, i) => (
-        <div key={i} className=" rounded-md border p-4 shadow dark:border-gray-800">
-          <div className="flex w-full animate-pulse space-x-4">
-            <div className="h-10 w-10 rounded-full bg-slate-700"></div>
-            <div className="flex-1 space-y-6 py-1">
+        <div key={i} className="p-4 border rounded-md shadow  dark:border-gray-800">
+          <div className="flex w-full space-x-4 animate-pulse">
+            <div className="w-10 h-10 rounded-full bg-slate-700"></div>
+            <div className="flex-1 py-1 space-y-6">
               <div className="h-2 rounded bg-slate-700"></div>
               <div className="space-y-3">
                 <div className="grid grid-cols-3 gap-4">
-                  <div className="col-span-2 h-2 rounded bg-slate-700"></div>
-                  <div className="col-span-1 h-2 rounded bg-slate-700"></div>
+                  <div className="h-2 col-span-2 rounded bg-slate-700"></div>
+                  <div className="h-2 col-span-1 rounded bg-slate-700"></div>
                 </div>
                 <div className="h-2 rounded bg-slate-700"></div>
               </div>
@@ -42,11 +31,11 @@ function Loading() {
 function Article({ id, info, author, tags }: Post) {
   const { setCurrentPostID } = React.useContext(PostContext);
   return (
-    <article className="flex justify-between items-center border-b mt-2 pb-2 gap-2">
+    <article className="flex items-center justify-between gap-2 pb-2 mt-2 border-b">
       <div className="flex flex-col flex-1">
-        <div className="mb-1 flex items-center gap-2 text-sm">
+        <div className="flex items-center gap-2 mb-1 text-sm">
           <a>
-            <img className="h-8 w-8" src={author.avatar} />
+            <img className="w-8 h-8" src={author.avatar} />
           </a>
           <span className="">{author.name}</span>
           <span className="font-light text-gray-600 dark:text-gray-500">
@@ -55,7 +44,7 @@ function Article({ id, info, author, tags }: Post) {
         </div>
 
         <div
-          className="mb-2 flex flex-col"
+          className="flex flex-col mb-2"
           onClick={setCurrentPostID.bind(null, id)}
         >
           <div className="mb-2 text-xl font-bold cursor-pointer">
@@ -96,7 +85,7 @@ function Article({ id, info, author, tags }: Post) {
 
       {info.coverImage && (
         <img
-          className="h-16 w-24 object-contain"
+          className="object-contain w-24 h-16"
           src={info.coverImage}
           alt={info.title}
         />
@@ -108,7 +97,7 @@ function Article({ id, info, author, tags }: Post) {
 function Articles() {
   const { postList } = React.useContext(PostContext);
   return (
-    <main className="flex-1 bg-white px-10 py-2 dark:bg-slate-800 mt-14">
+    <main className="flex-1 px-10 py-2 bg-white dark:bg-slate-800 mt-14">
       {postList.map((post) => (
         <Article key={post.id} {...post} />
       ))}

@@ -55,5 +55,17 @@ export async function reducer(action: Action) {
         ),
       });
       return;
+
+    case "SET_CURRENT_CATEGORY_ID":
+      action.payload.panel.webview.postMessage({
+        type: "SEND_POST_LIST",
+        payload: postListMapping(
+          await getPostList({
+            cursor: action.payload.cursor,
+            cateId: action.payload.categoryID,
+          })
+        ),
+      });
+      return;
   }
 }

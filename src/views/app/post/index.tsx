@@ -36,6 +36,8 @@ export const PostContext = React.createContext<{
   setCurrentPostID: Function;
   postHTML: any;
   setPostHTML: Function;
+  currentCategoryID: string;
+  setCurrentCategoryID: Function;
 } | null>(null);
 
 function App() {
@@ -44,13 +46,21 @@ function App() {
   const [postList, setPostList] = React.useState([]);
   const [currentPostID, setCurrentPostID] = React.useState(null);
   const [postHTML, setPostHTML] = React.useState(null);
+  const [currentCategoryID, setCurrentCategoryID] = React.useState(
+    window.config.defaultCategory
+  );
 
   React.useEffect(() => {
     // TODO: one load all
     // dispatch({ type: "GET_CATEGORIES", payload: { setCategories } });
     dispatch({
       type: "GET_INITIAL",
-      payload: { cateName: window.config.defaultCategory, setCategories, setPostList },
+      payload: {
+        cateName: currentCategoryID,
+        setCategories,
+        setPostList,
+        setCurrentCategoryID,
+      },
     });
     // dispatch({
     //   type: "GET_POST_LIST",
@@ -72,6 +82,8 @@ function App() {
         setCurrentPostID,
         postHTML,
         setPostHTML,
+        currentCategoryID,
+        setCurrentCategoryID,
       }}
     >
       <MemoryRouter initialEntries={["/"]}>
