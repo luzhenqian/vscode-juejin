@@ -1,17 +1,17 @@
 import * as vscode from "vscode";
 import * as path from "path";
-import { postMain } from "../controllers/post";
 import { PageName } from "../types";
 import { viewConfig } from "./viewconfig";
 import { createDispatch } from "../flux";
 import { reducer } from "../server/reducers/post";
 
-function getMetaData() {
+function getConfiguration() {
   let defaultCategory =
     vscode.workspace.getConfiguration().get("juejin.post.default-category") ||
-    "前端"; // 增加未配置分类时设置前端为默认分类
+    ""; // 增加未配置分类时设置前端为默认分类
   return { defaultCategory };
 }
+
 export default class ViewLoader {
   private readonly _panel: vscode.WebviewPanel | undefined;
   private readonly _extensionPath: string;
@@ -31,7 +31,9 @@ export default class ViewLoader {
       }
     );
 
-    this._panel.webview.html = this.getWebviewContent(pageName);
+    const config = getConfiguration();
+
+    this._panel.webview.html = this.getWebviewContent(pageName, config);
 
     const dispatch = createDispatch(reducer);
     const panel = this._panel;
@@ -43,15 +45,18 @@ export default class ViewLoader {
           panel,
           reload: () => {
             panel.webview.html = "";
-            panel.webview.html = this.getWebviewContent(pageName);
+            panel.webview.html = this.getWebviewContent(pageName, config);
           },
           ...message.payload,
         },
       });
+
+      // TODO: open url in browser
+      // vscode.env.openExternal(vscode.Uri.parse("https://www.stackoverflow.com/"));
     });
   }
 
-  private getWebviewContent(pageName: PageName): string {
+  private getWebviewContent(pageName: PageName, config: any): string {
     // Local path to main script run in the webview
     const reactAppPathOnDisk = vscode.Uri.file(
       path.join(this._extensionPath, "views", `${pageName}.js`)
@@ -71,6 +76,7 @@ export default class ViewLoader {
                              style-src vscode-resource: 'unsafe-inline';">
         <script>
           window.acquireVsCodeApi = acquireVsCodeApi;
+          window.config = ${JSON.stringify(config)};
         </script>
     </head>
     <body>

@@ -4,12 +4,14 @@ export type PageName = "post";
 
 export type Action = {
   type:
+    | "GET_INITIAL"
+    | "SEND_INITIAL"
     | GET_CATEGORORIES
     | GET_POST_LIST
     | GET_POST
     | SEND_CATEGORORIES
     | SEND_POST_LIST
-    | 'SEND_POST'
+    | "SEND_POST"
     | "RELOAD";
   payload?: any;
 };

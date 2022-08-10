@@ -12,6 +12,7 @@ declare global {
   interface Window {
     acquireVsCodeApi(): Webview;
     vscode: any;
+    config: any;
   }
 }
 
@@ -46,11 +47,15 @@ function App() {
 
   React.useEffect(() => {
     // TODO: one load all
-    dispatch({ type: "GET_CATEGORIES", payload: { setCategories } });
+    // dispatch({ type: "GET_CATEGORIES", payload: { setCategories } });
     dispatch({
-      type: "GET_POST_LIST",
-      payload: { cursor: 0, cateID: "", setPostList },
+      type: "GET_INITIAL",
+      payload: { cateName: window.config.defaultCategory, setCategories, setPostList },
     });
+    // dispatch({
+    //   type: "GET_POST_LIST",
+    //   payload: { cursor: 0, cateID: "", setPostList },
+    // });
   }, []);
 
   return (

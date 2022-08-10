@@ -1,6 +1,10 @@
 import { Action } from "../../types";
 import { getCategories, getPostList } from "../requests/post";
-import { categoriesMapping, postListMapping, postMapping } from "../mapping/post";
+import {
+  categoriesMapping,
+  postListMapping,
+  postMapping,
+} from "../mapping/post";
 import { getPost } from "../post";
 
 export async function reducer(action: Action) {
@@ -18,6 +22,26 @@ export async function reducer(action: Action) {
       action.payload.panel.webview.postMessage({
         type: "SEND_POST",
         payload: postMapping(await getPost(action.payload.id)),
+      });
+      return;
+    case "GET_INITIAL":
+      const {
+        payload: { cateName, cursor = 0 },
+      } = action;
+      const categories = categoriesMapping(await getCategories());
+      const cateId = categories.find((c) => c.name === cateName)?.id || "";
+      const postList = postListMapping(
+        await getPostList({
+          cursor,
+          cateId,
+        })
+      );
+      action.payload.panel.webview.postMessage({
+        type: "SEND_INITIAL",
+        payload: {
+          categories,
+          postList,
+        },
       });
       return;
     case "GET_POST_LIST":
