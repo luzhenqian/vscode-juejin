@@ -62,7 +62,7 @@ export function activate(context: vscode.ExtensionContext) {
           "./src/html/src/juejin-pins.html"
         );
       } else if (env === ENV.PROD) {
-        panel.webview.html = "<div>1</div>";
+        panel.webview.html = "<div>功能正在开发中</div>";
       }
       panel.webview.onDidReceiveMessage(
         async (message) => {
@@ -106,7 +106,7 @@ export function activate(context: vscode.ExtensionContext) {
     createPinsWebview();
   });
 
-  let post = vscode.commands.registerCommand("juejin.post_", () => {
+  vscode.commands.registerCommand("juejin.post_", () => {
     let pageFirstOpen = true;
 
     // 获取配置信息
@@ -155,11 +155,12 @@ export function activate(context: vscode.ExtensionContext) {
     }
 
     createPostWebview();
-    context.subscriptions.splice(context.subscriptions.length, 0, post, pins);
+    // context.subscriptions.splice(context.subscriptions.length, 0, post, pins);
   });
 
-  vscode.commands.registerCommand("juejin.post", () => {
+  let post = vscode.commands.registerCommand("juejin.post", () => {
     new ViewLoader(context.extensionPath, "post");
+    context.subscriptions.splice(context.subscriptions.length, 0, post, pins);
   });
 }
 

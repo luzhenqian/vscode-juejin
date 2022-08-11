@@ -1,8 +1,8 @@
 {
   "name": "juejin",
   "displayName": "掘金",
-  "description": "A juejin plugin in vscode",
-  "version": "0.2.24",
+  "description": "A juejin extension in vscode",
+  "version": "2.0.0",
   "publisher": "luzhenqian",
   "homepage": "https://github.com/luzhenqian/vscode-juejin",
   "repository": {
@@ -63,10 +63,10 @@
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
-    "compile": "npm-run-all compile:*",
+    "compile": "npm run compile:views && npm run compile:extension",
     "watch": "npm-run-all -p watch:*",
     "compile:extension": "tsc -p ./",
-    "compile:views": "webpack --mode development",
+    "compile:views": "webpack --mode production",
     "lint": "eslint src --ext ts",
     "watch:extension": "tsc -watch -p ./",
     "watch:views": "webpack --watch --mode development",
@@ -79,7 +79,6 @@
     "@tailwindcss/line-clamp": "^0.4.0",
     "@types/glob": "^7.1.1",
     "@types/lodash": "^4.14.182",
-    "@types/marked": "^4.0.3",
     "@types/mocha": "^7.0.1",
     "@types/node": "^12.11.7",
     "@types/qs": "^6.9.5",
@@ -92,9 +91,7 @@
     "css-loader": "^6.7.1",
     "eslint": "^6.8.0",
     "glob": "^7.1.6",
-    "marked": "^4.0.18",
     "mocha": "^7.0.1",
-    "node-html-parser": "^5.3.3",
     "npm-run-all": "^4.1.5",
     "postcss": "^8.4.16",
     "postcss-loader": "^7.0.1",
@@ -108,11 +105,12 @@
   },
   "dependencies": {
     "axios": "^0.21.2",
+    "cheerio": "^1.0.0-rc.12",
     "lodash": "^4.17.21",
+    "markdown-it": "^13.0.1",
     "moment": "^2.29.2",
     "qs": "^6.9.3",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "tailwind-scrollbar-hide": "^1.1.7"
+    "react-dom": "^18.2.0"
   }
 }

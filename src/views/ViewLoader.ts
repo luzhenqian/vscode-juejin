@@ -30,9 +30,8 @@ export default class ViewLoader {
         ],
       }
     );
-
+    
     const config = getConfiguration();
-
     this._panel.webview.html = this.getWebviewContent(pageName, config);
 
     const dispatch = createDispatch(reducer);

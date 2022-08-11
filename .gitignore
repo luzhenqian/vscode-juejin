@@ -3,4 +3,5 @@ node_modules
 .vscode-test/
 *.vsix
 
-./views/
+views
+.DS_Store

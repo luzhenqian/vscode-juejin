@@ -1,8 +1,10 @@
 import { Category, Post } from "../../types";
 
-import { parse } from "node-html-parser";
 import * as vm from "vm";
-import { marked } from "marked";
+// don't use import, because TypeScript build error
+const cheerio = require("cheerio");
+var md = require("markdown-it")();
+
 import { timeFromNow } from "../../utils/time";
 
 export function categoriesMapping(raw: any[]): Category[] {
@@ -54,11 +56,9 @@ export function postListMapping(raw: any[]): Post[] {
   );
 }
 
-export function postMapping(raw: any): { html: string } {
-  const root = parse(raw.html);
-  const body = root.getElementsByTagName("body")[0];
-  const script = body.getElementsByTagName("script")[0];
-  const scriptContent = script.childNodes[0].rawText;
+export function postMapping(raw: string) {
+  const $ = cheerio.load(raw);
+  const scriptContent = $("body > script")[0].firstChild.data;
   let data: any = {};
   vm.runInNewContext(`${scriptContent}`, {
     window: data,
@@ -66,6 +66,6 @@ export function postMapping(raw: any): { html: string } {
   const markdown = (
     data.__NUXT__.state.view.column.entry.article_info.mark_content as string
   ).replace(/^---$.*^---$/ms, "");
-  const html = marked.parse(markdown);
+  const html = md.render(markdown);
   return { html };
 }
