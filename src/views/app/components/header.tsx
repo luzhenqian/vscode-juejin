@@ -145,9 +145,9 @@ function AddUserGroup() {
         src="https://s2.loli.net/2022/08/10/w4FEUIQszedixmX.jpg"
         className="object-contain w-full h-auto"
       />
-      <span>微信群聊二维码有过期时间</span>
+      <span>考虑到微信群聊二维码存在过期时间</span>
       <span>添加作者邀请入群</span>
-      <span>请加备注「VSCode掘金」</span>
+      <span>添加好友时请加备注「VSCode掘金」</span>
     </Button>
   );
 }
