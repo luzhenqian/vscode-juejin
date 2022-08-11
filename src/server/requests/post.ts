@@ -28,9 +28,13 @@ export async function getPostList(params: GetPostListParams) {
 }
 
 export async function getPost(id: string) {
-  getPostConfig.url += id;
-  const data = await axios(getPostConfig);
-  return extractData(data);
+  const config = { ...getPostConfig, url: getPostConfig.url + id };
+  const res = await axios(config);
+  const { status, data } = res;
+  if (status === 200) {
+    return data;
+  }
+  return "";
 }
 
 function extractData({ status, data }: RawData) {
