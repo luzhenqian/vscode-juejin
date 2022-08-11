@@ -4,4 +4,6 @@ node_modules
 *.vsix
 
 views
+!**/src/views
+
 .DS_Store
