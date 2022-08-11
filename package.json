@@ -72,9 +72,8 @@
     "watch:views": "webpack --watch --mode development",
     "pretest": "npm run compile && npm run lint",
     "test": "node ./out/test/runTest.js",
-    "build": "npm run htmlts && vsce package",
-    "htmlts": "node ./scripts/ts.html-generator.js",
-    "publish": "npm run htmlts && vsce publish"
+    "build": "vsce package",
+    "publish": "vsce publish"
   },
   "devDependencies": {
     "@tailwindcss/line-clamp": "^0.4.0",
@@ -114,7 +113,6 @@
     "qs": "^6.9.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.3.0",
     "tailwind-scrollbar-hide": "^1.1.7"
   }
 }

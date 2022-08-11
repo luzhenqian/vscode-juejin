@@ -4,9 +4,8 @@ import { createDispatch } from "../../../flux";
 import { Webview } from "vscode";
 import { Category, Post } from "../../../types";
 import { reducer } from "../../reducers/post";
-import { MemoryRouter } from "react-router-dom";
 import "../index.css";
-import { Router } from "./router";
+import { List } from "./list";
 
 declare global {
   interface Window {
@@ -89,9 +88,7 @@ function App() {
         setScrollTop,
       }}
     >
-      <MemoryRouter initialEntries={["/"]}>
-        <Router />
-      </MemoryRouter>
+      <List />
     </PostContext.Provider>
   );
 }
