@@ -33,7 +33,7 @@ function Loading() {
 }
 
 function Article({ id, info, author, tags }: Post) {
-  const { setCurrentPostID } = React.useContext(PostContext);
+  const { setCurrentPostID, setScrollTop } = React.useContext(PostContext);
   return (
     <article className="flex items-center justify-between gap-2 pb-2 mt-2 border-b">
       <div className="flex flex-col flex-1">
@@ -49,7 +49,12 @@ function Article({ id, info, author, tags }: Post) {
 
         <div
           className="flex flex-col mb-2"
-          onClick={setCurrentPostID.bind(null, id)}
+          onClick={() => {
+            setScrollTop(window.scrollY);
+            console.log('set y:', window.scrollY);
+            
+            setCurrentPostID(id);
+          }}
         >
           <div className="mb-2 text-xl font-bold cursor-pointer">
             {info.title}
@@ -96,25 +101,6 @@ function Article({ id, info, author, tags }: Post) {
       )}
     </article>
   );
-}
-function useInterval(callback: Function, delay: number) {
-  const savedCallback = React.useRef<Function>();
-
-  // 保存新回调
-  React.useEffect(() => {
-    savedCallback.current = callback;
-  });
-
-  // 建立 interval
-  React.useEffect(() => {
-    function tick() {
-      savedCallback.current();
-    }
-    if (delay !== null) {
-      let id = setInterval(tick, delay);
-      return () => clearInterval(id);
-    }
-  }, [delay]);
 }
 
 function Articles() {

@@ -24,7 +24,7 @@ window.addEventListener("message", ({ data: action }) => {
   dispatch(action);
 });
 
-export const PostContext = React.createContext<{
+export type IPostContext = {
   categories: Category[];
   setCategories: Function;
   darkMode: boolean;
@@ -40,7 +40,11 @@ export const PostContext = React.createContext<{
   setCurrentCategoryID: Function;
   cursor: number;
   setCursor: Function;
-} | null>(null);
+  scrollTop: number;
+  setScrollTop: Function;
+} | null;
+
+export const PostContext = React.createContext<IPostContext>(null);
 
 function App() {
   const [categories, setCategories] = React.useState([]);
@@ -50,7 +54,7 @@ function App() {
   const [postHTML, setPostHTML] = React.useState(null);
   const [currentCategoryID, setCurrentCategoryID] = React.useState("");
   const [cursor, setCursor] = React.useState(0);
-
+  const [scrollTop, setScrollTop] = React.useState(0);
   React.useEffect(() => {
     dispatch({
       type: "GET_INITIAL",
@@ -81,6 +85,8 @@ function App() {
         setCurrentCategoryID,
         cursor,
         setCursor,
+        scrollTop,
+        setScrollTop,
       }}
     >
       <MemoryRouter initialEntries={["/"]}>

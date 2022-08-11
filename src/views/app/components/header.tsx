@@ -1,5 +1,5 @@
 import * as React from "react";
-import { dispatch, PostContext } from "../post";
+import { dispatch, IPostContext } from "../post";
 
 function Item({ onClick = () => {}, children, className = "" }) {
   return (
@@ -24,11 +24,17 @@ function Button({ children, className = "", style = {} }) {
   );
 }
 
-export function Header({ context }) {
-  const { darkMode, setDarkMode, reload, categories } =
-    React.useContext(context);
-  const { currentPostID, setCurrentPostID, setPostHTML } =
-    React.useContext(PostContext);
+export function Header({ context }: { context: React.Context<IPostContext> }) {
+  const {
+    darkMode,
+    setDarkMode,
+    reload,
+    categories,
+    currentPostID,
+    setCurrentPostID,
+    setPostHTML,
+    scrollTop,
+  } = React.useContext(context);
 
   const [cateVisible, setCateVisible] = React.useState(false);
   const [addUserGroupVisible, setAddUserGroupVisible] = React.useState(false);
@@ -41,6 +47,9 @@ export function Header({ context }) {
             onClick={() => {
               setCurrentPostID(null);
               setPostHTML("");
+              console.log("get y: ", scrollTop);
+
+              window.scrollBy({ top: scrollTop });
             }}
           >
             关闭
@@ -52,7 +61,7 @@ export function Header({ context }) {
 
       <div className="relative flex items-center">
         <Button>
-          <Item onClick={reload}>刷新</Item>
+          <Item onClick={() => reload()}>刷新</Item>
           <Item
             className="relative"
             onClick={() => setAddUserGroupVisible(!addUserGroupVisible)}
