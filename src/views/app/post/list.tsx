@@ -1,14 +1,18 @@
 import * as React from "react";
-import { PostContext } from ".";
+import { dispatch, PostContext } from ".";
 import { Post } from "../../../types";
 import { Header } from "../components/header";
 import { Post as PostComponent } from "./post";
+import { debounce } from "lodash";
 
 function Loading() {
   return (
     <div className="flex flex-col w-full max-h-screen gap-3 px-3 overflow-hidden pt-14">
       {[...Array(10)].map((_, i) => (
-        <div key={i} className="p-4 border rounded-md shadow  dark:border-gray-800">
+        <div
+          key={i}
+          className="p-4 border rounded-md shadow dark:border-gray-800"
+        >
           <div className="flex w-full space-x-4 animate-pulse">
             <div className="w-10 h-10 rounded-full bg-slate-700"></div>
             <div className="flex-1 py-1 space-y-6">
@@ -93,9 +97,47 @@ function Article({ id, info, author, tags }: Post) {
     </article>
   );
 }
+function useInterval(callback: Function, delay: number) {
+  const savedCallback = React.useRef<Function>();
+
+  // 保存新回调
+  React.useEffect(() => {
+    savedCallback.current = callback;
+  });
+
+  // 建立 interval
+  React.useEffect(() => {
+    function tick() {
+      savedCallback.current();
+    }
+    if (delay !== null) {
+      let id = setInterval(tick, delay);
+      return () => clearInterval(id);
+    }
+  }, [delay]);
+}
 
 function Articles() {
-  const { postList } = React.useContext(PostContext);
+  const { postList, cursor, setCursor, currentCategoryID } =
+    React.useContext(PostContext);
+
+  const loadMore = debounce(() => {
+    const { scrollHeight, scrollTop } = document.documentElement;
+    if (scrollTop + window.innerHeight > scrollHeight - 100) {
+      setCursor(cursor + 1);
+      dispatch({
+        type: "GET_POST_LIST",
+        payload: {
+          cursor: cursor + 1,
+          categoryID: currentCategoryID,
+        },
+      });
+    }
+  }, 1000);
+  React.useEffect(() => {
+    window.addEventListener("scroll", loadMore);
+    return () => window.removeEventListener("scroll", loadMore);
+  }, [cursor]);
   return (
     <main className="flex-1 px-10 py-2 bg-white dark:bg-slate-800 mt-14">
       {postList.map((post) => (

@@ -45,14 +45,14 @@ export async function reducer(action: Action) {
       });
       return;
     case "GET_POST_LIST":
+      const data = await getPostList({
+        cursor: action.payload.cursor,
+        cateId: action.payload.categoryID,
+      });
+      const dataMapped = postListMapping(data);
       action.payload.panel.webview.postMessage({
         type: "SEND_POST_LIST",
-        payload: postListMapping(
-          await getPostList({
-            cursor: action.payload.cursor,
-            cateId: action.payload.cateId,
-          })
-        ),
+        payload: dataMapped,
       });
       return;
 

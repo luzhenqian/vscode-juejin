@@ -4,7 +4,7 @@ import * as moment from "moment";
  * 获取相对于当前时间的表现形式
  * @param time 13 位 时间戳
  */
-export function timeFromNow(time: string) {
+export function timeFromNow(time: string): string {
   let d1 = moment(time, "x");
   let currentTime = moment();
   let years = currentTime.diff(d1, "year");
@@ -20,4 +20,5 @@ export function timeFromNow(time: string) {
   if (hours) return hours + "小时前";
   if (minutes) return minutes + "分钟前";
   if (seconds) return seconds + "秒前";
+  return "";
 }

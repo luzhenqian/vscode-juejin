@@ -3,6 +3,7 @@ import { Category, Post } from "../../types";
 import { parse } from "node-html-parser";
 import * as vm from "vm";
 import { marked } from "marked";
+import { timeFromNow } from "../../utils/time";
 
 export function categoriesMapping(raw: any[]): Category[] {
   return raw.map(({ category_id, category_name }) => ({
@@ -12,47 +13,44 @@ export function categoriesMapping(raw: any[]): Category[] {
 }
 
 export function postListMapping(raw: any[]): Post[] {
-  return (
-    raw
-      .map(
-        ({
-          article_info: {
-            article_id,
-            title,
-            brief_content,
-            cover_image,
-            view_count,
-            digg_count,
-            comment_count,
-            collect_count,
-            hot_index,
-            ctime,
-          },
-          author_user_info: { avatar_large, user_id, user_name },
-          category,
-          tags,
-        }) => ({
-          id: article_id,
-          info: {
-            title,
-            briefContent: brief_content,
-            coverImage: cover_image,
-            viewCount: view_count,
-            diggCount: digg_count,
-            commentCount: comment_count,
-            collectCount: collect_count,
-            hotIndex: hot_index,
-            createdAt: ctime,
-          },
-          author: {
-            id: user_id,
-            avatar: avatar_large,
-            name: user_name,
-          },
-          category: category.category_name,
-          tags: tags.map((tag: any) => tag.tag_name),
-        })
-      )
+  return raw.map(
+    ({
+      article_info: {
+        article_id,
+        title,
+        brief_content,
+        cover_image,
+        view_count,
+        digg_count,
+        comment_count,
+        collect_count,
+        hot_index,
+        ctime,
+      },
+      author_user_info: { avatar_large, user_id, user_name },
+      category,
+      tags,
+    }) => ({
+      id: article_id,
+      info: {
+        title,
+        briefContent: brief_content,
+        coverImage: cover_image,
+        viewCount: view_count,
+        diggCount: digg_count,
+        commentCount: comment_count,
+        collectCount: collect_count,
+        hotIndex: hot_index,
+        createdAt: timeFromNow(ctime + "000"),
+      },
+      author: {
+        id: user_id,
+        avatar: avatar_large,
+        name: user_name,
+      },
+      category: category.category_name,
+      tags: tags.map((tag: any) => tag.tag_name),
+    })
   );
 }
 

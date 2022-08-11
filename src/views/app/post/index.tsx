@@ -38,6 +38,8 @@ export const PostContext = React.createContext<{
   setPostHTML: Function;
   currentCategoryID: string;
   setCurrentCategoryID: Function;
+  cursor: number;
+  setCursor: Function;
 } | null>(null);
 
 function App() {
@@ -46,15 +48,14 @@ function App() {
   const [postList, setPostList] = React.useState([]);
   const [currentPostID, setCurrentPostID] = React.useState(null);
   const [postHTML, setPostHTML] = React.useState(null);
-  const [currentCategoryID, setCurrentCategoryID] = React.useState(
-    window.config.defaultCategory || "前端"
-  );
+  const [currentCategoryID, setCurrentCategoryID] = React.useState("");
+  const [cursor, setCursor] = React.useState(0);
 
   React.useEffect(() => {
     dispatch({
       type: "GET_INITIAL",
       payload: {
-        cateName: currentCategoryID,
+        cateName: window.config.defaultCategory || "前端",
         setCategories,
         setPostList,
         setCurrentCategoryID,
@@ -78,6 +79,8 @@ function App() {
         setPostHTML,
         currentCategoryID,
         setCurrentCategoryID,
+        cursor,
+        setCursor,
       }}
     >
       <MemoryRouter initialEntries={["/"]}>
