@@ -1,11 +1,10 @@
 import { Action } from "../../types";
-import { getCategories, getPostList } from "../requests/post";
+import { getCategories, getPostList, getPost } from "../requests/post";
 import {
   categoriesMapping,
   postListMapping,
   postMapping,
 } from "../mapping/post";
-import { getPost } from "../post";
 
 export async function reducer(action: Action) {
   switch (action.type) {
@@ -55,7 +54,6 @@ export async function reducer(action: Action) {
         payload: dataMapped,
       });
       return;
-
     case "SET_CURRENT_CATEGORY_ID":
       action.payload.panel.webview.postMessage({
         type: "SEND_POST_LIST",
