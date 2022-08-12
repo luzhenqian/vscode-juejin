@@ -27,12 +27,16 @@ export default class ViewLoader {
         enableScripts: true,
         localResourceRoots: [
           vscode.Uri.file(path.join(extensionPath, "views")),
+          vscode.Uri.file(path.join(extensionPath, "assets/fonts")),
         ],
       }
     );
-    
+
     const config = getConfiguration();
-    this._panel.webview.html = this.getWebviewContent(pageName, config);
+    this._panel.webview.html = this.getWebviewContent(pageName, {
+      ...config,
+      path: vscode.Uri.file(path.join(this._extensionPath)),
+    });
 
     const dispatch = createDispatch(reducer);
     const panel = this._panel;
@@ -62,6 +66,23 @@ export default class ViewLoader {
     );
     const reactAppUri = reactAppPathOnDisk.with({ scheme: "vscode-resource" });
 
+    // FIXME: load font failed
+    // const albbphFontWoff2Uri = vscode.Uri.file(
+    //   path.join(
+    //     this._extensionPath,
+    //     "assets/fonts",
+    //     `1kmN4KTZntIkHlzBckQA9.woff2`
+    //   )
+    // ).with({ scheme: "vscode-resource" });
+
+    // const albbphFontWoffUri = vscode.Uri.file(
+    //   path.join(
+    //     this._extensionPath,
+    //     "assets/fonts",
+    //     `1kmN4KTZntIkHlzBckQA9.woff`
+    //   )
+    // ).with({ scheme: "vscode-resource" });
+
     return `<!DOCTYPE html>
     <html lang="en">
     <head>
@@ -77,6 +98,7 @@ export default class ViewLoader {
           window.acquireVsCodeApi = acquireVsCodeApi;
           window.config = ${JSON.stringify(config)};
         </script>
+
     </head>
     <body>
         <div id="root"></div>
@@ -85,3 +107,11 @@ export default class ViewLoader {
     </html>`;
   }
 }
+
+// <style>
+// @font-face {
+// font-family: "albbph2.0";
+// font-weight: 250;src: url(${albbphFontWoff2Uri}) format("woff2"),
+// url(${albbphFontWoffUri}) format("woff");
+// font-display: swap;
+// </style>

@@ -41,6 +41,8 @@ export type IPostContext = {
   setCursor: Function;
   scrollTop: number;
   setScrollTop: Function;
+  zenMode: boolean;
+  setZenMode: Function;
 } | null;
 
 export const PostContext = React.createContext<IPostContext>(null);
@@ -54,6 +56,7 @@ function App() {
   const [currentCategoryID, setCurrentCategoryID] = React.useState("");
   const [cursor, setCursor] = React.useState(0);
   const [scrollTop, setScrollTop] = React.useState(0);
+  const [zenMode, setZenMode] = React.useState(false);
   React.useEffect(() => {
     dispatch({
       type: "GET_INITIAL",
@@ -86,6 +89,8 @@ function App() {
         setCursor,
         scrollTop,
         setScrollTop,
+        zenMode,
+        setZenMode,
       }}
     >
       <List />
