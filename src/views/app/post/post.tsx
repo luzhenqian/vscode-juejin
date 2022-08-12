@@ -20,9 +20,7 @@ export function Post() {
             __html: `${postHTML.html}
 <style>
 .post_content{
-  color: ${
-    darkMode ? "white" : "black"
-  };
+  color: ${darkMode ? "white" : "black"};
 }
 .post_content img {
   display: block;
@@ -31,6 +29,8 @@ export function Post() {
   margin: auto;
 }
 </style>
+
+<link href="${window.config.themes.tailwindCSS}" rel="stylesheet">
     `,
           }}
           className="w-full h-full post_content"

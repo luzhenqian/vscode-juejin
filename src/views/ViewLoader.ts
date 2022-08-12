@@ -27,7 +27,7 @@ export default class ViewLoader {
         enableScripts: true,
         localResourceRoots: [
           vscode.Uri.file(path.join(extensionPath, "views")),
-          vscode.Uri.file(path.join(extensionPath, "assets/fonts")),
+          vscode.Uri.file(path.join(extensionPath, "assets")),
         ],
       }
     );
@@ -69,40 +69,42 @@ export default class ViewLoader {
       path.join(this._extensionPath, "views", `${pageName}.js`)
     );
     const reactAppUri = reactAppPathOnDisk.with({ scheme: "vscode-resource" });
-
+    const tailwindCSS = vscode.Uri.file(
+      path.join(this._extensionPath, "assets/theme", `tailwind.css`)
+    ).with({ scheme: "vscode-resource" });
     // FIXME: load font failed
-    // const albbphFontWoff2Uri = vscode.Uri.file(
-    //   path.join(
-    //     this._extensionPath,
-    //     "assets/fonts",
-    //     `1kmN4KTZntIkHlzBckQA9.woff2`
-    //   )
-    // ).with({ scheme: "vscode-resource" });
+    const albbphFontWoff2Uri = vscode.Uri.file(
+      path.join(
+        this._extensionPath,
+        "assets/fonts",
+        `1kmN4KTZntIkHlzBckQA9.woff2`
+      )
+    ).with({ scheme: "vscode-resource" });
 
-    // const albbphFontWoffUri = vscode.Uri.file(
-    //   path.join(
-    //     this._extensionPath,
-    //     "assets/fonts",
-    //     `1kmN4KTZntIkHlzBckQA9.woff`
-    //   )
-    // ).with({ scheme: "vscode-resource" });
+    const albbphFontWoffUri = vscode.Uri.file(
+      path.join(
+        this._extensionPath,
+        "assets/fonts",
+        `1kmN4KTZntIkHlzBckQA9.woff`
+      )
+    ).with({ scheme: "vscode-resource" });
 
     return `<!DOCTYPE html>
     <html lang="en">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Config View</title>
-        <meta http-equiv="Content-Security-Policy"
-                    content="default-src 'none';
-                             img-src https:;
-                             script-src 'unsafe-eval' 'unsafe-inline' vscode-resource:;
-                             style-src vscode-resource: 'unsafe-inline';">
+        <title>掘金</title>
+        <link rel="stylesheet" href="/path/to/styles/default.min.css">
+<script src="/path/to/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
         <script>
           window.acquireVsCodeApi = acquireVsCodeApi;
-          window.config = ${JSON.stringify(config)};
+          window.config = ${JSON.stringify({
+            ...config,
+            themes: { tailwindCSS: tailwindCSS.toString() },
+          })};
         </script>
-
     </head>
     <body>
         <div id="root"></div>
@@ -119,3 +121,10 @@ export default class ViewLoader {
 // url(${albbphFontWoffUri}) format("woff");
 // font-display: swap;
 // </style>
+
+// <meta http-equiv="Content-Security-Policy"
+// content="default-src 'none';
+//          img-src https:;
+//          script-src 'unsafe-eval' 'unsafe-inline' vscode-resource:;
+//          style-src vscode-resource: 'unsafe-inline';
+//          font-src ">
