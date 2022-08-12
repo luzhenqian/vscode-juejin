@@ -86,8 +86,8 @@ function Article({ id, info, author, tags }: Post) {
             </div>
           </div>
           <div className="flex gap-2 text-sm">
-            <span className="cursor-pointer">收藏</span>
-            <span className="cursor-pointer">屏蔽</span>
+            {/* <span className="cursor-pointer">收藏</span>
+            <span className="cursor-pointer">屏蔽</span> */}
           </div>
         </div>
       </div>

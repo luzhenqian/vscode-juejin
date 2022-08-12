@@ -22,7 +22,7 @@ export default class ViewLoader {
     this._panel = vscode.window.createWebviewPanel(
       viewConfig[pageName].title,
       viewConfig[pageName].title,
-      vscode.ViewColumn.Two,
+      vscode.ViewColumn.One,
       {
         enableScripts: true,
         localResourceRoots: [

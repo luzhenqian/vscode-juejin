@@ -65,7 +65,7 @@
     "vscode:prepublish": "npm run compile",
     "compile": "npm run compile:views && npm run compile:extension",
     "watch": "npm-run-all -p watch:*",
-    "compile:extension": "tsc -p ./",
+    "compile:extension": "npm run esbuild-base -- --minify",
     "compile:views": "webpack --mode production",
     "lint": "eslint src --ext ts",
     "watch:extension": "tsc -watch -p ./",
@@ -73,7 +73,11 @@
     "pretest": "npm run compile && npm run lint",
     "test": "node ./out/test/runTest.js",
     "build": "vsce package",
-    "publish": "vsce publish"
+    "publish": "vsce publish",
+    "esbuild-base": "esbuild ./src/extension.ts --bundle --outfile=out/main.js --external:vscode --format=cjs --platform=node",
+    "esbuild": "npm run esbuild-base -- --sourcemap",
+    "esbuild-watch": "npm run esbuild-base -- --sourcemap --watch",
+    "test-compile": "tsc -p ./"
   },
   "devDependencies": {
     "@tailwindcss/line-clamp": "^0.4.0",
@@ -89,6 +93,7 @@
     "@typescript-eslint/parser": "^2.18.0",
     "autoprefixer": "^10.4.8",
     "css-loader": "^6.7.1",
+    "esbuild": "^0.15.1",
     "eslint": "^6.8.0",
     "glob": "^7.1.6",
     "mocha": "^7.0.1",
