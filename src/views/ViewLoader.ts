@@ -32,6 +32,10 @@ export default class ViewLoader {
       }
     );
 
+    this._panel.iconPath = vscode.Uri.file(
+      path.resolve(extensionPath, "./icon/icon.png")
+    );
+
     const config = getConfiguration();
     this._panel.webview.html = this.getWebviewContent(pageName, {
       ...config,

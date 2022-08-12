@@ -2,7 +2,7 @@
   "name": "juejin",
   "displayName": "掘金",
   "description": "A juejin extension in vscode",
-  "version": "2.0.0",
+  "version": "2.0.2",
   "publisher": "luzhenqian",
   "homepage": "https://github.com/luzhenqian/vscode-juejin",
   "repository": {
@@ -19,7 +19,7 @@
     "onCommand:juejin.pins",
     "onCommand:juejin.post"
   ],
-  "main": "./out/extension.js",
+  "main": "./out/main.js",
   "icon": "icon/icon.png",
   "contributes": {
     "configuration": {
@@ -36,6 +36,7 @@
         },
         "juejin.post.default-category": {
           "type": "string",
+          "default": "前端",
           "description": "文章默认分类。必须设置掘金官方的分类，如：前端、后端。"
         }
       }
@@ -68,7 +69,7 @@
     "compile:extension": "npm run esbuild-base -- --minify",
     "compile:views": "webpack --mode production",
     "lint": "eslint src --ext ts",
-    "watch:extension": "tsc -watch -p ./",
+    "watch:extension": "npm run esbuild-watch",
     "watch:views": "webpack --watch --mode development",
     "pretest": "npm run compile && npm run lint",
     "test": "node ./out/test/runTest.js",
@@ -111,6 +112,7 @@
   "dependencies": {
     "axios": "^0.21.2",
     "cheerio": "^1.0.0-rc.12",
+    "dayjs": "^1.11.4",
     "lodash": "^4.17.21",
     "markdown-it": "^13.0.1",
     "moment": "^2.29.2",

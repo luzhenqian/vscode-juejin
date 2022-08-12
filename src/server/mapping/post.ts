@@ -5,7 +5,7 @@ import * as vm from "vm";
 const cheerio = require("cheerio");
 var md = require("markdown-it")();
 
-import { timeFromNow } from "../../utils/time";
+import { timeFromNow } from "../utils/time";
 
 export function categoriesMapping(raw: any[]): Category[] {
   return raw.map(({ category_id, category_name }) => ({

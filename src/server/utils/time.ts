@@ -1,12 +1,12 @@
-import * as moment from "moment";
+const dayjs = require('dayjs');
 
 /**
  * 获取相对于当前时间的表现形式
  * @param time 13 位 时间戳
  */
 export function timeFromNow(time: string): string {
-  let d1 = moment(time, "x");
-  let currentTime = moment();
+  let d1 = dayjs(time, "x");
+  let currentTime = dayjs();
   let years = currentTime.diff(d1, "year");
   let months = currentTime.diff(d1, "month");
   let days = currentTime.diff(d1, "day");
