@@ -3,7 +3,7 @@ import { Loading } from "../components/loading";
 import { dispatch, PostContext } from ".";
 
 export function Post() {
-  const { currentPostID, postHTML, setPostHTML } =
+  const { darkMode, currentPostID, postHTML, setPostHTML } =
     React.useContext(PostContext);
   React.useEffect(() => {
     dispatch({ type: "GET_POST", payload: { id: currentPostID, setPostHTML } });
@@ -15,7 +15,12 @@ export function Post() {
     "
     >
       {postHTML && postHTML.html ? (
-        <iframe srcDoc={`${postHTML.html}<style>img {display: block;max-width: 100%;margin: auto;}</style>`} className="w-full h-full" />
+        <iframe
+          srcDoc={`${postHTML.html}<style>body{color: ${
+            darkMode ? "white" : "black"
+          };} img {display: block;max-width: 100%;margin: auto;}</style>`}
+          className="w-full h-full"
+        />
       ) : (
         // <div dangerouslySetInnerHTML={{ __html: postHTML.html }} />
         <Loading />
