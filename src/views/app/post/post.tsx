@@ -11,10 +11,11 @@ export function Post() {
   }, []);
   React.useEffect(() => {
     hljs.highlightAll();
-  }, [postHTML]);
+  });
   return (
     <div
       className="fixed overflow-scroll top-14 left-[20px] bottom-0 right-[20px]
+      px-4
     bg-white text-gray-900 dark:bg-gray-900 dark:text-white
     "
     >
@@ -34,7 +35,12 @@ export function Post() {
 }
 </style>
 
-<link href="${window.config.themes.tailwindCSS}" rel="stylesheet">
+<link href="${window.config.themes.tailwind}" rel="stylesheet">
+<link href="${
+              darkMode
+                ? window.config.codeThemes.githubDarkDimmed
+                : window.config.codeThemes.github
+            }" rel="stylesheet">
     `,
           }}
           className="w-full h-full post_content"

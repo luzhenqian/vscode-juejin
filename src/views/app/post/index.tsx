@@ -13,8 +13,7 @@ import html from "highlight.js/lib/languages/xml";
 import css from "highlight.js/lib/languages/css";
 import typescript from "highlight.js/lib/languages/typescript";
 import json from "highlight.js/lib/languages/json";
-import "highlight.js/styles/default.css";
-// import "highlight.js/styles/github.css";
+
 hljs.registerLanguage("javascript", javascript);
 hljs.registerLanguage("html", html);
 hljs.registerLanguage("css", css);

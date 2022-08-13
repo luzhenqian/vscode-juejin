@@ -4,6 +4,7 @@ import { PageName } from "../types";
 import { viewConfig } from "./viewconfig";
 import { createDispatch } from "../flux";
 import { reducer } from "../server/reducers/post";
+import { Source } from "./source";
 
 function getConfiguration() {
   let defaultCategory =
@@ -64,14 +65,15 @@ export default class ViewLoader {
   }
 
   private getWebviewContent(pageName: PageName, config: any): string {
+    const source = new Source(this._extensionPath);
     // Local path to main script run in the webview
     const reactAppPathOnDisk = vscode.Uri.file(
       path.join(this._extensionPath, "views", `${pageName}.js`)
     );
     const reactAppUri = reactAppPathOnDisk.with({ scheme: "vscode-resource" });
-    const tailwindCSS = vscode.Uri.file(
-      path.join(this._extensionPath, "assets/theme", `tailwind.css`)
-    ).with({ scheme: "vscode-resource" });
+    // const tailwindCSS = vscode.Uri.file(
+    //   path.join(this._extensionPath, "assets/theme", `tailwind.css`)
+    // ).with({ scheme: "vscode-resource" });
     // FIXME: load font failed
     const albbphFontWoff2Uri = vscode.Uri.file(
       path.join(
@@ -99,7 +101,8 @@ export default class ViewLoader {
           window.acquireVsCodeApi = acquireVsCodeApi;
           window.config = ${JSON.stringify({
             ...config,
-            themes: { tailwindCSS: tailwindCSS.toString() },
+            themes: source.themes,
+            codeThemes: source.codeThemes,
           })};
         </script>
     </head>
