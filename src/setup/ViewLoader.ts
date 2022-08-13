@@ -26,6 +26,7 @@ export default class ViewLoader {
       vscode.ViewColumn.One,
       {
         enableScripts: true,
+        retainContextWhenHidden: true,
         localResourceRoots: [
           vscode.Uri.file(path.join(extensionPath, "views")),
           vscode.Uri.file(path.join(extensionPath, "assets")),
