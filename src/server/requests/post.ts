@@ -1,10 +1,10 @@
-import axios from "axios";
 import { RawData } from "../../types";
 import {
   getPostCategoryConfig,
   getPostConfig,
   getPostListCateConfig,
 } from "./configs/post";
+const axios = require("axios");
 
 export async function getCategories() {
   return extractData(await axios(getPostCategoryConfig));

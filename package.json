@@ -65,7 +65,8 @@
   "scripts": {
     "vscode:prepublish": "npm run compile",
     "compile": "npm-run-all compile:*",
-    "compile:extension": "tsc -p ./",
+    "_compile:extension": "tsc -p ./",
+    "compile:extension": "esbuild ./src/extension.ts --bundle --outfile=out/extension.js --external:vscode --format=cjs --platform=node",
     "compile:views": "webpack --mode production",
     "lint": "eslint src --ext ts",
     "watch": "npm-run-all -p watch:*",
@@ -91,7 +92,7 @@
     "@typescript-eslint/parser": "^2.18.0",
     "autoprefixer": "^10.4.8",
     "css-loader": "^6.7.1",
-    "esbuild": "^0.15.1",
+    "esbuild": "^0.15.2",
     "eslint": "^6.8.0",
     "glob": "^7.1.6",
     "mocha": "^7.0.1",
@@ -107,7 +108,7 @@
     "webpack-cli": "^4.10.0"
   },
   "dependencies": {
-    "axios": "^0.21.2",
+    "axios": "^0.21.4",
     "cheerio": "^1.0.0-rc.12",
     "dayjs": "^1.11.4",
     "highlight.js": "^11.6.0",

@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import * as path from "path";
-import ViewLoader from "./views/ViewLoader";
+import ViewLoader from "./setup/ViewLoader";
 
 export function activate(context: vscode.ExtensionContext) {
   let pins = vscode.commands.registerCommand("juejin.pins", () => {
