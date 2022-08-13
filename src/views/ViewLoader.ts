@@ -95,9 +95,6 @@ export default class ViewLoader {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>掘金</title>
-        <link rel="stylesheet" href="/path/to/styles/default.min.css">
-<script src="/path/to/highlight.min.js"></script>
-<script>hljs.highlightAll();</script>
         <script>
           window.acquireVsCodeApi = acquireVsCodeApi;
           window.config = ${JSON.stringify({

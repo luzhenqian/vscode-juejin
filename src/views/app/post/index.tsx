@@ -7,6 +7,20 @@ import { reducer } from "../../reducers/post";
 import "../index.css";
 import { List } from "./list";
 
+import hljs from "highlight.js/lib/core";
+import javascript from "highlight.js/lib/languages/javascript";
+import html from "highlight.js/lib/languages/xml";
+import css from "highlight.js/lib/languages/css";
+import typescript from "highlight.js/lib/languages/typescript";
+import 'highlight.js/styles/default.css'
+// import "highlight.js/styles/github.css";
+hljs.registerLanguage("javascript", javascript);
+hljs.registerLanguage("js", javascript);
+hljs.registerLanguage("html", html);
+hljs.registerLanguage("css", css);
+hljs.registerLanguage("typescript", typescript);
+hljs.registerLanguage("ts", typescript);
+
 declare global {
   interface Window {
     acquireVsCodeApi(): Webview;

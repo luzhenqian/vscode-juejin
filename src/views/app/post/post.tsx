@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Loading } from "../components/loading";
 import { dispatch, PostContext } from ".";
+import hljs from "highlight.js/lib/core";
 
 export function Post() {
   const { darkMode, currentPostID, postHTML, setPostHTML } =
@@ -8,6 +9,9 @@ export function Post() {
   React.useEffect(() => {
     dispatch({ type: "GET_POST", payload: { id: currentPostID, setPostHTML } });
   }, []);
+  React.useEffect(() => {
+    hljs.highlightAll();
+  }, [postHTML]);
   return (
     <div
       className="fixed overflow-scroll top-14 left-[20px] bottom-0 right-[20px]
