@@ -8,7 +8,8 @@ export class Source {
   constructor(extensionPath: string) {
     this._extensionPath = extensionPath;
     this.themes = {
-      tailwind: this.getPath("assets/theme", `tailwind.css`),
+      tailwind: this.getPath("assets/theme/tailwind.css"),
+      tailwindDark: this.getPath("assets/theme/tailwind-dark.css"),
     };
     this.codeThemes = {
       github: this.getPath("assets/code-theme", `github.css`),

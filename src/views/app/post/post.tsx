@@ -24,9 +24,6 @@ export function Post() {
           dangerouslySetInnerHTML={{
             __html: `${postHTML.html}
 <style>
-.post_content{
-  color: ${darkMode ? "white" : "black"};
-}
 .post_content img {
   display: block;
   max-width: 100%;
@@ -36,6 +33,11 @@ export function Post() {
 </style>
 
 <link href="${window.config.themes.tailwind}" rel="stylesheet">
+${
+  darkMode
+    ? `<link href="${window.config.themes.tailwindDark}" rel="stylesheet">`
+    : ""
+}
 <link href="${
               darkMode
                 ? window.config.codeThemes.githubDarkDimmed
