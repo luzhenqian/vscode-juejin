@@ -17,14 +17,14 @@
   --tw-primary: #62bbf3;
 
   --tw-prose-body: var(--theme-700);
-  --tw-prose-headings: var(--theme-900);
+  --tw-prose-headings: var(--theme-50);
   --tw-prose-lead: var(--theme-600);
   --tw-prose-links: var(--theme-900);
   --tw-prose-bold: var(--theme-900);
   --tw-prose-counters: var(--theme-500);
   --tw-prose-bullets: var(--theme-300);
   --tw-prose-hr: var(--theme-200);
-  --tw-prose-quotes: var(--theme-900);
+  --tw-prose-quotes: var(--theme-50);
   --tw-prose-quote-borders: var(--theme-200);
   --tw-prose-captions: var(--theme-500);
   --tw-prose-code: var(--theme-900);
