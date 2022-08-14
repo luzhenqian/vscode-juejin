@@ -1,10 +1,10 @@
-const dayjs = require('dayjs');
+import * as dayjs from "dayjs";
 
 /**
  * 获取相对于当前时间的表现形式
  * @param time 13 位 时间戳
  */
-export function timeFromNow(time: string): string {
+export function timeFromNow(time: number): string {
   let d1 = dayjs(time, "x");
   let currentTime = dayjs();
   let years = currentTime.diff(d1, "year");

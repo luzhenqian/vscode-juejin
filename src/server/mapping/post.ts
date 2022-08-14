@@ -45,7 +45,7 @@ export function postListMapping(raw: any[]): Post[] {
         collectCount: collect_count,
         hotIndex: hot_index,
         rankIndex: Math.floor(rank_index * 1000),
-        createdAt: timeFromNow(ctime + "000"),
+        createdAt: timeFromNow(Number(ctime + "000")),
       },
       author: {
         id: user_id,
