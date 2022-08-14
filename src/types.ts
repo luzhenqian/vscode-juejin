@@ -42,6 +42,7 @@ export type Post = {
     commentCount: number;
     collectCount: number;
     hotIndex: number;
+    rankIndex: number;
     createdAt: string;
   };
   author: {

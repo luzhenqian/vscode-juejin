@@ -51,8 +51,6 @@ function Article({ id, info, author, tags }: Post) {
           className="flex flex-col mb-2"
           onClick={() => {
             setScrollTop(window.scrollY);
-            console.log('set y:', window.scrollY);
-            
             setCurrentPostID(id);
           }}
         >
@@ -78,11 +76,12 @@ function Article({ id, info, author, tags }: Post) {
             </div>
 
             <div className="flex gap-2">
-              <span>{info.viewCount}阅读</span>
-              <span>{info.diggCount}点赞</span>
-              <span>{info.commentCount}评论</span>
-              <span>{info.collectCount}收藏</span>
-              <span>{info.hotIndex}热度</span>
+              <span>阅读:{info.viewCount}</span>
+              <span>点赞:{info.diggCount}</span>
+              <span>评论:{info.commentCount}</span>
+              <span>收藏:{info.collectCount}</span>
+              <span>总分:{info.rankIndex}</span>
+              <span>热度:{info.hotIndex}</span>
             </div>
           </div>
           <div className="flex gap-2 text-sm">

@@ -27,6 +27,7 @@ export function postListMapping(raw: any[]): Post[] {
         comment_count,
         collect_count,
         hot_index,
+        rank_index,
         ctime,
       },
       author_user_info: { avatar_large, user_id, user_name },
@@ -43,6 +44,7 @@ export function postListMapping(raw: any[]): Post[] {
         commentCount: comment_count,
         collectCount: collect_count,
         hotIndex: hot_index,
+        rankIndex: Math.floor(rank_index * 1000),
         createdAt: timeFromNow(ctime + "000"),
       },
       author: {
