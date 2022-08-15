@@ -33,8 +33,8 @@ export default function Cursor({ color, x, y, message }: Props) {
 
       {message && (
         <div
-          className="absolute px-4 py-2 top-5 left-2 rounded-3xl"
-          style={{ backgroundColor: color, borderRadius: 20 }}
+          className="absolute p-1 rounded-sm top-5 left-2"
+          style={{ backgroundColor: color }}
         >
           <p className="text-sm leading-relaxed text-white whitespace-nowrap">
             {message}

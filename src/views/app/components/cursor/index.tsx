@@ -211,15 +211,12 @@ function Example({ onScroll, children }) {
                 <img src={window.config.images.cursor} />
 
                 <div
-                  className="absolute z-50 px-4 py-2 text-sm leading-relaxed text-white bg-blue-500 top-5 left-2"
+                  className="absolute z-50 p-1 text-sm leading-relaxed text-white bg-blue-500 rounded-sm top-5 left-2 "
                   onKeyUp={(e) => e.stopPropagation()}
-                  style={{
-                    borderRadius: 20,
-                  }}
                 >
                   {state.previousMessage && <div>{state.previousMessage}</div>}
                   <input
-                    className="text-white placeholder-blue-300 bg-transparent border-none outline-none w-60"
+                    className="w-auto p-1 text-white placeholder-blue-300 bg-transparent border-none outline-none"
                     autoFocus={true}
                     onChange={(e) => {
                       updateMyPresence({ message: e.target.value });
@@ -242,7 +239,9 @@ function Example({ onScroll, children }) {
                         });
                       }
                     }}
-                    placeholder={state.previousMessage ? "" : "Say something…"}
+                    placeholder={
+                      state.previousMessage ? "" : "输入文字，开始聊天"
+                    }
                     value={state.message}
                     maxLength={50}
                   />

@@ -4,6 +4,7 @@ import { Button } from "./Button";
 import { Item } from "./Item";
 import { AddUserGroup } from "./AddUserGroup";
 import { Categories } from "./Categories";
+import { ChatMode } from "./ChatMode";
 
 const styleEl = document.createElement("style");
 styleEl.innerText = `img {display:none !important;}`;
@@ -80,25 +81,11 @@ export function Header({ context }: { context: React.Context<IPostContext> }) {
         <div className="hidden w-px h-6 mx-6 bg-gray-200 dark:bg-gray-700 sm:block lg:mx-4"></div>
 
         <Button>
-          <Item
-            onClick={() => {
-              setChatMode(!chatMode);
-              // TODO: 切换聊天模式，恢复原来的滚动位置
-              // const scrollTop = window.scrollY;
-              // setTimeout(() => {
-              //   window.scrollBy({
-              //     top: scrollTop,
-              //     left: 0,
-              //   });
-              // }, 0);
-            }}
-            className={`
-            ${chatMode ? "font-bold" : ""}
-            ${chatMode ? (darkMode ? "text-gray-300" : "text-gray-800") : ""}
-            `}
-          >
-            聊天模式
-          </Item>
+          <ChatMode
+            darkMode={darkMode}
+            chatMode={chatMode}
+            setChatMode={setChatMode}
+          />
           <Item
             onClick={() => {
               setZenMode(!zenMode);
