@@ -137,7 +137,7 @@ export const List = React.memo(function _List() {
     }
   }, 1000);
   React.useEffect(() => {
-    if (chatMode) return;
+    if (chatMode) {return () => {};}
     window.addEventListener("scroll", loadMore);
     return () => window.removeEventListener("scroll", loadMore);
   }, [cursor, currentCategoryID]);

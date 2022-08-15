@@ -27,7 +27,12 @@ module.exports = {
             loader: "style-loader"
           },
           {
-            loader: "css-loader"
+            loader: "css-loader",
+            options: {
+              modules: {
+                auto: /\.module\.\w+$/i,
+              },
+            },
           },
           {
             loader: "postcss-loader"

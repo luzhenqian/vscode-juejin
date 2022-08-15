@@ -14,6 +14,11 @@
         "noUnusedLocals": true,
         "noImplicitReturns": true,
         "noFallthroughCasesInSwitch": true,
-        "experimentalDecorators": true
+        "experimentalDecorators": true,
+        "plugins": [
+            {
+                "name": "typescript-plugin-css-modules"
+            }
+        ]
     }
 }

@@ -74,7 +74,7 @@ function App() {
   const [cursor, setCursor] = React.useState(0);
   const [scrollTop, setScrollTop] = React.useState(0);
   const [zenMode, setZenMode] = React.useState(false);
-  const [chatMode, setChatMode] = React.useState(false);
+  const [chatMode, setChatMode] = React.useState(true);
   React.useEffect(() => {
     dispatch({
       type: "GET_INITIAL",
