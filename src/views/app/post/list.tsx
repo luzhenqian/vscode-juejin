@@ -1,9 +1,9 @@
+import { debounce } from "lodash";
 import * as React from "react";
 import { dispatch, PostContext } from ".";
 import { Post } from "../../../types";
 import { Header } from "../components/header";
 import { Post as PostComponent } from "./post";
-import { debounce } from "lodash";
 
 function Loading() {
   return (
@@ -103,9 +103,26 @@ function Article({ id, info, author, tags }: Post) {
 }
 
 function Articles() {
-  const { postList, cursor, setCursor, currentCategoryID } =
-    React.useContext(PostContext);
+  const { postList } = React.useContext(PostContext);
+  return (
+    <main className="flex-1 px-10 py-2 bg-white dark:bg-slate-800 mt-14">
+      {postList.map((post) => (
+        <Article key={post.id} {...post} />
+      ))}
+    </main>
+  );
+}
 
+export const List = React.memo(function _List() {
+  const {
+    postList,
+    darkMode,
+    currentPostID,
+    cursor,
+    setCursor,
+    currentCategoryID,
+    chatMode,
+  } = React.useContext(PostContext);
   const loadMore = debounce(() => {
     const { scrollHeight, scrollTop } = document.documentElement;
     if (scrollTop + window.innerHeight > scrollHeight - 100) {
@@ -120,28 +137,18 @@ function Articles() {
     }
   }, 1000);
   React.useEffect(() => {
+    if (chatMode) return;
     window.addEventListener("scroll", loadMore);
     return () => window.removeEventListener("scroll", loadMore);
-  }, [cursor]);
-  return (
-    <main className="flex-1 px-10 py-2 bg-white dark:bg-slate-800 mt-14">
-      {postList.map((post) => (
-        <Article key={post.id} {...post} />
-      ))}
-    </main>
-  );
-}
-
-export const List = React.memo(function _List() {
-  const { darkMode, postList, currentPostID } = React.useContext(PostContext);
-
+  }, [cursor, currentCategoryID]);
   return (
     <div
       className={`${darkMode && " dark "} min-w-[800px] 
+      w-full
       ${currentPostID && "max-h-screen overflow-hidden"}`}
     >
       <div
-        className={`flex max-h-screen h-screen flex-col bg-white text-gray-900 dark:bg-gray-900 dark:text-white`}
+        className={`flex w-full max-h-screen h-screen flex-col bg-white text-gray-900 dark:bg-gray-900 dark:text-white`}
       >
         <Header context={PostContext} />
         {postList.length === 0 ? <Loading /> : <Articles />}

@@ -1,4 +1,4 @@
-import * as dayjs from "dayjs";
+const dayjs = require("dayjs");
 
 /**
  * 获取相对于当前时间的表现形式

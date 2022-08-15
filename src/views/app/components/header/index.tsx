@@ -20,6 +20,8 @@ export function Header({ context }: { context: React.Context<IPostContext> }) {
     scrollTop,
     zenMode,
     setZenMode,
+    chatMode,
+    setChatMode,
   } = React.useContext(context);
 
   React.useEffect(() => {
@@ -39,7 +41,6 @@ export function Header({ context }: { context: React.Context<IPostContext> }) {
             onClick={() => {
               setCurrentPostID(null);
               setPostHTML("");
-              console.log("get y: ", scrollTop);
 
               setTimeout(() => {
                 window.scrollBy({
@@ -81,12 +82,40 @@ export function Header({ context }: { context: React.Context<IPostContext> }) {
         <Button>
           <Item
             onClick={() => {
+              setChatMode(!chatMode);
+              // TODO: 切换聊天模式，恢复原来的滚动位置
+              // const scrollTop = window.scrollY;
+              // setTimeout(() => {
+              //   window.scrollBy({
+              //     top: scrollTop,
+              //     left: 0,
+              //   });
+              // }, 0);
+            }}
+            className={`
+            ${chatMode ? "font-bold" : ""}
+            ${chatMode ? (darkMode ? "text-gray-300" : "text-gray-800") : ""}
+            `}
+          >
+            聊天模式
+          </Item>
+          <Item
+            onClick={() => {
               setZenMode(!zenMode);
             }}
+            className={`
+            ${zenMode ? "font-bold" : ""}
+            ${zenMode ? (darkMode ? "text-gray-300" : "text-gray-800") : ""}
+            `}
           >
             禅模式
           </Item>
-          <Item onClick={() => setDarkMode(!darkMode)}>
+          <Item
+            onClick={() => setDarkMode(!darkMode)}
+            className={`
+            ${darkMode ? "text-gray-300" : "text-gray-800"}
+            `}
+          >
             {darkMode ? "浅色模式" : "暗色模式"}
           </Item>
         </Button>

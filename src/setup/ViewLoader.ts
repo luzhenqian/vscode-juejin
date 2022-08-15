@@ -104,6 +104,7 @@ export default class ViewLoader {
             ...config,
             themes: source.themes,
             codeThemes: source.codeThemes,
+            images: source.images,
           })};
         </script>
     </head>

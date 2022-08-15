@@ -5,6 +5,7 @@ export class Source {
   private _extensionPath: string;
   codeThemes: {};
   themes: {};
+  images: { cursor: string; };
   constructor(extensionPath: string) {
     this._extensionPath = extensionPath;
     this.themes = {
@@ -17,6 +18,9 @@ export class Source {
         "assets/code-theme",
         `github-dark-dimmed.css`
       ),
+    };
+    this.images = {
+      cursor: this.getPath("assets/images/cursor.svg"),
     };
   }
 

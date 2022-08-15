@@ -13,6 +13,8 @@ import html from "highlight.js/lib/languages/xml";
 import css from "highlight.js/lib/languages/css";
 import typescript from "highlight.js/lib/languages/typescript";
 import json from "highlight.js/lib/languages/json";
+import CursorsChat from "../components/cursor";
+import LiveBlocksContext from "../components/LiveBlocks";
 
 hljs.registerLanguage("javascript", javascript);
 hljs.registerLanguage("html", html);
@@ -56,6 +58,8 @@ export type IPostContext = {
   setScrollTop: Function;
   zenMode: boolean;
   setZenMode: Function;
+  chatMode: boolean;
+  setChatMode: Function;
 } | null;
 
 export const PostContext = React.createContext<IPostContext>(null);
@@ -70,6 +74,7 @@ function App() {
   const [cursor, setCursor] = React.useState(0);
   const [scrollTop, setScrollTop] = React.useState(0);
   const [zenMode, setZenMode] = React.useState(false);
+  const [chatMode, setChatMode] = React.useState(false);
   React.useEffect(() => {
     dispatch({
       type: "GET_INITIAL",
@@ -104,9 +109,19 @@ function App() {
         setScrollTop,
         zenMode,
         setZenMode,
+        chatMode,
+        setChatMode,
       }}
     >
-      <List />
+      <LiveBlocksContext>
+        {chatMode ? (
+          <CursorsChat>
+            <List />
+          </CursorsChat>
+        ) : (
+          <List />
+        )}
+      </LiveBlocksContext>
     </PostContext.Provider>
   );
 }
