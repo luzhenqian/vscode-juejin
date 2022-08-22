@@ -7,23 +7,24 @@ export type Action = {
     | "SET_CURRENT_CATEGORY_ID"
     | "GET_INITIAL"
     | "SEND_INITIAL"
-    | GET_CATEGORORIES
+    | GET_CATEGORIES
     | GET_POST_LIST
     | GET_POST
-    | SEND_CATEGORORIES
+    | SEND_CATEGORIES
     | SEND_POST_LIST
     | "SEND_POST"
-    | "RELOAD";
+    | "RELOAD"
+    | "CHECK_IN";
   payload?: any;
 };
 
 export type Reducer = (action: Action) => any;
 
-export type GET_CATEGORORIES = "GET_CATEGORIES";
+export type GET_CATEGORIES = "GET_CATEGORIES";
 export type GET_POST_LIST = "GET_POST_LIST";
 export type GET_POST = "GET_POST";
 
-export type SEND_CATEGORORIES = "SEND_CATEGORIES";
+export type SEND_CATEGORIES = "SEND_CATEGORIES";
 export type SEND_POST_LIST = "SEND_POST_LIST";
 
 export type Category = {
@@ -52,6 +53,21 @@ export type Post = {
   };
   category: any;
   tags: any;
+};
+
+export type CheckInResponse = {
+  success: boolean;
+  incrPoint: number;
+  sumPoint: number;
+};
+
+export type LotteryConfig = {
+  freeCount: number;
+};
+
+export type Draw = {
+  name: string;
+  image: string;
 };
 
 export type RawData = {

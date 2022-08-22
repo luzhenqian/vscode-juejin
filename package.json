@@ -2,7 +2,7 @@
   "name": "juejin",
   "displayName": "掘金",
   "description": "A juejin extension in vscode",
-  "version": "2.2.1",
+  "version": "2.3.0",
   "publisher": "luzhenqian",
   "homepage": "https://github.com/luzhenqian/vscode-juejin",
   "repository": {
@@ -25,6 +25,10 @@
     "configuration": {
       "title": "juejin-掘金",
       "properties": {
+        "juejin.cookie": {
+          "type": "string",
+          "description": "掘金的 cookie，用于自动签到、自动抽奖等功能"
+        },
         "juejin.pins.head.text": {
           "type": "string",
           "default": "别看了，我在写代码。",

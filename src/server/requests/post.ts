@@ -1,4 +1,4 @@
-import { RawData } from "../../types";
+import { extractData } from "../utils/extract";
 import {
   getPostCategoryConfig,
   getPostConfig,
@@ -14,6 +14,7 @@ export type GetPostListParams = {
   cursor: number;
   cateId: string;
 };
+
 export async function getPostList(params: GetPostListParams) {
   getPostListCateConfig.data = {
     id_type: 2,
@@ -37,12 +38,3 @@ export async function getPost(id: string) {
   return "";
 }
 
-function extractData({ status, data }: RawData) {
-  if (status === 200) {
-    const { err_no } = data;
-    if (err_no === 0) {
-      return data.data;
-    }
-  }
-  return null;
-}
