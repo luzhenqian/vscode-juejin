@@ -64,7 +64,7 @@ function Example({ onScroll, children }) {
   const broadcast = useBroadcastEvent();
   const [state, setState] = useState<CursorState>({ mode: CursorMode.Hidden });
   const [reactions, setReactions] = useState<Reaction[]>([]);
-
+  const inputRef = React.useRef<HTMLInputElement>();
   const setReaction = useCallback((reaction: string) => {
     setState({ mode: CursorMode.Reaction, reaction, isPressed: false });
   }, []);
@@ -99,6 +99,11 @@ function Example({ onScroll, children }) {
     function onKeyUp(e: KeyboardEvent) {
       if (e.key === "/") {
         setState({ mode: CursorMode.Chat, previousMessage: null, message: "" });
+        setTimeout(() => {
+          if (inputRef.current) {
+            inputRef.current.focus();
+          }
+        });
       } else if (e.key === "Escape") {
         updateMyPresence({ message: "" });
         setState({ mode: CursorMode.Hidden });
@@ -217,13 +222,15 @@ function Example({ onScroll, children }) {
                   {state.previousMessage && <div>{state.previousMessage}</div>}
                   <input
                     className="w-auto p-1 text-white placeholder-blue-300 bg-transparent border-none outline-none"
+                    ref={inputRef}
                     autoFocus={true}
                     onChange={(e) => {
-                      updateMyPresence({ message: e.target.value });
+                      let value = e.target.value;
+                      updateMyPresence({ message: value });
                       setState({
                         mode: CursorMode.Chat,
                         previousMessage: null,
-                        message: e.target.value,
+                        message: value,
                       });
                     }}
                     onKeyDown={(e) => {
@@ -233,6 +240,9 @@ function Example({ onScroll, children }) {
                           previousMessage: state.message,
                           message: "",
                         });
+                        if (inputRef.current) {
+                          inputRef.current.blur();
+                        }
                       } else if (e.key === "Escape") {
                         setState({
                           mode: CursorMode.Hidden,
