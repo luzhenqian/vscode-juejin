@@ -2,8 +2,58 @@ import { debounce } from "lodash";
 import * as React from "react";
 import { dispatch, PostContext } from ".";
 import { Post } from "../../../types";
-import { Header } from "../components/header";
+import { Header } from "../components/Header";
+import { Search } from "../components/Search";
 import { Post as PostComponent } from "./post";
+
+export const List = React.memo(function _List() {
+  const {
+    postList,
+    darkMode,
+    currentPostID,
+    cursor,
+    setCursor,
+    currentCategoryID,
+    chatMode,
+    searchVisible,
+  } = React.useContext(PostContext);
+  const loadMore = debounce(() => {
+    const { scrollHeight, scrollTop } = document.documentElement;
+    if (scrollTop + window.innerHeight > scrollHeight - 100) {
+      setCursor(cursor + 1);
+      dispatch({
+        type: "GET_POST_LIST",
+        payload: {
+          cursor: cursor + 1,
+          categoryID: currentCategoryID,
+        },
+      });
+    }
+  }, 1000);
+  React.useEffect(() => {
+    if (chatMode) {
+      return () => {};
+    }
+    window.addEventListener("scroll", loadMore);
+    return () => window.removeEventListener("scroll", loadMore);
+  }, [cursor, currentCategoryID]);
+  return (
+    <div
+      className={`${darkMode && " dark "} min-w-[800px] 
+      w-full
+      ${currentPostID && "max-h-screen overflow-hidden"}`}
+    >
+      <div
+        className={`flex w-full max-h-screen h-screen flex-col bg-white text-gray-900 dark:bg-gray-900 dark:text-white`}
+      >
+        <Header context={PostContext} />
+        {postList.length === 0 ? <Loading /> : <Articles />}
+        {currentPostID && <PostComponent />}
+        {searchVisible && <Search />}
+      </div>
+    </div>
+  );
+});
 
 function Loading() {
   return (
@@ -112,48 +162,3 @@ function Articles() {
     </main>
   );
 }
-
-export const List = React.memo(function _List() {
-  const {
-    postList,
-    darkMode,
-    currentPostID,
-    cursor,
-    setCursor,
-    currentCategoryID,
-    chatMode,
-  } = React.useContext(PostContext);
-  const loadMore = debounce(() => {
-    const { scrollHeight, scrollTop } = document.documentElement;
-    if (scrollTop + window.innerHeight > scrollHeight - 100) {
-      setCursor(cursor + 1);
-      dispatch({
-        type: "GET_POST_LIST",
-        payload: {
-          cursor: cursor + 1,
-          categoryID: currentCategoryID,
-        },
-      });
-    }
-  }, 1000);
-  React.useEffect(() => {
-    if (chatMode) {return () => {};}
-    window.addEventListener("scroll", loadMore);
-    return () => window.removeEventListener("scroll", loadMore);
-  }, [cursor, currentCategoryID]);
-  return (
-    <div
-      className={`${darkMode && " dark "} min-w-[800px] 
-      w-full
-      ${currentPostID && "max-h-screen overflow-hidden"}`}
-    >
-      <div
-        className={`flex w-full max-h-screen h-screen flex-col bg-white text-gray-900 dark:bg-gray-900 dark:text-white`}
-      >
-        <Header context={PostContext} />
-        {postList.length === 0 ? <Loading /> : <Articles />}
-        {currentPostID && <PostComponent />}
-      </div>
-    </div>
-  );
-});

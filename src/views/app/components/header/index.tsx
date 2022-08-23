@@ -5,6 +5,7 @@ import { Item } from "./Item";
 import { AddUserGroup } from "./AddUserGroup";
 import { Categories } from "./Categories";
 import { ChatMode } from "./ChatMode";
+import { SearchButton } from "../Search/Button";
 
 const styleEl = document.createElement("style");
 styleEl.innerText = `img {display:none !important;}`;
@@ -23,6 +24,7 @@ export function Header({ context }: { context: React.Context<IPostContext> }) {
     setZenMode,
     chatMode,
     setChatMode,
+    setSearchVisible,
   } = React.useContext(context);
 
   React.useEffect(() => {
@@ -59,6 +61,7 @@ export function Header({ context }: { context: React.Context<IPostContext> }) {
       )}
 
       <div className="relative flex items-center">
+        <SearchButton className="mr-3" />
         <Button>
           <Item onClick={() => reload()}>刷新</Item>
           <AddUserGroup />

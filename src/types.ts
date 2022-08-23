@@ -14,7 +14,8 @@ export type Action = {
     | SEND_POST_LIST
     | "SEND_POST"
     | "RELOAD"
-    | "CHECK_IN";
+    | "CHECK_IN"
+    | "SEARCH";
   payload?: any;
 };
 

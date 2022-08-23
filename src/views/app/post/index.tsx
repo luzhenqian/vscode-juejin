@@ -60,6 +60,8 @@ export type IPostContext = {
   setZenMode: Function;
   chatMode: boolean;
   setChatMode: Function;
+  searchVisible: boolean;
+  setSearchVisible: Function;
 } | null;
 
 export const PostContext = React.createContext<IPostContext>(null);
@@ -75,6 +77,7 @@ function App() {
   const [scrollTop, setScrollTop] = React.useState(0);
   const [zenMode, setZenMode] = React.useState(false);
   const [chatMode, setChatMode] = React.useState(true);
+  const [searchVisible, setSearchVisible] = React.useState(false);
   React.useEffect(() => {
     dispatch({
       type: "GET_INITIAL",
@@ -111,6 +114,8 @@ function App() {
         setZenMode,
         chatMode,
         setChatMode,
+        searchVisible,
+        setSearchVisible,
       }}
     >
       <LiveBlocksContext>
