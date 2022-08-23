@@ -56,10 +56,12 @@ export async function reducer(action: Action) {
           );
         }
 
-        const { freeCount } = lotteryConfigMapping(await lotteryConfig(cookie));
+        const lotteryConfigRes = await lotteryConfig(cookie);
+        const { freeCount } = lotteryConfigMapping(lotteryConfigRes);
 
         if (freeCount > 0) {
-          const drawData = drawMapping(await draw(cookie));
+          const drawRes = await draw(cookie);
+          const drawData = drawMapping(drawRes);
           vscode.window.showInformationMessage(
             `免费抽奖成功！获得 ${drawData.name}！`
           );
