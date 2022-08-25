@@ -15,11 +15,12 @@ export type Action = {
     | "SEND_POST"
     | "RELOAD"
     | "CHECK_IN"
-    | "SEARCH";
+    | "SEARCH_POST";
   payload?: any;
 };
 
-export type Reducer = (action: Action) => any;
+export type Dispatch = (action: Action) => any;
+export type Reducer = (action: Action, dispatch: Dispatch) => any;
 
 export type GET_CATEGORIES = "GET_CATEGORIES";
 export type GET_POST_LIST = "GET_POST_LIST";
@@ -74,4 +75,14 @@ export type Draw = {
 export type RawData = {
   status: number;
   data: { err_no: number; data: any };
+};
+
+export type RequestConfig = Action;
+
+export type SortType = "default" | "hot" | "new";
+
+export type SearchPostParams = {
+  sortType: SortType;
+  cursor?: string;
+  keywords: string;
 };

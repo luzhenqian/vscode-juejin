@@ -1,10 +1,16 @@
 import * as vscode from "vscode";
-import { Action, CheckInResponse, Draw } from "../../types";
-import { getCategories, getPostList, getPost } from "../requests/post";
+import { Action, CheckInResponse, Dispatch, Draw, Reducer } from "../../types";
+import {
+  getCategories,
+  getPostList,
+  getPost,
+  searchPost,
+} from "../requests/post";
 import {
   categoriesMapping,
   postListMapping,
   postMapping,
+  searchPostListMapping,
 } from "../mapping/post";
 import { checkIn, draw, lotteryConfig } from "../requests/growth";
 import {
@@ -13,7 +19,7 @@ import {
   lotteryConfigMapping,
 } from "../mapping/growth";
 
-export async function reducer(action: Action) {
+export const reducer: Reducer = async (action: Action, dispatch: Dispatch) => {
   switch (action.type) {
     case "GET_CATEGORIES":
       action.payload.panel.webview.postMessage({
@@ -43,30 +49,7 @@ export async function reducer(action: Action) {
         })
       );
 
-      const cookie = vscode.workspace
-        .getConfiguration()
-        .get("juejin.cookie") as string;
-      if (cookie) {
-        // ! 两者存在依赖关系，必须先签到才可以获得抽奖次数
-        const res = await checkIn(cookie);
-        if (res !== null) {
-          const data = checkInMapping(res);
-          vscode.window.showInformationMessage(
-            `每日签到成功！获得 ${data.incrPoint} 矿石，累计 ${data.sumPoint} 矿石！`
-          );
-        }
-
-        const lotteryConfigRes = await lotteryConfig(cookie);
-        const { freeCount } = lotteryConfigMapping(lotteryConfigRes);
-
-        if (freeCount > 0) {
-          const drawRes = await draw(cookie);
-          const drawData = drawMapping(drawRes);
-          vscode.window.showInformationMessage(
-            `免费抽奖成功！获得 ${drawData.name}！`
-          );
-        }
-      }
+      setTimeout(() => dispatch({ type: "CHECK_IN" }), 0);
 
       action.payload.panel.webview.postMessage({
         type: "SEND_INITIAL",
@@ -75,6 +58,7 @@ export async function reducer(action: Action) {
           postList,
         },
       });
+
       return;
     case "GET_POST_LIST":
       const data = await getPostList({
@@ -98,19 +82,11 @@ export async function reducer(action: Action) {
         ),
       });
       return;
-    case "CHECK_IN":
-      // const cookie = vscode.workspace.getConfiguration().get("juejin.cookie");
-      // console.log(cookie);
-      // debugger;
-      // action.payload.panel.webview.postMessage({
-      //   type: "SEND_POST_LIST",
-      //   payload: postListMapping(
-      //     await getPostList({
-      //       cursor: action.payload.cursor,
-      //       cateId: action.payload.categoryID,
-      //     })
-      //   ),
-      // });
+    case "SEARCH_POST":
+      action.payload.panel.webview.postMessage({
+        type: "SEARCH_POST",
+        payload: searchPostListMapping(await searchPost(action.payload)),
+      });
       return;
   }
-}
+};

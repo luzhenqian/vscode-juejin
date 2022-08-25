@@ -2,8 +2,9 @@ import * as vscode from "vscode";
 import * as path from "path";
 import { PageName } from "../types";
 import { viewConfig } from "./viewconfig";
-import { createDispatch } from "../flux";
-import { reducer } from "../server/reducers/post";
+import { createDispatch, combineReducers } from "../flux";
+import { reducer as postReducer } from "../server/reducers/post";
+import { reducer as growthReducer } from "../server/reducers/growth";
 import { Source } from "./source";
 
 function getConfiguration() {
@@ -44,7 +45,9 @@ export default class ViewLoader {
       path: vscode.Uri.file(path.join(this._extensionPath)),
     });
 
-    const dispatch = createDispatch(reducer);
+    const dispatch = createDispatch(
+      combineReducers(postReducer, growthReducer)
+    );
     const panel = this._panel;
 
     this._panel.webview.onDidReceiveMessage((message) => {

@@ -24,7 +24,6 @@ export function Header({ context }: { context: React.Context<IPostContext> }) {
     setZenMode,
     chatMode,
     setChatMode,
-    setSearchVisible,
   } = React.useContext(context);
 
   React.useEffect(() => {

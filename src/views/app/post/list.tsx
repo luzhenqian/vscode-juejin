@@ -47,7 +47,11 @@ export const List = React.memo(function _List() {
         className={`flex w-full max-h-screen h-screen flex-col bg-white text-gray-900 dark:bg-gray-900 dark:text-white`}
       >
         <Header context={PostContext} />
-        {postList.length === 0 ? <Loading /> : <Articles />}
+        {postList.length === 0 ? (
+          <Loading />
+        ) : (
+          <Articles postList={postList} className=" mt-14" />
+        )}
         {currentPostID && <PostComponent />}
         {searchVisible && <Search />}
       </div>
@@ -55,9 +59,11 @@ export const List = React.memo(function _List() {
   );
 });
 
-function Loading() {
+export function Loading({ className = "" }) {
   return (
-    <div className="flex flex-col w-full max-h-screen gap-3 px-3 overflow-hidden pt-14">
+    <div
+      className={`flex flex-col w-full max-h-screen gap-3 px-3 overflow-hidden pt-14 ${className}`}
+    >
       {[...Array(10)].map((_, i) => (
         <div
           key={i}
@@ -115,7 +121,7 @@ function Article({ id, info, author, tags }: Post) {
         <div className="flex justify-between text-xs">
           <div className="flex items-center">
             <div className="flex gap-2 mr-3">
-              {tags.map((tag) => (
+              {tags.slice(0, 3).map((tag) => (
                 <span
                   key={tag}
                   className="inline-flex items-center rounded-lg bg-gray-200 px-1.5 py-0.5 cursor-pointer dark:bg-gray-600"
@@ -152,10 +158,11 @@ function Article({ id, info, author, tags }: Post) {
   );
 }
 
-function Articles() {
-  const { postList } = React.useContext(PostContext);
+export function Articles({ postList, className = "" }) {
   return (
-    <main className="flex-1 px-10 py-2 bg-white dark:bg-slate-800 mt-14">
+    <main
+      className={`flex-1 px-10 py-2 bg-white dark:bg-slate-800 ${className}`}
+    >
       {postList.map((post) => (
         <Article key={post.id} {...post} />
       ))}

@@ -8,14 +8,14 @@ export function Post() {
     React.useContext(PostContext);
   React.useEffect(() => {
     dispatch({ type: "GET_POST", payload: { id: currentPostID, setPostHTML } });
-  }, []);
+  }, [currentPostID, setPostHTML]);
   React.useEffect(() => {
     hljs.highlightAll();
   });
   return (
     <div
       className="fixed overflow-scroll top-14 left-[20px] bottom-0 right-[20px]
-      px-4
+      px-4 z-20
     bg-white text-gray-900 dark:bg-gray-900 dark:text-white
     "
     >

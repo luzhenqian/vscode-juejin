@@ -1,8 +1,11 @@
+import { SearchPostParams } from "../../types";
 import { extractData } from "../utils/extract";
 import {
   getPostCategoryConfig,
   getPostConfig,
   getPostListCateConfig,
+  randomID,
+  searchPostConfig,
 } from "./configs/post";
 const axios = require("axios");
 
@@ -38,3 +41,28 @@ export async function getPost(id: string) {
   return "";
 }
 
+export async function searchPost(params: SearchPostParams) {
+  const sortType = {
+    default: 0,
+    hot: 1,
+    new: 2,
+  };
+  const config = {
+    ...searchPostConfig,
+    data: {
+      id_type: 2,
+      uuid: randomID(),
+      limit: 20,
+      sort_type: sortType[params.sortType],
+      version: 1,
+      key_word: params.keywords || "",
+      cursor: params.cursor || "0",
+    },
+  };
+  const res = await axios(config);
+  const { status, data } = res;
+  if (status === 200) {
+    return data;
+  }
+  return "";
+}

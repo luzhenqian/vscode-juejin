@@ -2,7 +2,7 @@
   "name": "juejin",
   "displayName": "掘金",
   "description": "A juejin extension in vscode",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "publisher": "luzhenqian",
   "homepage": "https://github.com/luzhenqian/vscode-juejin",
   "repository": {
@@ -124,6 +124,7 @@
     "lodash": "^4.17.21",
     "markdown-it": "^13.0.1",
     "moment": "^2.29.2",
+    "nanoid": "^4.0.0",
     "public-ip": "^6.0.1",
     "qs": "^6.9.3",
     "react": "^18.2.0",

@@ -20,6 +20,7 @@
 		"./src/views/**/*.tsx",
 		"./src/views/**/*.ts",
 		"./src/views/**/*.css",
-		"./src/views/tsconfig.json"
+		"./src/views/tsconfig.json",
+		"./src/request/**/*.ts",
 	]
 }
