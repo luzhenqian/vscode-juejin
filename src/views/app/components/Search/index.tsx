@@ -20,7 +20,7 @@ export function Search() {
   const { setSearchVisible } = React.useContext(PostContext);
   return (
     <div
-      className="fixed m-auto left-0 right-0 bg-white dark:bg-slate-800 top-[80px] w-[800px] rounded-md border py-2 z-10
+      className="fixed m-auto left-0 right-0 bg-white dark:bg-slate-800 top-[80px] w-[800px] rounded-md border py-2
     max-h-[90vh] pt-0 overflow-auto"
     >
       <Input

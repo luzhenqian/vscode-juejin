@@ -36,7 +36,7 @@ export function Header({ context }: { context: React.Context<IPostContext> }) {
     }
   }, [zenMode]);
   return (
-    <header className="h-14 gap2 flex items-center justify-between border-b border-gray-200 p-3 text-gray-500 dark:border-gray-800 dark:bg-gray-900 fixed z-10 top-0 left-[20px] right-[20px] bg-white">
+    <header className="h-14 gap2 flex items-center justify-between border-b border-gray-200 p-3 text-gray-500 dark:border-gray-800 dark:bg-gray-900 fixed z-50 top-0 left-[20px] right-[20px] bg-white">
       {currentPostID ? (
         <Button>
           <Item
@@ -60,7 +60,7 @@ export function Header({ context }: { context: React.Context<IPostContext> }) {
       )}
 
       <div className="relative flex items-center">
-        <SearchButton className="mr-3" />
+        {currentPostID ? null : <SearchButton className="mr-3" />}
         <Button>
           <Item onClick={() => reload()}>刷新</Item>
           <AddUserGroup />

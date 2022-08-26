@@ -111,9 +111,18 @@ export function postMapping(raw: string) {
   vm.runInNewContext(`${scriptContent}`, {
     window: data,
   });
-  const markdown = (
-    data.__NUXT__.state.view.column.entry.article_info.mark_content as string
-  ).replace(/^---$.*^---$/ms, "");
-  const html = md.render(markdown);
-  return { html };
+
+  console.log(data.__NUXT__.state.view.column.entry.article_info, "data");
+
+  if (data.__NUXT__.state.view.column.entry.article_info.mark_content) {
+    const markdown = (
+      data.__NUXT__.state.view.column.entry.article_info.mark_content as string
+    ).replace(/^---$.*^---$/ms, "");
+    const html = md.render(markdown);
+    return { html };
+  } else if (data.__NUXT__.state.view.column.entry.article_info.content) {
+    return {
+      html: data.__NUXT__.state.view.column.entry.article_info.content,
+    };
+  }
 }
