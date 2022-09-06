@@ -31,9 +31,6 @@ export async function reducer(action: Action) {
     case "SEND_CATEGORIES":
       setCategories && setCategories(action.payload);
       return;
-    case "GET_POST_LIST":
-      window.vscode.postMessage(action);
-      return;
     case "GET_POST":
       setPostHTML = action.payload.setPostHTML;
       delete action.payload.setPostHTML;
@@ -41,22 +38,6 @@ export async function reducer(action: Action) {
       return;
     case "SEND_POST":
       setPostHTML && setPostHTML(action.payload);
-      return;
-    case "SEND_POST_LIST":
-      setPostList((oldList) => [...oldList, ...action.payload]);
-      return;
-    case "SET_CURRENT_CATEGORY_ID":
-      setCurrentCategoryID(action.payload.categoryID);
-      window.scrollTo({ top: 0, behavior: "smooth" });
-      setPostList([]);
-      setPostHTML([]);
-      window.vscode.postMessage({
-        type: action.type,
-        payload: {
-          categoryID: action.payload.categoryID,
-          cursor: 0,
-        },
-      });
       return;
     case "RELOAD":
       window.vscode.postMessage(action);

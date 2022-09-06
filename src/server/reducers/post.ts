@@ -1,5 +1,4 @@
-import * as vscode from "vscode";
-import { Action, CheckInResponse, Dispatch, Draw, Reducer } from "../../types";
+import { Action, ActionType, Dispatch, Draw, Reducer } from "../../types";
 import {
   getCategories,
   getPostList,
@@ -12,12 +11,45 @@ import {
   postMapping,
   searchPostListMapping,
 } from "../mapping/post";
-import { checkIn, draw, lotteryConfig } from "../requests/growth";
-import {
-  checkInMapping,
-  drawMapping,
-  lotteryConfigMapping,
-} from "../mapping/growth";
+
+const processing = new Map<
+  ActionType,
+  (action: Action, dispatch: Dispatch) => void
+>();
+
+processing.set("GET_POST_LIST", async (action: Action, dispatch: Dispatch) => {
+  const { cursor, data } = await getPostList({
+    sortType: action.payload.sortType,
+    cursor: action.payload.cursor,
+    cateId: action.payload.categoryID,
+  });
+  const dataMapped = postListMapping(data);
+  action.payload.panel.webview.postMessage({
+    type: "SEND_POST_LIST",
+    payload: {
+      cursor,
+      data: dataMapped,
+    },
+  });
+});
+processing.set(
+  "GET_POST_LIST_V2",
+  async (action: Action, dispatch: Dispatch) => {
+    const { cursor, data } = await getPostList({
+      sortType: action.payload.sortType,
+      cursor: action.payload.cursor,
+      cateId: action.payload.categoryID,
+    });
+    const dataMapped = postListMapping(data);
+    action.payload.panel.webview.postMessage({
+      type: "GET_POST_LIST_V2",
+      payload: {
+        cursor,
+        data: dataMapped,
+      },
+    });
+  }
+);
 
 export const reducer: Reducer = async (action: Action, dispatch: Dispatch) => {
   switch (action.type) {
@@ -43,10 +75,13 @@ export const reducer: Reducer = async (action: Action, dispatch: Dispatch) => {
       const categories = categoriesMapping(await getCategories());
       const cateId = categories.find((c) => c.name === cateName)?.id || "";
       const postList = postListMapping(
-        await getPostList({
-          cursor,
-          cateId,
-        })
+        (
+          await getPostList({
+            sortType: action.payload.sortType,
+            cursor,
+            cateId,
+          })
+        ).data
       );
 
       setTimeout(() => dispatch({ type: "CHECK_IN" }), 0);
@@ -60,25 +95,17 @@ export const reducer: Reducer = async (action: Action, dispatch: Dispatch) => {
       });
 
       return;
-    case "GET_POST_LIST":
-      const data = await getPostList({
-        cursor: action.payload.cursor,
-        cateId: action.payload.categoryID,
-      });
-      const dataMapped = postListMapping(data);
-      action.payload.panel.webview.postMessage({
-        type: "SEND_POST_LIST",
-        payload: dataMapped,
-      });
-      return;
     case "SET_CURRENT_CATEGORY_ID":
       action.payload.panel.webview.postMessage({
         type: "SEND_POST_LIST",
         payload: postListMapping(
-          await getPostList({
-            cursor: action.payload.cursor,
-            cateId: action.payload.categoryID,
-          })
+          (
+            await getPostList({
+              sortType: action.payload.sortType,
+              cursor: action.payload.cursor,
+              cateId: action.payload.categoryID,
+            })
+          ).data
         ),
       });
       return;
@@ -88,5 +115,9 @@ export const reducer: Reducer = async (action: Action, dispatch: Dispatch) => {
         payload: searchPostListMapping(await searchPost(action.payload)),
       });
       return;
+    default:
+      if (processing.has(action.type)) {
+        processing.get(action.type)!(action, dispatch);
+      }
   }
 };

@@ -8,19 +8,24 @@ import {
 import { Button } from "./Button";
 import { Item } from "./Item";
 import { getPostList } from "../../proto/post";
+import { SortType } from "../../../../types";
 
-export const Categories = ({
+const sortDictionary = new Map<string, SortType>();
+sortDictionary.set("推荐", 200);
+sortDictionary.set("最新", 300);
+sortDictionary.set("最热", 3);
+
+export const Sort = ({
   hide,
-  categories,
-  sortType,
-  setCursor,
-  setCurrentCategoryID,
+  setCurrentSort,
+  categoryID,
   setPostList,
+  setCursor,
 }) => {
-  const [cateVisible, setCateVisible] = React.useState(false);
+  const [visible, setVisible] = React.useState(false);
   const { x, y, reference, floating, strategy, context } = useFloating({
-    open: cateVisible,
-    onOpenChange: setCateVisible,
+    open: visible,
+    onOpenChange: setVisible,
     middleware: [offset(16)],
   });
   const { getReferenceProps, getFloatingProps } = useInteractions([
@@ -29,14 +34,13 @@ export const Categories = ({
   return (
     <>
       <Item ref={reference} {...getReferenceProps()}>
-        分类
+        排序
       </Item>
 
-      {cateVisible && (
+      {visible && (
         <Button
           className="flex justify-between gap-2 p-2 break-words bg-white ring-1 ring-gray-800 dark:bg-gray-900 "
           style={{
-            // top: "calc(100% + 0.5rem)",
             wordBreak: "keep-all",
             position: strategy,
             top: y ?? 0,
@@ -45,14 +49,14 @@ export const Categories = ({
           ref={floating}
           {...getFloatingProps()}
         >
-          {categories.map((category) => (
+          {Array.from(sortDictionary.keys()).map((sort) => (
             <Item
-              key={category.id}
+              key={sort}
               onClick={async () => {
+                const sortType = sortDictionary.get(sort);
                 hide();
-                setCateVisible(false);
-                setCurrentCategoryID(category.id);
-
+                setVisible(false);
+                setCurrentSort(sortType);
                 const cursorContainer =
                   document.getElementById("cursor-container");
                 if (cursorContainer) {
@@ -64,13 +68,13 @@ export const Categories = ({
                 const { cursor, data } = await getPostList({
                   sortType,
                   cursor: "0",
-                  categoryID: category.id,
+                  categoryID,
                 });
                 setCursor(cursor);
                 setPostList(data);
               }}
             >
-              {category.name}
+              {sort}
             </Item>
           ))}
         </Button>

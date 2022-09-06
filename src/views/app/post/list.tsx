@@ -1,9 +1,10 @@
 import { debounce } from "lodash";
 import * as React from "react";
-import { dispatch, PostContext } from ".";
+import { PostContext } from ".";
 import { Post } from "../../../types";
 import { Header } from "../components/Header";
 import { Search } from "../components/Search";
+import { getPostList } from "../proto/post";
 import { Post as PostComponent } from "./post";
 
 export const List = React.memo(function _List() {
@@ -16,18 +17,21 @@ export const List = React.memo(function _List() {
     currentCategoryID,
     chatMode,
     searchVisible,
+    currentSort,
+    setPostList,
   } = React.useContext(PostContext);
-  const loadMore = debounce(() => {
+  const loadMore = debounce(async () => {
     const { scrollHeight, scrollTop } = document.documentElement;
     if (scrollTop + window.innerHeight > scrollHeight - 100) {
-      setCursor(cursor + 1);
-      dispatch({
-        type: "GET_POST_LIST",
-        payload: {
-          cursor: cursor + 1,
-          categoryID: currentCategoryID,
-        },
+      console.log(cursor, "cursor");
+
+      const res = await getPostList({
+        sortType: currentSort,
+        cursor,
+        categoryID: currentCategoryID,
       });
+      setCursor(res.cursor);
+      setPostList((postList) => postList.concat(res.data));
     }
   }, 1000);
   React.useEffect(() => {
@@ -95,7 +99,7 @@ function Article({ id, info, author, tags }: Post) {
       <div className="flex flex-col flex-1">
         <div className="flex items-center gap-2 mb-1 text-sm">
           <a>
-            <img className="w-8 h-8" src={author.avatar} />
+            <img className="w-8 h-8" src={author.avatar} alt={author.name} />
           </a>
           <span className="">{author.name}</span>
           <span className="font-light text-gray-600 dark:text-gray-500">

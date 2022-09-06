@@ -2,7 +2,7 @@ import { RequestConfig } from "../types";
 
 declare const window: any;
 
-export function request(config: RequestConfig) {
+export function request<T>(config: RequestConfig): Promise<T> {
   return new Promise((resolve, reject) => {
     const { type, payload } = config;
     window.vscode.postMessage({
@@ -30,5 +30,5 @@ export function request(config: RequestConfig) {
 }
 
 request.config = {
-  timeout: 5_000,
+  timeout: 10_000,
 };

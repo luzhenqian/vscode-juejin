@@ -4,6 +4,7 @@ import { Button } from "./Button";
 import { Item } from "./Item";
 import { AddUserGroup } from "./AddUserGroup";
 import { Categories } from "./Categories";
+import { Sort } from "./Sort";
 import { ChatMode } from "./ChatMode";
 import { SearchButton } from "../Search/Button";
 
@@ -24,6 +25,12 @@ export function Header({ context }: { context: React.Context<IPostContext> }) {
     setZenMode,
     chatMode,
     setChatMode,
+    currentCategoryID,
+    setCurrentCategoryID,
+    currentSort,
+    setCurrentSort,
+    setPostList,
+    setCursor,
   } = React.useContext(context);
 
   React.useEffect(() => {
@@ -64,12 +71,26 @@ export function Header({ context }: { context: React.Context<IPostContext> }) {
         <Button>
           <Item onClick={() => reload()}>刷新</Item>
           <AddUserGroup />
+          <Sort
+            categoryID={currentCategoryID}
+            hide={() => {
+              setCurrentPostID("");
+              setPostHTML("");
+            }}
+            setCurrentSort={setCurrentSort}
+            setPostList={setPostList}
+            setCursor={setCursor}
+          />
           <Categories
             hide={() => {
               setCurrentPostID("");
               setPostHTML("");
             }}
+            sortType={currentSort}
             categories={categories}
+            setCurrentCategoryID={setCurrentCategoryID}
+            setCursor={setCursor}
+            setPostList={setPostList}
           />
           <Item>
             <a href="https://github.com/luzhenqian/vscode-juejin">源码</a>

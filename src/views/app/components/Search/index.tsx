@@ -9,7 +9,7 @@ export function Search() {
   const [searching, setSearching] = React.useState(false);
   const onSearch = (value) => {
     setSearching(true);
-    searchPost({ sortType: "default", keywords: value }).then((res) => {
+    searchPost({ sortType: 200, keywords: value }).then((res) => {
       setSearching(false);
       setPostList(res as any);
     });

@@ -14,6 +14,7 @@ export async function getCategories() {
 }
 
 export type GetPostListParams = {
+  sortType: number;
   cursor: number;
   cateId: string;
 };
@@ -22,13 +23,13 @@ export async function getPostList(params: GetPostListParams) {
   getPostListCateConfig.data = {
     id_type: 2,
     client_type: 2608,
-    sort_type: 200,
+    sort_type: params.sortType,
     cursor: params.cursor + "",
     limit: 20,
     cate_id: params.cateId,
   };
   const data = await axios(getPostListCateConfig);
-  return extractData(data);
+  return { cursor: data.data.cursor, data: extractData(data) };
 }
 
 export async function getPost(id: string) {
@@ -42,18 +43,13 @@ export async function getPost(id: string) {
 }
 
 export async function searchPost(params: SearchPostParams) {
-  const sortType = {
-    default: 0,
-    hot: 1,
-    new: 2,
-  };
   const config = {
     ...searchPostConfig,
     data: {
       id_type: 2,
       uuid: randomID(),
       limit: 20,
-      sort_type: sortType[params.sortType],
+      sort_type: params.sortType,
       version: 1,
       key_word: params.keywords || "",
       cursor: params.cursor || "0",

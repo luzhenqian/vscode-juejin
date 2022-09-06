@@ -2,7 +2,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom/client";
 import { createDispatch } from "../../../flux";
 import { Webview } from "vscode";
-import { Category, Post } from "../../../types";
+import { Category, Post, SortType } from "../../../types";
 import { reducer } from "../../reducers/post";
 import "../index.css";
 import { List } from "./list";
@@ -52,7 +52,7 @@ export type IPostContext = {
   setPostHTML: Function;
   currentCategoryID: string;
   setCurrentCategoryID: Function;
-  cursor: number;
+  cursor: string;
   setCursor: Function;
   scrollTop: number;
   setScrollTop: Function;
@@ -62,6 +62,10 @@ export type IPostContext = {
   setChatMode: Function;
   searchVisible: boolean;
   setSearchVisible: Function;
+  currentSort: SortType;
+  setCurrentSort: Function;
+  getPostListIsLoading: boolean;
+  setGetPostListIsLoading: Function;
 } | null;
 
 export const PostContext = React.createContext<IPostContext>(null);
@@ -73,11 +77,14 @@ function App() {
   const [currentPostID, setCurrentPostID] = React.useState(null);
   const [postHTML, setPostHTML] = React.useState(null);
   const [currentCategoryID, setCurrentCategoryID] = React.useState("");
-  const [cursor, setCursor] = React.useState(0);
+  const [currentSort, setCurrentSort] = React.useState<SortType>(200);
+  const [cursor, setCursor] = React.useState("0");
   const [scrollTop, setScrollTop] = React.useState(0);
   const [zenMode, setZenMode] = React.useState(false);
   const [chatMode, setChatMode] = React.useState(true);
   const [searchVisible, setSearchVisible] = React.useState(false);
+  const [getPostListIsLoading, setGetPostListIsLoading] = React.useState(false);
+
   React.useEffect(() => {
     dispatch({
       type: "GET_INITIAL",
@@ -116,6 +123,10 @@ function App() {
         setChatMode,
         searchVisible,
         setSearchVisible,
+        currentSort,
+        setCurrentSort,
+        getPostListIsLoading,
+        setGetPostListIsLoading,
       }}
     >
       <LiveBlocksContext>

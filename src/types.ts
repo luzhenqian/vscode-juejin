@@ -2,20 +2,24 @@ export type GET_POST_LIST_TYPE = "INIT" | "NEXT";
 
 export type PageName = "post";
 
+export type ActionType =
+  | "SET_CURRENT_CATEGORY_ID"
+  | "GET_INITIAL"
+  | "SEND_INITIAL"
+  | GET_CATEGORIES
+  | GET_POST_LIST
+  | "GET_POST_LIST_V2"
+  | GET_POST
+  | SEND_CATEGORIES
+  | SEND_POST_LIST
+  | "SEND_POST"
+  | "RELOAD"
+  | "CHECK_IN"
+  | "SEARCH_POST"
+  | "SET_CURRENT_SORT";
+  
 export type Action = {
-  type:
-    | "SET_CURRENT_CATEGORY_ID"
-    | "GET_INITIAL"
-    | "SEND_INITIAL"
-    | GET_CATEGORIES
-    | GET_POST_LIST
-    | GET_POST
-    | SEND_CATEGORIES
-    | SEND_POST_LIST
-    | "SEND_POST"
-    | "RELOAD"
-    | "CHECK_IN"
-    | "SEARCH_POST";
+  type: ActionType;
   payload?: any;
 };
 
@@ -79,10 +83,16 @@ export type RawData = {
 
 export type RequestConfig = Action;
 
-export type SortType = "default" | "hot" | "new";
+export type SortType = 200 | 300 | 3;
 
 export type SearchPostParams = {
   sortType: SortType;
   cursor?: string;
   keywords: string;
+};
+
+export type GetPostListParams = {
+  sortType: SortType;
+  cursor?: string;
+  categoryID: string;
 };
