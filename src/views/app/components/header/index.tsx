@@ -77,6 +77,7 @@ export function Header({ context }: { context: React.Context<IPostContext> }) {
               setCurrentPostID("");
               setPostHTML("");
             }}
+            sortType={currentSort}
             setCurrentSort={setCurrentSort}
             setPostList={setPostList}
             setCursor={setCursor}
@@ -87,6 +88,7 @@ export function Header({ context }: { context: React.Context<IPostContext> }) {
               setPostHTML("");
             }}
             sortType={currentSort}
+            categoryID={currentCategoryID}
             categories={categories}
             setCurrentCategoryID={setCurrentCategoryID}
             setCursor={setCursor}

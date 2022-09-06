@@ -16,6 +16,7 @@ export const Categories = ({
   setCursor,
   setCurrentCategoryID,
   setPostList,
+  categoryID,
 }) => {
   const [cateVisible, setCateVisible] = React.useState(false);
   const { x, y, reference, floating, strategy, context } = useFloating({
@@ -69,6 +70,9 @@ export const Categories = ({
                 setCursor(cursor);
                 setPostList(data);
               }}
+              className={`${
+                category.id === categoryID ? " font-bold " : ""
+              }`}
             >
               {category.name}
             </Item>

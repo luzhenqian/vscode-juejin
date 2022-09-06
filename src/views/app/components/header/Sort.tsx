@@ -21,6 +21,7 @@ export const Sort = ({
   categoryID,
   setPostList,
   setCursor,
+  sortType,
 }) => {
   const [visible, setVisible] = React.useState(false);
   const { x, y, reference, floating, strategy, context } = useFloating({
@@ -73,6 +74,7 @@ export const Sort = ({
                 setCursor(cursor);
                 setPostList(data);
               }}
+              className={`${sortDictionary.get(sort) === sortType ? " font-bold " : ""}`}
             >
               {sort}
             </Item>
