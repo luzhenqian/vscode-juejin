@@ -67,7 +67,25 @@ windows 使用 `ctrl + shift + p` / macOS 使用 `command + shift + p` 唤出插
 
 操作步骤：
 
+打开掘金官网，按 f12 进入开发者模式。
+通过 Network -> Fecth/XHR -> 随便选择一条 -> Headers -> cookie 找到 cookie，右键，选择 Copy value。
 
+打开 VSCode。
+点击 Code -> Preferences -> Settings 打开配置面板。
+
+![step1](./assets/images/step1.png)
+
+搜索 juejin.cookie 配置项，将 cookie 粘贴进去。
+
+![step2](./assets/images/step2.png)
+
+按 ctrl+p+p，完成自动签到、自动抽奖。
+
+![step2.1](./assets/images/step2.1.png)
+
+此步骤仅需要设置一次。如果账号密码发生变化，需要同步更新 cookie。
+
+![step2.2](./assets/images/step2.2.png)
 
 ---
 
